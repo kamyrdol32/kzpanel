@@ -1,0 +1,18 @@
+{
+  "recruitment": {
+    "title": "Recruitment",
+    "company": "Company",
+    "position": "Position",
+    "level": "Level",
+    "salary": "Salary",
+    "applied": "Applied",
+    "status": "Status",
+    "workMode": "Work mode",
+    "notes": "Notes",
+    "created": "Created",
+    "updated": "Updated",
+    "jobOffer": "Linked offer",
+    "confirmDeleteTitle": "Delete recruitment?",
+    "confirmDeleteMsg": "This will remove the recruitment entry. Are you sure you want to continue?"
+  }
+}

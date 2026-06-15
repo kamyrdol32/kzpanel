@@ -1,0 +1,14 @@
+{
+  "root": true,
+  "ignorePatterns": ["dist/**"],
+  "overrides": [
+    {
+      "files": ["*.ts"],
+      "parserOptions": { "project": ["tsconfig.json"] },
+      "extends": [
+        "../.eslintrc.base.json"
+      ],
+      "rules": {}
+    }
+  ]
+}

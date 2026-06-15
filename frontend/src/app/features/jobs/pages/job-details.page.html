@@ -1,0 +1,48 @@
+@if (facade.selected(); as job) {
+  <div class="ev-page">
+    <div class="ev-row" style="justify-content: space-between">
+      <h1 class="ev-page__title" style="margin: 0">{{ job.title }}</h1>
+      <a class="apply-btn" [href]="job.sourceUrl" target="_blank" rel="noopener noreferrer">
+        {{ 'jobs.apply' | translate }}
+        <span class="material-symbols-rounded" style="font-size:18px">open_in_new</span>
+      </a>
+    </div>
+
+    <p class="muted">{{ job.company }} · {{ job.location ?? '—' }} · {{ job.remoteType }}</p>
+
+    <div class="ev-row" style="gap: 8px; margin-bottom: 16px">
+      <ev-status-badge [label]="job.level" tone="info" />
+      <ev-status-badge [label]="job.language" tone="neutral" />
+      <ev-status-badge [label]="job.source" tone="neutral" />
+    </div>
+
+    <div class="ev-grid" style="grid-template-columns: 2fr 1fr">
+      <ev-card [title]="'jobs.description' | translate">
+        <p>{{ job.description ?? '—' }}</p>
+
+        <h4>{{ 'jobs.requirements' | translate }}</h4>
+        <ul>
+          @for (r of job.requirements; track r) { <li>{{ r }}</li> }
+        </ul>
+
+        <h4>{{ 'jobs.mustHave' | translate }}</h4>
+        <ul>
+          @for (r of job.mustHave; track r) { <li>{{ r }}</li> }
+        </ul>
+      </ev-card>
+
+      <ev-card [title]="'jobs.techStack' | translate">
+        <div class="chips">
+          @for (t of job.techStack; track t) { <span class="chip">{{ t }}</span> }
+        </div>
+
+        <h4>{{ 'jobs.benefits' | translate }}</h4>
+        <ul>
+          @for (b of job.benefits; track b) { <li>{{ b }}</li> }
+        </ul>
+      </ev-card>
+    </div>
+  </div>
+} @else {
+  <div class="ev-page"><p class="muted">{{ 'common.loading' | translate }}</p></div>
+}

@@ -1,0 +1,18 @@
+{
+  "scraping": {
+    "title": "Job scraping",
+    "addTitle": "Add scraping target",
+    "source": "Portal",
+    "selectSource": "— select a service —",
+    "pickFirst": "Pick a service to see available filters.",
+    "query": "Search keyword",
+    "fieldTech": "Technology",
+    "fieldKeyword": "Keyword",
+    "location": "Location",
+    "remote": "Work mode",
+    "add": "Add to scraping",
+    "scrapeNow": "Scrape now",
+    "empty": "No scraping targets configured",
+    "lastRun": "Last run"
+  }
+}

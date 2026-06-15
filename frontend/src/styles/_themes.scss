@@ -1,0 +1,52 @@
+@use 'tokens' as *;
+
+// ──────────────────────────────────────────────────────────────
+// Theme contracts via CSS custom properties.
+// Components ONLY consume var(--ev-*) — switching themes never
+// requires rewriting a component. Default = dark.
+// ──────────────────────────────────────────────────────────────
+
+@mixin dark-theme {
+  --ev-bg:            #{$ev-black-900};
+  --ev-surface:       #{$ev-black-800};
+  --ev-surface-2:     #{$ev-graphite};
+  --ev-border:        #2c2c2c;
+  --ev-text:          #ededed;
+  --ev-text-muted:    #9a9a9a;
+  --ev-accent:        #{$ev-gold};
+  --ev-accent-strong: #{$ev-gold-bright};
+  --ev-accent-dim:    #{$ev-gold-dark};
+
+  --ev-success: #3fbf6f;
+  --ev-warning: #e0b341;
+  --ev-danger:  #e2574c;
+  --ev-info:    #4a90d9;
+
+  --ev-shadow-sm: #{$shadow-sm};
+  --ev-shadow-md: #{$shadow-md};
+  --ev-shadow-lg: #{$shadow-lg};
+}
+
+@mixin light-theme {
+  --ev-bg:            #f5f5f4;
+  --ev-surface:       #ffffff;
+  --ev-surface-2:     #efeee9;
+  --ev-border:        #e0ddd4;
+  --ev-text:          #1b1b1b;
+  --ev-text-muted:    #6b6b6b;
+  --ev-accent:        #{$ev-gold-dark};
+  --ev-accent-strong: #{$ev-gold};
+  --ev-accent-dim:    #{$ev-gold-bright};
+
+  --ev-success: #2f9e58;
+  --ev-warning: #b8860b;
+  --ev-danger:  #c0392b;
+  --ev-info:    #2f6fae;
+
+  --ev-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.08);
+  --ev-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.10);
+  --ev-shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.14);
+}
+
+.theme-dark { @include dark-theme; }
+.theme-light { @include light-theme; }

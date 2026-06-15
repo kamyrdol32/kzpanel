@@ -1,0 +1,188 @@
+// ── status indicator dot in the prefix cell ───────────────────────────
+.status-dot {
+  display: inline-flex;
+  align-items: center;
+
+  .material-symbols-rounded {
+    font-size: 18px;
+  }
+
+  &--applied {
+    color: var(--ev-success, #22c55e);
+  }
+
+  &--dismissed {
+    color: var(--ev-text-muted);
+  }
+}
+
+// ── row state styling (driven by rowClass) ────────────────────────────
+:host ::ng-deep .job-row--dismissed td {
+  opacity: 0.5;
+
+  .cell {
+    text-decoration: line-through;
+  }
+}
+
+:host ::ng-deep .job-row--applied {
+  background: color-mix(in srgb, var(--ev-success, #22c55e) 8%, transparent);
+}
+
+// ── row action icon buttons ───────────────────────────────────────────
+.row-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--ev-text-muted);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+
+  .material-symbols-rounded {
+    font-size: 18px;
+  }
+
+  &:hover {
+    background: var(--ev-surface-2);
+    color: var(--ev-text);
+  }
+
+  &--primary:hover {
+    color: var(--ev-accent);
+  }
+
+  &--danger:hover {
+    color: var(--ev-danger, #ef4444);
+  }
+
+  &--active {
+    color: var(--ev-accent);
+    background: var(--ev-surface-2);
+  }
+}
+
+// ── chips ──────────────────────────────────────────────────────────────
+.chip--success {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: color-mix(in srgb, var(--ev-success, #22c55e) 15%, transparent);
+  color: var(--ev-success, #22c55e);
+  font-weight: 500;
+}
+
+// ── expanded detail panel ──────────────────────────────────────────────
+.job-detail {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  border-top: 1px solid var(--ev-border);
+  background: var(--ev-bg);
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+  }
+
+  &__section {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-top: 4px;
+    border-top: 1px solid var(--ev-border);
+  }
+
+  &__desc {
+    margin: 0;
+    font-size: 13px;
+    color: var(--ev-text-muted);
+    line-height: 1.6;
+    max-height: 160px;
+    overflow-y: auto;
+  }
+
+  &__list {
+    margin: 0;
+    padding-left: 20px;
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--ev-text-muted);
+  }
+
+  &__actions {
+    display: flex;
+    gap: 8px;
+    padding-top: 8px;
+  }
+}
+
+// field card — shared visual with recruitment details
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px 14px;
+  background: var(--ev-surface);
+  border: 1px solid var(--ev-border);
+  border-radius: 10px;
+
+  &__label {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--ev-text-muted);
+  }
+
+  &__value {
+    font-size: 14px;
+    color: var(--ev-text);
+    display: flex;
+    align-items: center;
+  }
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  border: 1px solid transparent;
+
+  &--primary {
+    background: var(--ev-accent);
+    color: #fff;
+
+    &:hover {
+      opacity: 0.9;
+    }
+  }
+
+  &--ghost {
+    background: transparent;
+    border-color: var(--ev-border);
+    color: var(--ev-text);
+
+    &:hover {
+      background: var(--ev-surface-2);
+    }
+  }
+}

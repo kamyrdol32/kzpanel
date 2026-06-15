@@ -1,0 +1,50 @@
+@use '../../../../styles/tokens' as *;
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: $space-4;
+}
+
+.section-title {
+  font-size: $fs-lg;
+  font-weight: $fw-semibold;
+  margin: $space-6 0 $space-4;
+}
+
+.tiles-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: $space-4;
+}
+
+.tile {
+  background: var(--ev-surface);
+  border: 1px solid var(--ev-border);
+  border-radius: $radius-lg;
+  padding: $space-4;
+
+  &__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: $space-4;
+  }
+
+  &__name { font-weight: $fw-semibold; }
+
+  &__metrics {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: $space-3;
+
+    div {
+      display: flex;
+      justify-content: space-between;
+      font-size: $fs-sm;
+      span { color: var(--ev-text-muted); }
+    }
+  }
+}
+
+.muted { color: var(--ev-text-muted); }

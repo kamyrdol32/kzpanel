@@ -1,0 +1,17 @@
+{
+  "jobs": {
+    "title": "Job offers",
+    "apply": "Apply",
+    "applied": "CV sent",
+    "dismiss": "Not interested",
+    "restore": "Restore",
+    "description": "Description",
+    "requirements": "Requirements",
+    "mustHave": "Must have",
+    "niceToHave": "Nice to have",
+    "benefits": "Benefits",
+    "techStack": "Tech stack",
+    "emptyTitle": "No offers",
+    "emptyDesc": "Run the scraper or add an offer manually."
+  }
+}

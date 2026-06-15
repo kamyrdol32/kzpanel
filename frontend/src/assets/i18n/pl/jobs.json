@@ -1,0 +1,17 @@
+{
+  "jobs": {
+    "title": "Oferty pracy",
+    "apply": "Aplikuj",
+    "applied": "CV wysłane",
+    "dismiss": "Nieinteresujące",
+    "restore": "Przywróć",
+    "description": "Opis",
+    "requirements": "Wymagania",
+    "mustHave": "Wymagane",
+    "niceToHave": "Mile widziane",
+    "benefits": "Benefity",
+    "techStack": "Technologie",
+    "emptyTitle": "Brak ofert",
+    "emptyDesc": "Uruchom scraper lub dodaj ofertę ręcznie."
+  }
+}

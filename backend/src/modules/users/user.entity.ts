@@ -1,0 +1,29 @@
+import { Role } from '@evpanel/shared';
+import { Column, Entity, Index } from 'typeorm';
+
+import { BaseEntity } from '../../common/entities/base.entity';
+
+@Entity('users')
+export class User extends BaseEntity {
+  @Index({ unique: true })
+  @Column({ type: 'citext' })
+  email!: string;
+
+  @Column({ select: false })
+  passwordHash!: string;
+
+  @Column({ type: 'enum', enum: Role, default: Role.USER })
+  role!: Role;
+
+  @Column({ default: false })
+  isActive!: boolean;
+
+  @Column({ type: 'varchar', nullable: true, select: false })
+  activationToken!: string | null;
+
+  @Column({ type: 'varchar', nullable: true, select: false })
+  resetToken!: string | null;
+
+  @Column({ type: 'timestamptz', nullable: true })
+  resetTokenExpiresAt!: Date | null;
+}

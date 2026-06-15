@@ -1,0 +1,98 @@
+@use 'styles/tokens' as *;
+@use 'styles/themes' as *;
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+  font-family: $font-sans;
+  font-size: $fs-md;
+  background: var(--ev-bg);
+  color: var(--ev-text);
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: var(--ev-accent);
+  text-decoration: none;
+  &:hover { color: var(--ev-accent-strong); }
+}
+
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-thumb {
+  background: var(--ev-surface-2);
+  border-radius: $radius-pill;
+}
+
+.material-symbols-rounded {
+  font-family: 'Material Symbols Rounded';
+  font-weight: normal;
+  font-style: normal;
+  line-height: 1;
+  vertical-align: middle;
+  user-select: none;
+}
+
+// Utility helpers used across feature templates
+.ev-page { padding: $space-5; }
+.ev-page__title {
+  font-size: $fs-2xl;
+  font-weight: $fw-semibold;
+  margin: 0 0 $space-5;
+}
+.ev-row { display: flex; align-items: center; gap: $space-3; }
+.ev-grid { display: grid; gap: $space-4; }
+.muted { color: var(--ev-text-muted); }
+
+.link {
+  color: var(--ev-accent);
+  font-weight: $fw-medium;
+  &:hover { color: var(--ev-accent-strong); }
+}
+
+.row-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-3;
+  justify-content: flex-end;
+}
+
+.icon-danger {
+  display: inline-flex;
+  align-items: center;
+  border: none;
+  background: transparent;
+  color: var(--ev-text-muted);
+  cursor: pointer;
+  padding: 2px;
+  border-radius: $radius-sm;
+  transition: color $dur-fast $ease-standard, background $dur-fast $ease-standard;
+  &:hover { color: var(--ev-danger); background: var(--ev-surface-2); }
+  .material-symbols-rounded { font-size: 20px; }
+}
+
+.chips { display: flex; flex-wrap: wrap; gap: $space-2; }
+.chip {
+  padding: 2px 10px;
+  border-radius: $radius-pill;
+  background: var(--ev-surface-2);
+  border: 1px solid var(--ev-border);
+  font-size: $fs-xs;
+}
+
+.apply-btn {
+  padding: 9px 18px;
+  border: none;
+  border-radius: $radius-md;
+  background: var(--ev-accent);
+  color: #1b1b1b;
+  font-weight: $fw-semibold;
+  cursor: pointer;
+  transition: background $dur-fast $ease-standard;
+  &:hover:not(:disabled) { background: var(--ev-accent-strong); }
+  &:disabled { opacity: 0.5; cursor: not-allowed; }
+}

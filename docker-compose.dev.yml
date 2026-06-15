@@ -1,0 +1,35 @@
+# ──────────────────────────────────────────────────────────────
+# EvPanel 2.0 — LOCAL DEV: database only.
+# Apps (backend / scraper / frontend) run NATIVELY via npm — not in Docker.
+# This compose only provides Postgres, exposed on localhost:5432.
+#
+# Usage:
+#   docker compose -f docker-compose.dev.yml up -d        # start DB
+#   (then, natively)  cd backend && npm run migration:run && npm run start:dev
+#
+# Prefer a native Postgres install? Skip this file — just point .env at it.
+# ──────────────────────────────────────────────────────────────
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: evpanel-db-dev
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - '5432:5432'
+    volumes:
+      - evpanel-db-data-dev:/var/lib/postgresql/data
+      # Extensions are also created by the baseline migration, so this is optional,
+      # but it keeps a fresh native DB consistent with the Docker one.
+      - ./infra/postgres/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  evpanel-db-data-dev:

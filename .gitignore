@@ -1,0 +1,43 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Build output
+dist/
+build/
+**/dist/
+**/build/
+.angular/
+
+# Environment
+.env
+.env.local
+.env.docker
+*.env
+!.env.example
+!.env.docker.example
+
+# Logs
+*.log
+npm-debug.log*
+logs/
+
+# IDE
+.idea/
+.vscode/*
+!.vscode/extensions.json
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Coverage / tests
+coverage/
+.nyc_output/
+
+# Docker volumes (local)
+.docker-data/

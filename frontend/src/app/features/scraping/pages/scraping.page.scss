@@ -1,0 +1,72 @@
+@use '../../../../styles/tokens' as *;
+
+.form {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr 1.4fr 1fr auto;
+  gap: $space-3;
+  align-items: end;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: $space-2;
+  font-size: $fs-sm;
+  color: var(--ev-text-muted);
+
+  input,
+  select {
+    background: var(--ev-bg);
+    border: 1px solid var(--ev-border);
+    border-radius: $radius-md;
+    padding: 9px 11px;
+    color: var(--ev-text);
+    font-size: $fs-md;
+    outline: none;
+    transition: border-color $dur-fast $ease-standard;
+    &:focus { border-color: var(--ev-accent); }
+  }
+}
+
+.targets {
+  display: flex;
+  flex-direction: column;
+  gap: $space-2;
+}
+
+.target {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $space-4;
+  padding: $space-3 $space-4;
+  background: var(--ev-surface);
+  border: 1px solid var(--ev-border);
+  border-radius: $radius-md;
+
+  &__main { display: flex; align-items: center; gap: $space-3; }
+  &__query { font-weight: $fw-semibold; }
+}
+
+.small { font-size: $fs-xs; }
+
+.ghost-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 7px 12px;
+  border: 1px solid var(--ev-border);
+  border-radius: $radius-md;
+  background: transparent;
+  color: var(--ev-text);
+  cursor: pointer;
+  font-weight: $fw-medium;
+  transition: background $dur-fast $ease-standard;
+  &:hover:not(:disabled) { background: var(--ev-surface-2); }
+  &:disabled { opacity: 0.5; cursor: not-allowed; }
+  &.danger { color: var(--ev-danger); }
+}
+
+@media (max-width: 900px) {
+  .form { grid-template-columns: 1fr; }
+}

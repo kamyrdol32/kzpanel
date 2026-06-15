@@ -1,0 +1,22 @@
+{
+  "common": {
+    "loading": "Ładowanie…",
+    "details": "Szczegóły",
+    "noData": "Brak danych",
+    "logout": "Wyloguj",
+    "theme": "Motyw",
+    "language": "Język",
+    "save": "Zapisz",
+    "cancel": "Anuluj",
+    "delete": "Usuń",
+    "confirm": "Potwierdź"
+  },
+  "nav": {
+    "dashboard": "Pulpit",
+    "projects": "Projekty",
+    "recruitment": "Rekrutacja",
+    "jobs": "Oferty pracy",
+    "scraping": "Scrapowanie",
+    "monitoring": "Monitoring"
+  }
+}

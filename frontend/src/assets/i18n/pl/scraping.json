@@ -1,0 +1,18 @@
+{
+  "scraping": {
+    "title": "Scrapowanie ofert",
+    "addTitle": "Dodaj cel scrapowania",
+    "source": "Portal",
+    "selectSource": "— wybierz serwis —",
+    "pickFirst": "Wybierz serwis, aby zobaczyć dostępne filtry.",
+    "query": "Słowo wyszukiwania",
+    "fieldTech": "Technologia",
+    "fieldKeyword": "Słowo kluczowe",
+    "location": "Lokalizacja",
+    "remote": "Forma pracy",
+    "add": "Dodaj do scrapowania",
+    "scrapeNow": "Scrapuj teraz",
+    "empty": "Brak skonfigurowanych celów scrapowania",
+    "lastRun": "Ostatni przebieg"
+  }
+}

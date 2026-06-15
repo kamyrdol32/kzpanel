@@ -1,0 +1,18 @@
+{
+  "recruitment": {
+    "title": "Rekrutacja",
+    "company": "Firma",
+    "position": "Stanowisko",
+    "level": "Poziom",
+    "salary": "Widełki",
+    "applied": "Data aplikacji",
+    "status": "Status",
+    "workMode": "Forma pracy",
+    "notes": "Notatki",
+    "created": "Utworzono",
+    "updated": "Zaktualizowano",
+    "jobOffer": "Powiązana oferta",
+    "confirmDeleteTitle": "Usunąć rekrutację?",
+    "confirmDeleteMsg": "Ta operacja usunie wpis rekrutacji. Czy na pewno chcesz kontynuować?"
+  }
+}

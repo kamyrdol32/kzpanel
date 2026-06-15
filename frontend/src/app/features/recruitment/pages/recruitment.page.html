@@ -1,0 +1,120 @@
+<div class="ev-page">
+  <h1 class="ev-page__title">{{ 'recruitment.title' | translate }}</h1>
+
+  @if (facade.items().length === 0) {
+    <ev-empty-state icon="work_history" [title]="'common.noData' | translate" />
+  } @else {
+    <div class="table-wrap">
+      <table class="rec-table">
+        <thead>
+          <tr>
+            <th class="chevron-col"></th>
+            <th>{{ 'recruitment.company' | translate }}</th>
+            <th>{{ 'recruitment.position' | translate }}</th>
+            <th>{{ 'recruitment.level' | translate }}</th>
+            <th>{{ 'recruitment.salary' | translate }}</th>
+            <th>{{ 'recruitment.applied' | translate }}</th>
+            <th>{{ 'recruitment.status' | translate }}</th>
+            <th class="actions-col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (r of facade.items(); track r.id) {
+            <tr class="clickable" (click)="toggleRow(r.id)">
+              <td class="chevron">
+                <span class="material-symbols-rounded">{{ isExpanded(r.id) ? 'expand_more' : 'chevron_right' }}</span>
+              </td>
+              <td class="trunc" [title]="r.company">{{ r.company }}</td>
+              <td class="trunc" [title]="r.position">{{ r.position }}</td>
+              <td>{{ r.level }}</td>
+              <td>{{ r.salaryMin ? (r.salaryMin + '–' + (r.salaryMax ?? '') + ' ' + (r.currency ?? '')) : '—' }}</td>
+              <td>{{ r.appliedAt ? (r.appliedAt | date: 'shortDate') : '—' }}</td>
+              <td>
+                <select
+                  class="status-select"
+                  [class]="'tone-' + tone(r.status)"
+                  [ngModel]="r.status"
+                  (ngModelChange)="onStatusChange(r.id, $event)"
+                  (click)="$event.stopPropagation()"
+                >
+                  @for (s of statuses; track s) { <option [value]="s">{{ s }}</option> }
+                </select>
+              </td>
+              <td class="actions">
+                <button
+                  class="icon-danger"
+                  [title]="'common.delete' | translate"
+                  (click)="$event.stopPropagation(); askDelete(r)"
+                >
+                  <span class="material-symbols-rounded">delete</span>
+                </button>
+              </td>
+            </tr>
+            @if (isExpanded(r.id)) {
+              <tr class="details-row">
+                <td colspan="8">
+                  <div class="details" @slideDown>
+                    <div class="details__grid">
+                      <div class="field">
+                        <span class="field__label">{{ 'recruitment.company' | translate }}</span>
+                        <span class="field__value">{{ r.company }}</span>
+                      </div>
+                      <div class="field">
+                        <span class="field__label">{{ 'recruitment.position' | translate }}</span>
+                        <span class="field__value">{{ r.position }}</span>
+                      </div>
+                      <div class="field">
+                        <span class="field__label">{{ 'recruitment.level' | translate }}</span>
+                        <span class="field__value">{{ r.level }}</span>
+                      </div>
+                      <div class="field">
+                        <span class="field__label">{{ 'recruitment.workMode' | translate }}</span>
+                        <span class="field__value">{{ r.workMode }}</span>
+                      </div>
+                      <div class="field">
+                        <span class="field__label">{{ 'recruitment.salary' | translate }}</span>
+                        <span class="field__value">{{ r.salaryMin ? (r.salaryMin + '–' + (r.salaryMax ?? '') + ' ' + (r.currency ?? '')) : '—' }}</span>
+                      </div>
+                      <div class="field">
+                        <span class="field__label">{{ 'recruitment.status' | translate }}</span>
+                        <span class="field__value">{{ r.status }}</span>
+                      </div>
+                      <div class="field">
+                        <span class="field__label">{{ 'recruitment.applied' | translate }}</span>
+                        <span class="field__value">{{ r.appliedAt ? (r.appliedAt | date: 'dd.MM.yyyy HH:mm') : '—' }}</span>
+                      </div>
+                      <div class="field">
+                        <span class="field__label">{{ 'recruitment.created' | translate }}</span>
+                        <span class="field__value">{{ r.createdAt | date: 'dd.MM.yyyy HH:mm' }}</span>
+                      </div>
+                      <div class="field">
+                        <span class="field__label">{{ 'recruitment.updated' | translate }}</span>
+                        <span class="field__value">{{ r.updatedAt | date: 'dd.MM.yyyy HH:mm' }}</span>
+                      </div>
+                      <div class="field">
+                        <span class="field__label">{{ 'recruitment.jobOffer' | translate }}</span>
+                        <span class="field__value field__value--mono">{{ r.jobOfferId ?? '—' }}</span>
+                      </div>
+                    </div>
+                    <div class="field field--full">
+                      <span class="field__label">{{ 'recruitment.notes' | translate }}</span>
+                      <span class="field__value">{{ r.notes || '—' }}</span>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+
+  <ev-confirm-dialog
+    [open]="!!pendingDelete()"
+    title="recruitment.confirmDeleteTitle"
+    message="recruitment.confirmDeleteMsg"
+    (confirm)="confirmDelete()"
+    (cancel)="pendingDelete.set(null)"
+  />
+</div>

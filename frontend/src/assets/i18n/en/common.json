@@ -1,0 +1,22 @@
+{
+  "common": {
+    "loading": "Loading…",
+    "details": "Details",
+    "noData": "No data",
+    "logout": "Log out",
+    "theme": "Theme",
+    "language": "Language",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "confirm": "Confirm"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "projects": "Projects",
+    "recruitment": "Recruitment",
+    "jobs": "Job offers",
+    "scraping": "Scraping",
+    "monitoring": "Monitoring"
+  }
+}

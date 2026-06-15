@@ -1,0 +1,33 @@
+<div class="ev-page">
+  <h1 class="ev-page__title">{{ 'dashboard.title' | translate }}</h1>
+
+  @if (facade.stats(); as stats) {
+    <div class="stats-grid">
+      <ev-metric-widget icon="folder" [label]="'dashboard.projects' | translate" [value]="stats.projects" />
+      <ev-metric-widget icon="work" [label]="'dashboard.jobOffers' | translate" [value]="stats.jobOffers" />
+      <ev-metric-widget icon="send" [label]="'dashboard.applications' | translate" [value]="stats.applications" />
+      <ev-metric-widget icon="dns" [label]="'dashboard.activeServices' | translate" [value]="stats.activeServices" />
+    </div>
+  }
+
+  <h2 class="section-title">{{ 'dashboard.monitoring' | translate }}</h2>
+
+  <div class="tiles-grid">
+    @for (svc of facade.services(); track svc.id) {
+      <div class="tile">
+        <div class="tile__head">
+          <span class="tile__name">{{ svc.name }}</span>
+          <ev-status-badge [label]="svc.status" [tone]="tone(svc.status)" />
+        </div>
+        <div class="tile__metrics">
+          <div><span>Uptime</span><b>{{ svc.uptime }}%</b></div>
+          <div><span>Resp.</span><b>{{ svc.responseTime ?? '—' }} ms</b></div>
+          <div><span>CPU</span><b>{{ svc.cpu ?? '—' }}%</b></div>
+          <div><span>RAM</span><b>{{ svc.ram ?? '—' }}%</b></div>
+        </div>
+      </div>
+    } @empty {
+      <p class="muted">{{ 'dashboard.noServices' | translate }}</p>
+    }
+  </div>
+</div>

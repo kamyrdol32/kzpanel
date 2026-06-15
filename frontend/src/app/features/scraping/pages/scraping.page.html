@@ -1,0 +1,81 @@
+<div class="ev-page">
+  <div class="ev-row" style="justify-content: space-between">
+    <h1 class="ev-page__title" style="margin: 0">{{ 'scraping.title' | translate }}</h1>
+    <div class="ev-row">
+      @if (facade.lastResult(); as r) {
+        <span class="muted">{{ r }}</span>
+      }
+      <button class="apply-btn" [disabled]="facade.running()" (click)="facade.runAll()">
+        {{ (facade.running() ? 'common.loading' : 'scraping.scrapeNow') | translate }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Formularz: najpierw serwis, potem pola zależne od serwisu -->
+  <ev-card [title]="'scraping.addTitle' | translate">
+    <form class="form" [formGroup]="form" (ngSubmit)="add()">
+      <label class="field">
+        <span>{{ 'scraping.source' | translate }}</span>
+        <select formControlName="source" (change)="onSourceChange($any($event.target).value)">
+          <option value="">{{ 'scraping.selectSource' | translate }}</option>
+          @for (s of sources; track s) { <option [value]="s">{{ s }}</option> }
+        </select>
+      </label>
+
+      @for (f of fields(); track f.key) {
+        <label class="field">
+          <span>{{ f.labelKey | translate }}{{ f.required ? ' *' : '' }}</span>
+          @if (f.type === 'select') {
+            <select [formControlName]="f.key">
+              @for (opt of f.options; track opt.value) {
+                <option [value]="opt.value">{{ opt.label }}</option>
+              }
+            </select>
+          } @else {
+            <input type="text" [formControlName]="f.key" [placeholder]="f.placeholder ?? ''" />
+          }
+        </label>
+      }
+
+      @if (selectedSource()) {
+        <button type="submit" class="apply-btn" [disabled]="!canAdd()">
+          {{ 'scraping.add' | translate }}
+        </button>
+      }
+    </form>
+
+    @if (!selectedSource()) {
+      <p class="muted" style="margin: 8px 0 0">{{ 'scraping.pickFirst' | translate }}</p>
+    }
+  </ev-card>
+
+  <!-- Lista skonfigurowanych scraperów -->
+  <div style="margin-top: 24px">
+    @if (facade.targets().length === 0) {
+      <ev-empty-state icon="travel_explore" [title]="'scraping.empty' | translate" />
+    } @else {
+      <div class="targets">
+        @for (t of facade.targets(); track t.id) {
+          <div class="target">
+            <div class="target__main">
+              <ev-status-badge [label]="t.source" tone="info" />
+              <span class="target__query">{{ t.query }}</span>
+              <span class="muted">{{ t.location ?? '—' }}{{ t.remoteType ? ' · ' + t.remoteType : '' }}</span>
+            </div>
+            <div class="ev-row">
+              <span class="muted small">
+                {{ 'scraping.lastRun' | translate }}: {{ t.lastRunAt ? (t.lastRunAt | date: 'short') : '—' }}
+              </span>
+              <button class="ghost-btn" [disabled]="facade.running()" (click)="facade.runOne(t.id)">
+                {{ 'scraping.scrapeNow' | translate }}
+              </button>
+              <button class="ghost-btn danger" [title]="'common.delete' | translate" (click)="facade.remove(t.id)">
+                <span class="material-symbols-rounded">delete</span>
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>
