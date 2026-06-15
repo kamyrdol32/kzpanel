@@ -14,7 +14,7 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 
 import { CreateScrapeTargetDto, UpdateScrapeTargetDto } from './dto/scrape-target.dto';
-import { ScraperClient } from './scraper-client.service';
+import { ScrapeOrchestratorService } from './scrape-orchestrator.service';
 import { ScrapeTargetsService } from './scrape-targets.service';
 
 @ApiTags('scrape-targets')
@@ -24,7 +24,7 @@ import { ScrapeTargetsService } from './scrape-targets.service';
 export class ScrapeTargetsController {
   constructor(
     private readonly targets: ScrapeTargetsService,
-    private readonly scraper: ScraperClient,
+    private readonly orchestrator: ScrapeOrchestratorService,
   ) {}
 
   @Get()
@@ -49,16 +49,16 @@ export class ScrapeTargetsController {
 
   /** Trigger an immediate scrape of all enabled targets ("Scrapuj teraz"). */
   @Post('run')
-  @HttpCode(202)
+  @HttpCode(200)
   runAll() {
-    return this.scraper.triggerRun();
+    return this.orchestrator.runTargets();
   }
 
   /** Trigger an immediate scrape of a single target. */
   @Post(':id/run')
-  @HttpCode(202)
+  @HttpCode(200)
   async runOne(@Param('id') id: string) {
     await this.targets.findOne(id); // 404 if missing
-    return this.scraper.triggerRun(id);
+    return this.orchestrator.runTargets(id);
   }
 }

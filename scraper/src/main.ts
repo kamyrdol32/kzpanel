@@ -4,9 +4,9 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 
 /**
- * The scraper runs an HTTP app exposing only an internal trigger endpoint
- * (POST /scrape/run) plus the daily scheduler + TypeORM. It is not published via
- * nginx — reachable only on the docker network.
+ * Stateless scraper worker. Exposes a single internal endpoint (POST /scrape)
+ * that runs one scrape and returns RAW offers. No DB, no scheduler. Not
+ * published via nginx — reachable only on the internal network.
  */
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule);

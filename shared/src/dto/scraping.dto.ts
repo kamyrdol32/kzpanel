@@ -1,4 +1,4 @@
-import { JobSource, RemoteType } from '../enums';
+import { JobLevel, JobSource, Language, RemoteType } from '../enums';
 
 import { BaseEntityDto } from './common.dto';
 
@@ -26,4 +26,48 @@ export type UpdateScrapeTargetRequest = Partial<CreateScrapeTargetRequest>;
 export interface ScrapeRunResult {
   targetsProcessed: number;
   offersUpserted: number;
+}
+
+/**
+ * Wire contract: backend → scraper. The scraper is a thin, stateless worker —
+ * it receives one request, runs the matching portal strategy, and returns RAW
+ * offers. All orchestration (targets, cron, dedup, persistence) lives in the
+ * backend.
+ */
+export interface ScrapeRequest {
+  source: JobSource;
+  query?: string;
+  location?: string;
+  remoteType?: RemoteType;
+  /** max listings to fetch */
+  limit?: number;
+}
+
+/**
+ * Wire contract: scraper → backend. A single normalized-but-unpersisted offer
+ * as scraped from a portal. The backend parses salary, detects language,
+ * deduplicates and persists it. `publishedDate` is an ISO string over the wire.
+ */
+export interface ScrapedOfferDto {
+  title: string;
+  company: string;
+  sourceUrl: string;
+  source: JobSource;
+  description?: string | null;
+  salaryMin?: number | null;
+  salaryMax?: number | null;
+  currency?: string | null;
+  /** raw salary text e.g. "18 000 - 24 000 PLN"; parsed by the backend */
+  salaryRaw?: string | null;
+  location?: string | null;
+  remoteType?: RemoteType;
+  level?: JobLevel;
+  techStack?: string[];
+  requirements?: string[];
+  mustHave?: string[];
+  niceToHave?: string[];
+  benefits?: string[];
+  responsibilities?: string[];
+  language?: Language;
+  publishedDate?: string | null;
 }

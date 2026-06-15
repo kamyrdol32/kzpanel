@@ -47,11 +47,8 @@ services:
     container_name: evpanel-scraper
     restart: unless-stopped
     env_file: .env.docker
-    depends_on:
-      db:
-        condition: service_healthy
-      backend:
-        condition: service_started
+    # Stateless worker: no DB, no dependency on other services. The backend
+    # calls it on demand / on schedule.
     networks: [evpanel-net]
 
   # Frontend container = Angular SPA + edge Nginx (reverse proxy to backend).

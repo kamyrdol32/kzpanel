@@ -1,32 +1,26 @@
-import { JobSource, ScrapeRunResult } from '@evpanel/shared';
+import { ScrapedOfferDto, ScrapeRunResult } from '@evpanel/shared';
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { ScrapeParams } from '../config/scrape-params';
-import { ScraperConfig } from '../config/scraper.config';
-import { JobOffer } from '../persistence/job-offer.entity';
-import { ScrapeTarget } from '../persistence/scrape-target.entity';
-import { JobRaw } from '../strategies/job-scraper.strategy';
-import { StrategyRegistry } from '../strategies/strategy.registry';
+import { JobOffer } from '../jobs/job-offer.entity';
 
 import { LanguageDetector } from './language.detector';
+import { ScrapeTarget } from './scrape-target.entity';
+import { ScraperClient } from './scraper-client.service';
 
 /**
- * Target-driven scraping pipeline. Reads `scrape_targets` from the DB (managed in
- * the panel) and for each runs the matching strategy:
- *   1. list  2. normalize  3. details  4. detect language  5. AI (stub)  6. persist  7. upsert
- * Dedup is guaranteed by the unique (source, sourceUrl) index — existing offers
- * are updated in place, never duplicated.
+ * Owns scrape orchestration: loads targets, asks the stateless scraper worker
+ * for RAW offers, then normalizes / parses / detects language / deduplicates /
+ * persists. The scraper holds none of this — it only fetches.
  */
 @Injectable()
-export class ScrapePipeline {
-  private readonly logger = new Logger(ScrapePipeline.name);
+export class ScrapeOrchestratorService {
+  private readonly logger = new Logger(ScrapeOrchestratorService.name);
 
   constructor(
-    private readonly registry: StrategyRegistry,
+    private readonly scraper: ScraperClient,
     private readonly language: LanguageDetector,
-    private readonly config: ScraperConfig,
     @InjectRepository(JobOffer)
     private readonly offers: Repository<JobOffer>,
     @InjectRepository(ScrapeTarget)
@@ -37,12 +31,14 @@ export class ScrapePipeline {
   async runTargets(targetId?: string): Promise<ScrapeRunResult> {
     const where = targetId ? { id: targetId } : { enabled: true };
     const targets = await this.targets.find({ where });
-    this.logger.log(`Run start — ${targets.length} target(s), mock=${this.config.mock}`);
+    this.logger.log(`Scrape run — ${targets.length} target(s)`);
 
     let offersUpserted = 0;
     for (const target of targets) {
       offersUpserted += await this.runForTarget(target).catch((err) => {
-        this.logger.error(`Target ${target.source}/${target.query} failed: ${(err as Error).message}`);
+        this.logger.error(
+          `Target ${target.source}/${target.query} failed: ${(err as Error).message}`,
+        );
         return 0;
       });
     }
@@ -50,54 +46,28 @@ export class ScrapePipeline {
   }
 
   private async runForTarget(target: ScrapeTarget): Promise<number> {
-    const params: ScrapeParams = {
+    const raws = await this.scraper.scrape({
+      source: target.source,
       query: target.query,
       location: target.location ?? undefined,
       remoteType: target.remoteType ?? undefined,
-      limit: this.config.params.limit,
-    };
+    });
 
     let count = 0;
-    if (this.config.mock) {
-      await this.upsert(this.normalize(this.synthetic(target.source, params)), target.id);
-      count = 1;
-    } else {
-      const strategy = this.registry.get(target.source);
-      if (!strategy) {
-        this.logger.warn(`No strategy registered for ${target.source}`);
-      } else {
-        const stubs = await strategy.fetchList(params); // 1
-        this.logger.log(`${target.source} "${target.query}": ${stubs.length} listings`);
-        for (const stub of stubs) {
-          const raw = await strategy.fetchDetails(stub); // 3
-          await this.upsert(this.normalize(raw), target.id); // 2 + 4 + 6 + 7
-          count++;
-        }
-      }
+    for (const raw of raws) {
+      await this.upsert(this.normalize(raw), target.id);
+      count++;
     }
 
     await this.targets.update(target.id, { lastRunAt: new Date() });
+    this.logger.log(`${target.source} "${target.query}": ${count} offer(s) upserted`);
     return count;
   }
 
-  private synthetic(source: JobSource, params: ScrapeParams): JobRaw {
-    const q = params.query ?? 'Developer';
-    return {
-      title: `${q} Developer`,
-      company: 'Mock Company',
-      sourceUrl: `mock://${source}/${encodeURIComponent(q)}-${encodeURIComponent(params.location ?? 'any')}`,
-      source,
-      description: `Synthetic ${q} offer for testing the pipeline.`,
-      location: params.location ?? null,
-      techStack: [q],
-    };
-  }
-
-  private normalize(raw: JobRaw): Partial<JobOffer> {
+  private normalize(raw: ScrapedOfferDto): Partial<JobOffer> {
     const language =
-      raw.language ?? this.language.detect(`${raw.title} ${raw.description ?? ''}`); // 4
+      raw.language ?? this.language.detect(`${raw.title} ${raw.description ?? ''}`);
     const salary = this.parseSalary(raw.salaryRaw);
-    // 5. AI analysis would enrich here (currently skipped — no provider).
     return {
       title: raw.title.trim(),
       company: raw.company.trim(),
@@ -117,7 +87,7 @@ export class ScrapePipeline {
       benefits: raw.benefits ?? [],
       responsibilities: raw.responsibilities ?? [],
       language,
-      publishedDate: raw.publishedDate ?? null,
+      publishedDate: raw.publishedDate ? new Date(raw.publishedDate) : null,
     };
   }
 
@@ -141,8 +111,8 @@ export class ScrapePipeline {
 
   /**
    * Insert new or update existing, deduplicating by normalized (source, title,
-   * company). This collapses portal quirks like NoFluffJobs publishing the same
-   * role once per region (different URLs) into a single offer.
+   * company). Collapses portal quirks like the same role published once per
+   * region (different URLs) into a single offer.
    */
   private async upsert(data: Partial<JobOffer>, scrapeTargetId: string): Promise<void> {
     const payload = { ...data, scrapeTargetId };

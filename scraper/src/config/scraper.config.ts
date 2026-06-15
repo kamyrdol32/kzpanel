@@ -8,22 +8,12 @@ import { ScrapeParams } from './scrape-params';
 export class ScraperConfig {
   constructor(private readonly config: ConfigService) {}
 
-  /** Master switch — set SCRAPER_ENABLED=false to disable the daily scheduler. */
-  get enabled(): boolean {
-    return this.config.get('SCRAPER_ENABLED') !== 'false';
-  }
-
-  /** Daily cron. Default = 04:00 (6-field: sec min hour * * *). */
-  get cron(): string {
-    return this.config.get<string>('SCRAPER_INTERVAL_CRON') ?? '0 0 4 * * *';
-  }
-
   /** Generate a synthetic offer instead of hitting the live portal (testing). */
   get mock(): boolean {
     return this.config.get('SCRAPER_MOCK') === 'true';
   }
 
-  /** Shared secret guarding the internal /scrape/run endpoint. */
+  /** Shared secret guarding the internal /scrape endpoint. */
   get internalToken(): string {
     return this.config.get<string>('INTERNAL_API_TOKEN') ?? '';
   }
