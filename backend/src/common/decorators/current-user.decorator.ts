@@ -1,4 +1,4 @@
-import { JwtPayload } from '@evpanel/shared';
+import { JwtPayload } from '../../shared';
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 
 /** Injects the authenticated user (JWT payload) into a route handler. */

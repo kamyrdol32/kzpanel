@@ -1,4 +1,4 @@
-import { AuditAction } from '@evpanel/shared';
+import { AuditAction } from '../../shared';
 import {
   DataSource,
   EntityManager,

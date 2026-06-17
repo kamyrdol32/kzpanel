@@ -1,6 +1,6 @@
 import { randomUUID } from 'crypto';
 
-import { AuthTokens, JwtPayload, LoginResponse, Role } from '@evpanel/shared';
+import { AuthTokens, JwtPayload, LoginResponse, Role } from '../../shared';
 import {
   BadRequestException,
   Injectable,

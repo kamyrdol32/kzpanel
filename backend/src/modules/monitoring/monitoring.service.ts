@@ -1,4 +1,4 @@
-import { DashboardStatsDto, ServiceStatus } from '@evpanel/shared';
+import { DashboardStatsDto, ServiceStatus } from '../../shared';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';

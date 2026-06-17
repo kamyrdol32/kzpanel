@@ -1,4 +1,4 @@
-import { RemoteType } from '@evpanel/shared';
+import { RemoteType } from '../shared';
 
 /** Search parameters passed to a strategy for a scrape run. */
 export interface ScrapeParams {

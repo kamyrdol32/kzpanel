@@ -1,4 +1,4 @@
-import { JobLevel, RecruitmentStatus, RemoteType } from '@evpanel/shared';
+import { JobLevel, RecruitmentStatus, RemoteType } from '../../shared';
 import { Column, Entity, Index } from 'typeorm';
 
 import { BaseEntity } from '../../common/entities/base.entity';

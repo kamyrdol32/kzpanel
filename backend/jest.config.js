@@ -8,6 +8,6 @@ module.exports = {
   coverageDirectory: '../coverage',
   testEnvironment: 'node',
   moduleNameMapper: {
-    '^@evpanel/shared$': '<rootDir>/../../shared/src/index.ts',
+    '^@evpanel/shared$': '<rootDir>/shared/index.ts',
   },
 };

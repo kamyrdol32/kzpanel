@@ -1,4 +1,4 @@
-import { ServiceStatus } from '@evpanel/shared';
+import { ServiceStatus } from '../../shared';
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 

@@ -1,4 +1,4 @@
-import { JobSource, ScrapeRequest } from '@evpanel/shared';
+import { JobSource, ScrapeRequest } from '../shared';
 import { Injectable, Logger } from '@nestjs/common';
 
 import { ScraperConfig } from '../config/scraper.config';

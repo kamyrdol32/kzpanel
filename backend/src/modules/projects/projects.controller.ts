@@ -1,4 +1,4 @@
-import { Role } from '@evpanel/shared';
+import { Role } from '../../shared';
 import {
   Body,
   Controller,

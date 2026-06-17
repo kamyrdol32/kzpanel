@@ -1,4 +1,4 @@
-import { AuditAction } from '@evpanel/shared';
+import { AuditAction } from '../../shared';
 import { Column, CreateDateColumn, Entity, Index, PrimaryGeneratedColumn } from 'typeorm';
 
 /** Append-only audit trail of entity mutations. */

@@ -1,4 +1,4 @@
-import { JwtPayload } from '@evpanel/shared';
+import { JwtPayload } from '../../../shared';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';

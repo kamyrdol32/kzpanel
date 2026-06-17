@@ -1,4 +1,4 @@
-import { ProjectStatus } from '@evpanel/shared';
+import { ProjectStatus } from '../../shared';
 import { Column, Entity, Index } from 'typeorm';
 
 import { BaseEntity } from '../../common/entities/base.entity';

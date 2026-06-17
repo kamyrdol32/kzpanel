@@ -1,4 +1,4 @@
-import { Role } from '@evpanel/shared';
+import { Role } from '../../shared';
 import { SetMetadata } from '@nestjs/common';
 
 export const ROLES_KEY = 'roles';

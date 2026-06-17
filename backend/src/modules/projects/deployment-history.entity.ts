@@ -1,4 +1,4 @@
-import { DeploymentStatus } from '@evpanel/shared';
+import { DeploymentStatus } from '../../shared';
 import { Column, Entity, Index } from 'typeorm';
 
 import { BaseEntity } from '../../common/entities/base.entity';

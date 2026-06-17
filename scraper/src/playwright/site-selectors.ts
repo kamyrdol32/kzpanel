@@ -1,4 +1,4 @@
-import { JobSource } from '@evpanel/shared';
+import { JobSource } from '../shared';
 
 import { ScrapeParams } from '../config/scrape-params';
 

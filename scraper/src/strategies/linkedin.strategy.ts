@@ -1,4 +1,4 @@
-import { JobSource } from '@evpanel/shared';
+import { JobSource } from '../shared';
 import { Injectable } from '@nestjs/common';
 
 import { PlaywrightFetcher } from '../playwright/playwright.fetcher';

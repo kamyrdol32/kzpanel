@@ -1,4 +1,4 @@
-import { Language } from '@evpanel/shared';
+import { Language } from '../../shared';
 import { Injectable } from '@nestjs/common';
 
 const PL_STOPWORDS = [' i ', ' oraz ', ' praca ', ' wymagania ', ' obowiązki ', ' znajomość '];

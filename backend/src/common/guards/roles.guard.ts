@@ -1,4 +1,4 @@
-import { Role } from '@evpanel/shared';
+import { Role } from '../../shared';
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 

@@ -1,4 +1,4 @@
-import { ScrapedOfferDto, ScrapeRunResult } from '@evpanel/shared';
+import { ScrapedOfferDto, ScrapeRunResult } from '../../shared';
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';

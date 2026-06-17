@@ -4,7 +4,7 @@ import {
   RecruitmentStatus,
   RemoteType,
   UpdateRecruitmentRequest,
-} from '@evpanel/shared';
+} from '../../../shared';
 import { ApiProperty, ApiPropertyOptional, PartialType } from '@nestjs/swagger';
 import { IsEnum, IsInt, IsOptional, IsString } from 'class-validator';
 

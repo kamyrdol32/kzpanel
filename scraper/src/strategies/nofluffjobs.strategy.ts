@@ -1,4 +1,4 @@
-import { JobLevel, JobSource, Language, RemoteType } from '@evpanel/shared';
+import { JobLevel, JobSource, Language, RemoteType } from '../shared';
 import { Injectable, Logger } from '@nestjs/common';
 
 import { ScrapeParams } from '../config/scrape-params';

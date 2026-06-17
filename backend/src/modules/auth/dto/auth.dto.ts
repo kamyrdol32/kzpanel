@@ -6,7 +6,7 @@ import {
   RefreshRequest,
   RegisterRequest,
   ResetPasswordRequest,
-} from '@evpanel/shared';
+} from '../../../shared';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsString, MinLength } from 'class-validator';
 

@@ -1,4 +1,4 @@
-import { CreateProjectRequest, ProjectStatus, UpdateProjectRequest } from '@evpanel/shared';
+import { CreateProjectRequest, ProjectStatus, UpdateProjectRequest } from '../../../shared';
 import { ApiProperty, ApiPropertyOptional, PartialType } from '@nestjs/swagger';
 import { IsArray, IsEnum, IsOptional, IsString, IsUrl } from 'class-validator';
 

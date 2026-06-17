@@ -1,4 +1,4 @@
-import { ScrapeRequest } from '@evpanel/shared';
+import { ScrapeRequest } from '../shared';
 import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 
 import { JobRaw } from '../strategies/job-scraper.strategy';

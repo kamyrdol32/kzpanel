@@ -1,4 +1,4 @@
-import { JwtPayload } from '@evpanel/shared';
+import { JwtPayload } from '../../shared';
 import { Body, Controller, HttpCode, Post, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 

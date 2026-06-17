@@ -1,4 +1,4 @@
-import { NotificationType } from '@evpanel/shared';
+import { NotificationType } from '../../shared';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IsNull, Repository } from 'typeorm';

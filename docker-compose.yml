@@ -15,7 +15,6 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
     volumes:
       - evpanel-db-data:/var/lib/postgresql/data
-      - ./infra/postgres/init:/docker-entrypoint-initdb.d:ro
     healthcheck:
       test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}']
       interval: 10s
@@ -25,8 +24,8 @@ services:
 
   backend:
     build:
-      context: .
-      dockerfile: infra/docker/backend.Dockerfile
+      context: ./backend
+      dockerfile: Dockerfile
     container_name: evpanel-backend
     restart: unless-stopped
     env_file: .env.docker
@@ -42,8 +41,8 @@ services:
 
   scraper:
     build:
-      context: .
-      dockerfile: infra/docker/scraper.Dockerfile
+      context: ./scraper
+      dockerfile: Dockerfile
     container_name: evpanel-scraper
     restart: unless-stopped
     env_file: .env.docker
@@ -54,8 +53,8 @@ services:
   # Frontend container = Angular SPA + edge Nginx (reverse proxy to backend).
   frontend:
     build:
-      context: .
-      dockerfile: infra/docker/frontend.Dockerfile
+      context: ./frontend
+      dockerfile: Dockerfile
     container_name: evpanel-frontend
     restart: unless-stopped
     depends_on: [backend]

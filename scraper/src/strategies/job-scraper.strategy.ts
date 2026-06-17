@@ -1,4 +1,4 @@
-import { JobLevel, JobSource, Language, RemoteType } from '@evpanel/shared';
+import { JobLevel, JobSource, Language, RemoteType } from '../shared';
 
 import { ScrapeParams } from '../config/scrape-params';
 

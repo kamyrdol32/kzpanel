@@ -3,7 +3,7 @@ import {
   JobSource,
   RemoteType,
   UpdateScrapeTargetRequest,
-} from '@evpanel/shared';
+} from '../../../shared';
 import { ApiProperty, ApiPropertyOptional, PartialType } from '@nestjs/swagger';
 import { IsBoolean, IsEnum, IsOptional, IsString, MaxLength } from 'class-validator';
 

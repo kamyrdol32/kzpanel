@@ -1,4 +1,4 @@
-import { JobFilter, JobLevel, JobSource, Language, RemoteType } from '@evpanel/shared';
+import { JobFilter, JobLevel, JobSource, Language, RemoteType } from '../../../shared';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { IsEnum, IsOptional, IsString } from 'class-validator';
 

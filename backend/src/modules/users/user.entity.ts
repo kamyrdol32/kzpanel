@@ -1,4 +1,4 @@
-import { Role } from '@evpanel/shared';
+import { Role } from '../../shared';
 import { Column, Entity, Index } from 'typeorm';
 
 import { BaseEntity } from '../../common/entities/base.entity';

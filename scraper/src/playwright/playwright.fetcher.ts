@@ -1,4 +1,4 @@
-import { JobSource, Language } from '@evpanel/shared';
+import { JobSource, Language } from '../shared';
 import { Injectable, Logger, OnModuleDestroy } from '@nestjs/common';
 import { Browser, chromium } from 'playwright-core';
 

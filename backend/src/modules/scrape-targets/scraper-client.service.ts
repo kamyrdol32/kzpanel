@@ -1,4 +1,4 @@
-import { ScrapeRequest, ScrapedOfferDto } from '@evpanel/shared';
+import { ScrapeRequest, ScrapedOfferDto } from '../../shared';
 import { HttpException, Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 

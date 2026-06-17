@@ -23,7 +23,6 @@
     "@angular/platform-browser": "~20.3.0",
     "@angular/router": "~20.3.0",
     "@angular/service-worker": "~20.3.0",
-    "@evpanel/shared": "file:../shared",
     "@ngrx/effects": "^20.0.0",
     "@ngrx/entity": "^20.0.0",
     "@ngrx/router-store": "^20.0.0",

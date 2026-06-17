@@ -12,19 +12,20 @@ procesem rekrutacyjnym, agregator ofert pracy oraz dashboard administracyjny wł
 |----------|-------------|
 | Frontend | Angular 20 (standalone, signals), RxJS, NgRx (Store/Effects/Entity), Angular Material, SCSS, ngx-translate, PWA |
 | Backend  | NestJS, TypeScript, PostgreSQL, TypeORM, JWT + Passport, Swagger, class-validator/transformer |
-| Scraper  | NestJS worker, @nestjs/schedule, Strategy Pattern |
-| DevOps   | Docker, Docker Compose, Nginx (reverse proxy), GitHub Actions CI/CD, healthchecks |
+| Scraper  | Bezstanowy NestJS worker (endpoint + Playwright, Strategy Pattern) |
+| DevOps   | Docker, Docker Compose, Nginx (reverse proxy), healthchecks |
 
 ## Struktura repo
 
 ```
-frontend/   Angular 20 SPA (serwowany przez Nginx w produkcji)
-backend/    NestJS API (JWT, Swagger, TypeORM)
-scraper/    NestJS worker (harmonogram + strategie portali)
-shared/     współdzielone enumy i kontrakty DTO (jedno źródło prawdy)
-infra/      nginx, dockerfiles, postgres init
-.github/    workflowy CI/CD
+frontend/   Angular 20 SPA + Nginx (Dockerfile, nginx.conf, src/shared kontrakty)
+backend/    NestJS API (JWT, Swagger, TypeORM, migracje, Dockerfile, src/shared kontrakty)
+scraper/    Bezstanowy worker (endpoint + Playwright, Dockerfile, src/shared kontrakty)
 ```
+
+Każdy projekt jest samowystarczalny: ma własny `Dockerfile`, a kontrakty (enumy/DTO)
+są zduplikowane lokalnie w `src/shared` (alias `@evpanel/shared` w tsconfig frontendu,
+ścieżki względne w backend/scraper).
 
 Pełna architektura: zobacz `docs/ARCHITECTURE.md` (jeśli wygenerowany) lub plan projektu.
 
