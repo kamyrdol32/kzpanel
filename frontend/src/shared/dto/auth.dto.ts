@@ -1,12 +1,13 @@
 import { Role } from '../enums';
 
 export interface LoginRequest {
-  email: string;
+  username: string;
   password: string;
 }
 
 export interface RegisterRequest {
-  email: string;
+  username: string;
+  email?: string;
   password: string;
 }
 
@@ -17,7 +18,8 @@ export interface AuthTokens {
 
 export interface AuthUser {
   id: string;
-  email: string;
+  username: string;
+  email: string | null;
   role: Role;
   isActive: boolean;
 }
@@ -51,6 +53,6 @@ export interface ActivateAccountRequest {
 /** JWT payload carried in access/refresh tokens. */
 export interface JwtPayload {
   sub: string;
-  email: string;
+  username: string;
   role: Role;
 }

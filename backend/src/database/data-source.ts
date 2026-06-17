@@ -3,7 +3,7 @@ import { config as loadEnv } from 'dotenv';
 import { DataSource } from 'typeorm';
 
 // Load .env from repo root when running the TypeORM CLI.
-loadEnv({ path: process.env.ENV_PATH ?? '../.env' });
+loadEnv({ path: process.env.ENV_PATH ?? '.env' });
 
 /**
  * Standalone DataSource used by the TypeORM CLI (migrations) AND re-used by the

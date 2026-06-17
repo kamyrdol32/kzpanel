@@ -1,76 +1,62 @@
 # ──────────────────────────────────────────────────────────────
-# EvPanel 2.0 — PRODUCTION compose (full stack in Docker)
-# Usage: cp .env.docker.example .env.docker && edit, then:
-#        docker compose --env-file .env.docker up -d --build
-# The backend container runs DB migrations on startup (DB_SYNC=false).
+# EvPanel 2.0 — PRODUCTION compose
+# Usage:
+#   cp backend/.env.example backend/.env && edit
+#   cp scraper/.env.example scraper/.env && edit
+#   docker compose up -d --build
+#
+# Each service reads its own .env from its subdirectory.
+# The database is EXTERNAL (shared PostgreSQL) — this stack does not
+# run it. Set POSTGRES_HOST in backend/.env (use host.docker.internal
+# for a DB running on the Docker host).
 # ──────────────────────────────────────────────────────────────
 services:
-  db:
-    image: postgres:16-alpine
-    container_name: evpanel-db
-    restart: unless-stopped
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
-    volumes:
-      - evpanel-db-data:/var/lib/postgresql/data
-    healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}']
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    networks: [evpanel-net]
-
-  backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    container_name: evpanel-backend
-    restart: unless-stopped
-    env_file: .env.docker
-    depends_on:
-      db:
-        condition: service_healthy
-    healthcheck:
-      test: ['CMD', 'node', '-e', "require('http').get('http://localhost:'+ (process.env.BACKEND_PORT||3000) +'/api/health',r=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))"]
-      interval: 15s
-      timeout: 5s
-      retries: 5
-    networks: [evpanel-net]
-
-  scraper:
-    build:
-      context: ./scraper
-      dockerfile: Dockerfile
-    container_name: evpanel-scraper
-    restart: unless-stopped
-    env_file: .env.docker
-    # Stateless worker: no DB, no dependency on other services. The backend
-    # calls it on demand / on schedule.
-    networks: [evpanel-net]
-
-  # Frontend container = Angular SPA + edge Nginx (reverse proxy to backend).
-  frontend:
+  evpanel-frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
     container_name: evpanel-frontend
     restart: unless-stopped
-    depends_on: [backend]
+    depends_on:
+      - evpanel-backend
     ports:
       - '80:80'
-      # - '443:443'   # odkomentuj po skonfigurowaniu TLS
     healthcheck:
       test: ['CMD', 'curl', '-fsS', 'http://localhost/']
       interval: 15s
       timeout: 5s
       retries: 5
-    networks: [evpanel-net]
+    networks:
+      - evpanel_default
 
-volumes:
-  evpanel-db-data:
+  evpanel-backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: evpanel-backend
+    restart: unless-stopped
+    env_file: ./backend/.env
+    healthcheck:
+      test: ['CMD', 'node', '-e', "require('http').get('http://localhost:'+ (process.env.BACKEND_PORT||3000) +'/api/health',r=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+    networks:
+      - evpanel_default
+      - postgres_default
+
+  evpanel-scraper:
+    build:
+      context: ./scraper
+      dockerfile: Dockerfile
+    container_name: evpanel-scraper
+    restart: unless-stopped
+    env_file: ./scraper/.env
+    networks:
+      - evpanel_default
 
 networks:
-  evpanel-net:
+  evpanel_default:
     driver: bridge
+  postgres_default:
+    external: true

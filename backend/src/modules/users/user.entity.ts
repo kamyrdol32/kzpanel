@@ -7,7 +7,11 @@ import { BaseEntity } from '../../common/entities/base.entity';
 export class User extends BaseEntity {
   @Index({ unique: true })
   @Column({ type: 'citext' })
-  email!: string;
+  username!: string;
+
+  @Index({ unique: true })
+  @Column({ type: 'citext', nullable: true })
+  email!: string | null;
 
   @Column({ select: false })
   passwordHash!: string;

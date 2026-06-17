@@ -7,13 +7,13 @@ import {
   RegisterRequest,
   ResetPasswordRequest,
 } from '../../../shared';
-import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsString, MinLength } from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { IsEmail, IsOptional, IsString, MinLength } from 'class-validator';
 
 export class LoginDto implements LoginRequest {
-  @ApiProperty({ example: 'admin@evpanel.dev' })
-  @IsEmail()
-  email!: string;
+  @ApiProperty({ example: 'kamyrdol32' })
+  @IsString()
+  username!: string;
 
   @ApiProperty({ example: 'StrongPass123' })
   @IsString()
@@ -22,9 +22,14 @@ export class LoginDto implements LoginRequest {
 }
 
 export class RegisterDto implements RegisterRequest {
-  @ApiProperty()
+  @ApiProperty({ example: 'kamyrdol32' })
+  @IsString()
+  username!: string;
+
+  @ApiPropertyOptional({ example: 'admin@evpanel.dev' })
   @IsEmail()
-  email!: string;
+  @IsOptional()
+  email?: string;
 
   @ApiProperty()
   @IsString()

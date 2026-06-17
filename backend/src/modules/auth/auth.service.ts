@@ -30,19 +30,19 @@ export class AuthService {
   ) {}
 
   // ── Registration / activation ───────────────────────────────
-  async register(email: string, password: string): Promise<{ activationToken: string }> {
-    const existing = await this.users.findByEmailWithSecrets(email);
-    if (existing) throw new BadRequestException('Email already registered');
+  async register(username: string, password: string, email?: string): Promise<{ activationToken: string }> {
+    const existing = await this.users.findByUsernameWithSecrets(username);
+    if (existing) throw new BadRequestException('Username already taken');
 
     const activationToken = randomUUID();
     await this.users.create({
-      email,
+      username,
+      email: email ?? null,
       passwordHash: await bcrypt.hash(password, SALT_ROUNDS),
       role: Role.USER,
       isActive: false,
       activationToken,
     });
-    // TODO: send activation email (NotificationsModule) — token returned for now
     return { activationToken };
   }
 
@@ -53,8 +53,8 @@ export class AuthService {
   }
 
   // ── Login / refresh / logout ────────────────────────────────
-  async login(email: string, password: string): Promise<LoginResponse> {
-    const user = await this.users.findByEmailWithSecrets(email);
+  async login(username: string, password: string): Promise<LoginResponse> {
+    const user = await this.users.findByUsernameWithSecrets(username);
     if (!user || !(await bcrypt.compare(password, user.passwordHash))) {
       throw new UnauthorizedException('Invalid credentials');
     }
@@ -63,7 +63,7 @@ export class AuthService {
     const tokens = await this.issueTokens(user);
     return {
       ...tokens,
-      user: { id: user.id, email: user.email, role: user.role, isActive: user.isActive },
+      user: { id: user.id, username: user.username, email: user.email, role: user.role, isActive: user.isActive },
     };
   }
 
@@ -111,8 +111,8 @@ export class AuthService {
   }
 
   async changePassword(userId: string, current: string, next: string): Promise<void> {
-    const user = await this.users.findByEmailWithSecrets(
-      (await this.users.getByIdOrThrow(userId)).email,
+    const user = await this.users.findByUsernameWithSecrets(
+      (await this.users.getByIdOrThrow(userId)).username,
     );
     if (!user || !(await bcrypt.compare(current, user.passwordHash))) {
       throw new BadRequestException('Current password is incorrect');
@@ -125,7 +125,7 @@ export class AuthService {
 
   // ── helpers ─────────────────────────────────────────────────
   private async issueTokens(user: User): Promise<AuthTokens> {
-    const payload: JwtPayload = { sub: user.id, email: user.email, role: user.role };
+    const payload: JwtPayload = { sub: user.id, username: user.username, role: user.role };
     const accessToken = await this.jwt.signAsync(payload, {
       secret: this.config.get('jwt.accessSecret'),
       expiresIn: this.config.get('jwt.accessTtl'),

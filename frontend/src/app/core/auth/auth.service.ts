@@ -22,8 +22,8 @@ export class AuthService {
   readonly user = this._user.asReadonly();
   readonly isAuthenticated = computed(() => !!this.tokens.accessToken);
 
-  login(email: string, password: string): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(`${this.base}/login`, { email, password }).pipe(
+  login(username: string, password: string): Observable<LoginResponse> {
+    return this.http.post<LoginResponse>(`${this.base}/login`, { username, password }).pipe(
       tap((res) => {
         this.tokens.set(res.accessToken, res.refreshToken);
         this._user.set(res.user);

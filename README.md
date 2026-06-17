@@ -1,39 +1,46 @@
 # EvPanel 2.0
 
-Prywatna aplikacja operacyjna: centrum zarządzania projektami, monitoringu usług,
-procesem rekrutacyjnym, agregator ofert pracy oraz dashboard administracyjny własnych aplikacji.
+Private operational application: project management hub, service monitoring,
+recruitment pipeline, job offer aggregator, and admin dashboard for personal apps.
 
-> **To nie jest portfolio.** To produkcyjny system klasy SaaS premium, projektowany pod
-> wieloletni rozwój o kolejne moduły.
+> **This is not a portfolio.** It is a production-grade SaaS-class system designed
+> for long-term, multi-module growth.
 
 ## Stack
 
-| Warstwa  | Technologie |
+| Layer    | Technologies |
 |----------|-------------|
 | Frontend | Angular 20 (standalone, signals), RxJS, NgRx (Store/Effects/Entity), Angular Material, SCSS, ngx-translate, PWA |
 | Backend  | NestJS, TypeScript, PostgreSQL, TypeORM, JWT + Passport, Swagger, class-validator/transformer |
-| Scraper  | Bezstanowy NestJS worker (endpoint + Playwright, Strategy Pattern) |
+| Scraper  | Stateless NestJS worker (endpoint + Playwright, Strategy Pattern) |
 | DevOps   | Docker, Docker Compose, Nginx (reverse proxy), healthchecks |
 
-## Struktura repo
+## Repo structure
 
 ```
-frontend/   Angular 20 SPA + Nginx (Dockerfile, nginx.conf, src/shared kontrakty)
-backend/    NestJS API (JWT, Swagger, TypeORM, migracje, Dockerfile, src/shared kontrakty)
-scraper/    Bezstanowy worker (endpoint + Playwright, Dockerfile, src/shared kontrakty)
+frontend/   Angular 20 SPA + Nginx (Dockerfile, nginx.conf, src/shared contracts)
+backend/    NestJS API (JWT, Swagger, TypeORM, migrations, Dockerfile, src/shared contracts)
+scraper/    Stateless worker (endpoint + Playwright, Dockerfile, src/shared contracts)
 ```
 
-Każdy projekt jest samowystarczalny: ma własny `Dockerfile`, a kontrakty (enumy/DTO)
-są zduplikowane lokalnie w `src/shared` (alias `@evpanel/shared` w tsconfig frontendu,
-ścieżki względne w backend/scraper).
+Each package is self-contained: it has its own `Dockerfile`, and contracts (enums/DTOs)
+are duplicated locally in `src/shared` (`@evpanel/shared` alias in the frontend tsconfig,
+relative paths in backend/scraper).
 
-Pełna architektura: zobacz `docs/ARCHITECTURE.md` (jeśli wygenerowany) lub plan projektu.
+Full architecture: see `docs/ARCHITECTURE.md` (if generated) or the project plan.
 
-## Szybki start (dev)
+## Database (external)
+
+The project uses a **shared, external PostgreSQL** (separate repo:
+`C:\Users\<user>\docker\postgres`) — it does not spin up its own database. Start that
+server once, then point `.env` at it (defaults: `localhost:5432`, database/role/password `evpanel`).
+
+## Quick start (dev)
 
 ```bash
-cp .env.example .env          # uzupełnij sekrety
-docker compose -f docker-compose.dev.yml --env-file .env up
+cp backend/.env.example backend/.env   # fill in secrets
+cp scraper/.env.example scraper/.env   # fill in secrets
+# then run each service natively (see below)
 ```
 
 - Frontend: http://localhost:4200
@@ -41,38 +48,37 @@ docker compose -f docker-compose.dev.yml --env-file .env up
 - Swagger: http://localhost:3000/api/docs
 - Health: http://localhost:3000/api/health
 
-## Uruchomienie lokalne bez Dockera
+## Running locally without Docker
 
-Każdy pakiet niezależnie:
-
-```bash
-# shared (zbuduj raz, konsumowane przez resztę)
-cd shared && npm i && npm run build
-
-cd ../backend && npm i && npm run start:dev
-cd ../scraper && npm i && npm run start:dev
-cd ../frontend && npm i && npm start
-```
-
-## Produkcja
+Each package independently:
 
 ```bash
-docker compose --env-file .env up -d --build
+cd backend && npm i && npm run start:dev
+cd scraper && npm i && npm run start:dev
+cd frontend && npm i && npm start
 ```
 
-Aplikacja dostępna przez Nginx na porcie `80` (`/` → frontend, `/api` → backend).
+## Production
 
-## Migracje (backend)
+```bash
+cp backend/.env.example backend/.env   # fill in secrets
+cp scraper/.env.example scraper/.env   # fill in secrets
+docker compose up -d --build
+```
+
+App served by Nginx on port `80` (`/` → frontend, `/api` → backend).
+
+## Migrations (backend)
 
 ```bash
 cd backend
-npm run migration:generate -- src/database/migrations/NazwaMigracji
+npm run migration:generate -- src/database/migrations/MigrationName
 npm run migration:run
 ```
 
-## Konwencje
+## Conventions
 
-- TypeScript `strict`, ESLint + Prettier (config w roocie).
-- Frontend: standalone components, `OnPush`, **Facade-only** (komponenty nie dotykają Store).
-- Backend: moduły domenowe, DTO + walidacja, cienkie serwisy.
-- Commity: Conventional Commits.
+- TypeScript `strict`, ESLint + Prettier (config at root).
+- Frontend: standalone components, `OnPush`, **Facade-only** (components do not touch the Store directly).
+- Backend: domain modules, DTO + validation, thin services.
+- Commits: Conventional Commits.

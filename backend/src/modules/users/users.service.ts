@@ -12,6 +12,14 @@ export class UsersService {
   ) {}
 
   /** Includes password hash + tokens (normally `select: false`). For auth use only. */
+  findByUsernameWithSecrets(username: string): Promise<User | null> {
+    return this.repo
+      .createQueryBuilder('u')
+      .addSelect(['u.passwordHash', 'u.activationToken', 'u.resetToken'])
+      .where('u.username = :username', { username })
+      .getOne();
+  }
+
   findByEmailWithSecrets(email: string): Promise<User | null> {
     return this.repo
       .createQueryBuilder('u')

@@ -21,7 +21,7 @@ export class LoginPage {
   protected readonly error = signal<string | null>(null);
 
   protected readonly form = this.fb.nonNullable.group({
-    email: ['', [Validators.required, Validators.email]],
+    username: ['', [Validators.required]],
     password: ['', [Validators.required, Validators.minLength(8)]],
   });
 
@@ -29,8 +29,8 @@ export class LoginPage {
     if (this.form.invalid) return;
     this.loading.set(true);
     this.error.set(null);
-    const { email, password } = this.form.getRawValue();
-    this.auth.login(email, password).subscribe({
+    const { username, password } = this.form.getRawValue();
+    this.auth.login(username, password).subscribe({
       next: () => void this.router.navigate(['/dashboard']),
       error: () => {
         this.error.set('auth.invalidCredentials');

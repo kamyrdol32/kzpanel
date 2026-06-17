@@ -23,7 +23,7 @@ import { UsersModule } from './modules/users/users.module';
       isGlobal: true,
       load: [configuration],
       validationSchema,
-      envFilePath: ['../.env', '.env'],
+      envFilePath: ['.env'],
     }),
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],

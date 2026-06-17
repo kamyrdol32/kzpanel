@@ -19,7 +19,7 @@ import { StrategyRegistry } from './strategies/strategy.registry';
  * and persistence live in the backend.
  */
 @Module({
-  imports: [ConfigModule.forRoot({ isGlobal: true, envFilePath: ['../.env', '.env'] })],
+  imports: [ConfigModule.forRoot({ isGlobal: true, envFilePath: ['.env'] })],
   controllers: [ScrapeController],
   providers: [
     ScraperConfig,
