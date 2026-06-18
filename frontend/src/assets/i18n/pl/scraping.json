@@ -2,6 +2,7 @@
   "scraping": {
     "title": "Scrapowanie ofert",
     "addTitle": "Dodaj cel scrapowania",
+    "targetList": "Skonfigurowane scrapy",
     "source": "Portal",
     "selectSource": "— wybierz serwis —",
     "pickFirst": "Wybierz serwis, aby zobaczyć dostępne filtry.",

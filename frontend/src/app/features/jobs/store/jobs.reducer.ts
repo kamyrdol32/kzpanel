@@ -2,13 +2,15 @@ import { JobFilter, JobOfferDto } from '@evpanel/shared';
 import { createEntityAdapter, EntityAdapter, EntityState } from '@ngrx/entity';
 import { createReducer, on } from '@ngrx/store';
 
-import { JobsActions } from './jobs.actions';
+import { JobsActions, JobSortField, SortDir } from './jobs.actions';
 
 export const JOBS_FEATURE_KEY = 'jobs';
 
 export interface JobsState extends EntityState<JobOfferDto> {
   selectedId: string | null;
   filter: JobFilter;
+  sortField: JobSortField;
+  sortDir: SortDir;
   loading: boolean;
   error: string | null;
 }
@@ -21,6 +23,8 @@ export const jobsAdapter: EntityAdapter<JobOfferDto> = createEntityAdapter<JobOf
 export const initialJobsState: JobsState = jobsAdapter.getInitialState({
   selectedId: null,
   filter: {},
+  sortField: 'publishedDate' as JobSortField,
+  sortDir: 'desc' as SortDir,
   loading: false,
   error: null,
 });
@@ -39,6 +43,7 @@ export const jobsReducer = createReducer(
   on(JobsActions.select, (state, { id }) => ({ ...state, selectedId: id })),
   on(JobsActions.clearSelection, (state) => ({ ...state, selectedId: null })),
   on(JobsActions.setFilter, (state, { filter }) => ({ ...state, filter })),
+  on(JobsActions.setSort, (state, { sortField, sortDir }) => ({ ...state, sortField, sortDir })),
 
   on(JobsActions.deleteSuccess, (state, { id }) => jobsAdapter.removeOne(id, state)),
   on(JobsActions.deleteFailure, (state, { error }) => ({ ...state, error })),

@@ -12,6 +12,34 @@
     "benefits": "Benefits",
     "techStack": "Tech stack",
     "emptyTitle": "No offers",
-    "emptyDesc": "Run the scraper or add an offer manually."
+    "emptyDesc": "Run the scraper or add an offer manually.",
+    "col": {
+      "title": "Position",
+      "company": "Company",
+      "salary": "Salary",
+      "location": "Location",
+      "remoteType": "Work mode",
+      "publishedDate": "Date"
+    },
+    "filter": {
+      "search": "Search by position…",
+      "allPortals": "All portals",
+      "allLevels": "All levels",
+      "allRemote": "Work mode",
+      "allLanguages": "Language",
+      "clear": "Clear"
+    },
+    "detail": {
+      "level": "Level",
+      "language": "Language",
+      "source": "Source",
+      "published": "Published",
+      "status": "Status",
+      "statusNew": "New",
+      "statusApplied": "CV sent",
+      "statusDismissed": "Not interested"
+    },
+    "dismissTitle": "Mark as not interested",
+    "restoreTitle": "Restore offer"
   }
 }

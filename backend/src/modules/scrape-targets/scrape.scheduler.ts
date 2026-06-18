@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { SchedulerRegistry } from '@nestjs/schedule';
 import { CronJob } from 'cron';
 
-import { ScrapeOrchestratorService } from './scrape-orchestrator.service';
+import { ScrapeQueueService } from './scrape-queue.service';
 
 /**
  * Daily scrape cron (SCRAPER_INTERVAL_CRON, default 04:00) over every enabled
@@ -16,7 +16,7 @@ export class ScrapeScheduler implements OnModuleInit {
   private readonly logger = new Logger(ScrapeScheduler.name);
 
   constructor(
-    private readonly orchestrator: ScrapeOrchestratorService,
+    private readonly queue: ScrapeQueueService,
     private readonly config: ConfigService,
     private readonly schedulerRegistry: SchedulerRegistry,
   ) {}
@@ -34,8 +34,8 @@ export class ScrapeScheduler implements OnModuleInit {
   }
 
   private async run(): Promise<void> {
-    this.logger.log('Scheduled scrape started');
-    const result = await this.orchestrator.runTargets();
+    this.logger.log('Scheduled scrape enqueued');
+    const result = await this.queue.enqueue();
     this.logger.log(
       `Scheduled scrape finished — targets=${result.targetsProcessed} offers=${result.offersUpserted}`,
     );

@@ -1,5 +1,47 @@
 <div class="ev-page">
-  <h1 class="ev-page-title">{{ 'jobs.title' | translate }}</h1>
+  <div class="ev-row" style="justify-content: space-between; align-items: center; margin-bottom: 16px">
+    <h1 class="ev-page-title" style="margin: 0">{{ 'jobs.title' | translate }}</h1>
+    @if (!facade.loading() && facade.jobs().length > 0) {
+      <span class="jobs-count">{{ facade.jobs().length }}</span>
+    }
+  </div>
+
+  <!-- Filter bar -->
+  <div class="filter-bar" [formGroup]="filterForm">
+    <div class="filter-row">
+      <div class="search-wrap">
+        <span class="material-symbols-rounded search-icon">search</span>
+        <input class="search-input" type="text" formControlName="search" [placeholder]="'jobs.filter.search' | translate" />
+      </div>
+
+      <select class="filter-select" formControlName="source">
+        <option value="">{{ 'jobs.filter.allPortals' | translate }}</option>
+        @for (s of sources; track s) { <option [value]="s">{{ s }}</option> }
+      </select>
+
+      <select class="filter-select" formControlName="level">
+        <option value="">{{ 'jobs.filter.allLevels' | translate }}</option>
+        @for (l of levels; track l) { <option [value]="l">{{ l }}</option> }
+      </select>
+
+      <select class="filter-select" formControlName="remoteType">
+        <option value="">{{ 'jobs.filter.allRemote' | translate }}</option>
+        @for (r of remoteTypes; track r) { <option [value]="r">{{ r }}</option> }
+      </select>
+
+      <select class="filter-select" formControlName="language">
+        <option value="">{{ 'jobs.filter.allLanguages' | translate }}</option>
+        @for (l of languages; track l) { <option [value]="l">{{ l }}</option> }
+      </select>
+
+      @if (activeFilters()) {
+        <button class="clear-btn" type="button" (click)="clearFilters()">
+          <span class="material-symbols-rounded">close</span>
+          {{ 'jobs.filter.clear' | translate }}
+        </button>
+      }
+    </div>
+  </div>
 
   @if (facade.loading()) {
     <ev-skeleton [count]="6" height="44px" />
@@ -12,40 +54,40 @@
   } @else {
     <ev-data-table
       [columns]="columns"
-      [rows]="facade.jobs()"
+      [rows]="paginatedJobs()"
       [trackBy]="trackById"
       [clickable]="true"
       [selectedId]="expandedId()"
       [rowClass]="rowClass"
+      [activeSort]="{ key: facade.sort().sortField, dir: facade.sort().sortDir }"
       (rowClick)="toggleRow($event)"
+      (sortChange)="onSortChange($event)"
     >
-      <!-- prefix cell: status indicator (CV sent / dismissed) -->
       <ng-template #rowPrefix let-job>
         @if (isApplied(job)) {
-          <span class="status-dot status-dot-applied" title="CV wysłane">
+          <span class="status-dot status-dot-applied" [title]="'jobs.detail.statusApplied' | translate">
             <span class="material-symbols-rounded">mark_email_read</span>
           </span>
         } @else if (job.dismissed) {
-          <span class="status-dot status-dot-dismissed" title="Zweryfikowane — nieinteresujące">
+          <span class="status-dot status-dot-dismissed" [title]="'jobs.detail.statusDismissed' | translate">
             <span class="material-symbols-rounded">visibility_off</span>
           </span>
         }
       </ng-template>
 
-      <!-- actions column: icon buttons -->
       <ng-template #actions let-job>
         <div class="row-actions">
           @if (isApplied(job)) {
             <span class="chip chip-success">{{ 'jobs.applied' | translate }}</span>
           } @else {
-            <button class="icon-btn icon-btn-primary" title="Aplikuj — wyślij CV" (click)="apply(job)">
+            <button class="icon-btn icon-btn-primary" [title]="'jobs.apply' | translate" (click)="apply(job)">
               <span class="material-symbols-rounded">send</span>
             </button>
           }
           <button
             class="icon-btn"
             [class.icon-btn-active]="job.dismissed"
-            [title]="job.dismissed ? 'Przywróć ofertę' : 'Oznacz jako nieinteresujące'"
+            [title]="job.dismissed ? ('jobs.restoreTitle' | translate) : ('jobs.dismissTitle' | translate)"
             (click)="toggleDismissed(job)"
           >
             <span class="material-symbols-rounded">{{ job.dismissed ? 'undo' : 'visibility_off' }}</span>
@@ -56,37 +98,36 @@
         </div>
       </ng-template>
 
-      <!-- expanded detail row -->
       <ng-template #expanded let-job>
         <div class="job-detail">
           <div class="job-detail-grid">
             <div class="field">
-              <span class="field-label">Poziom</span>
+              <span class="field-label">{{ 'jobs.detail.level' | translate }}</span>
               <span class="field-value"><ev-status-badge [label]="job.level" tone="info" /></span>
             </div>
             <div class="field">
-              <span class="field-label">Język</span>
+              <span class="field-label">{{ 'jobs.detail.language' | translate }}</span>
               <span class="field-value"><ev-status-badge [label]="job.language" tone="neutral" /></span>
             </div>
             <div class="field">
-              <span class="field-label">Źródło</span>
+              <span class="field-label">{{ 'jobs.detail.source' | translate }}</span>
               <span class="field-value"><ev-status-badge [label]="job.source" tone="neutral" /></span>
             </div>
             @if (job.publishedDate) {
               <div class="field">
-                <span class="field-label">Opublikowano</span>
+                <span class="field-label">{{ 'jobs.detail.published' | translate }}</span>
                 <span class="field-value">{{ job.publishedDate | date:'dd.MM.yyyy' }}</span>
               </div>
             }
             <div class="field">
-              <span class="field-label">Status</span>
+              <span class="field-label">{{ 'jobs.detail.status' | translate }}</span>
               <span class="field-value">
                 @if (isApplied(job)) {
-                  <ev-status-badge label="CV wysłane" tone="success" />
+                  <ev-status-badge [label]="'jobs.detail.statusApplied' | translate" tone="success" />
                 } @else if (job.dismissed) {
-                  <ev-status-badge label="Nieinteresujące" tone="neutral" />
+                  <ev-status-badge [label]="'jobs.detail.statusDismissed' | translate" tone="neutral" />
                 } @else {
-                  <ev-status-badge label="Nowa" tone="info" />
+                  <ev-status-badge [label]="'jobs.detail.statusNew' | translate" tone="info" />
                 }
               </span>
             </div>
@@ -94,7 +135,7 @@
 
           @if (job.techStack?.length) {
             <div class="job-detail-section">
-              <span class="field-label">Tech stack</span>
+              <span class="field-label">{{ 'jobs.techStack' | translate }}</span>
               <div class="chips">
                 @for (t of job.techStack; track t) { <span class="chip">{{ t }}</span> }
               </div>
@@ -103,14 +144,14 @@
 
           @if (job.description) {
             <div class="job-detail-section">
-              <span class="field-label">Opis</span>
+              <span class="field-label">{{ 'jobs.description' | translate }}</span>
               <p class="job-detail-desc">{{ job.description }}</p>
             </div>
           }
 
           @if (job.requirements?.length) {
             <div class="job-detail-section">
-              <span class="field-label">Wymagania</span>
+              <span class="field-label">{{ 'jobs.requirements' | translate }}</span>
               <ul class="job-detail-list">@for (r of job.requirements; track r) { <li>{{ r }}</li> }</ul>
             </div>
           }
@@ -131,11 +172,36 @@
               <span class="material-symbols-rounded" style="font-size:16px">
                 {{ job.dismissed ? 'undo' : 'visibility_off' }}
               </span>
-              {{ job.dismissed ? 'Przywróć' : 'Nieinteresujące' }}
+              {{ job.dismissed ? ('jobs.restore' | translate) : ('jobs.dismiss' | translate) }}
             </button>
           </div>
         </div>
       </ng-template>
     </ev-data-table>
+
+    @if (totalPages() > 1) {
+      <div class="pagination">
+        <button class="page-btn" [disabled]="currentPage() === 1" (click)="goToPage(currentPage() - 1)">
+          <span class="material-symbols-rounded">chevron_left</span>
+        </button>
+
+        @for (p of pageNumbers(); track p) {
+          @if (p === -1) {
+            <span class="page-ellipsis">…</span>
+          } @else {
+            <button class="page-btn" [class.page-btn-active]="p === currentPage()" (click)="goToPage(p)">{{ p }}</button>
+          }
+        }
+
+        <button class="page-btn" [disabled]="currentPage() === totalPages()" (click)="goToPage(currentPage() + 1)">
+          <span class="material-symbols-rounded">chevron_right</span>
+        </button>
+
+        <span class="page-info">
+          {{ (currentPage() - 1) * PAGE_SIZE + 1 }}–{{ currentPage() * PAGE_SIZE > facade.jobs().length ? facade.jobs().length : currentPage() * PAGE_SIZE }}
+          z {{ facade.jobs().length }}
+        </span>
+      </div>
+    }
   }
 </div>

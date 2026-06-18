@@ -134,6 +134,8 @@ a {
   text-wrap: balance;
   margin: 0 0 $space-5;
   color: var(--ev-text);
+  padding-left: 14px;
+  border-left: 3px solid var(--ev-accent);
 }
 
 .ev-row  { display: flex; align-items: center; gap: $space-3; }

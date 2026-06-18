@@ -21,7 +21,7 @@ export class ScraperClient {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'x-internal-token': token },
         body: JSON.stringify(req),
-        signal: AbortSignal.timeout(120_000),
+        signal: AbortSignal.timeout(600_000),
       });
       if (!res.ok) {
         throw new HttpException(`Scraper returned ${res.status}`, 502);

@@ -35,6 +35,38 @@
     font-size: 12px;
     text-transform: uppercase;
     letter-spacing: 0.4px;
+
+    &.th-sortable {
+      cursor: pointer;
+      user-select: none;
+
+      &:hover {
+        color: var(--ev-text);
+
+        .th-sort-icon-idle {
+          opacity: 1;
+        }
+      }
+    }
+
+    &.th-sort-active {
+      color: var(--ev-accent);
+    }
+  }
+
+  .th-inner {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .th-sort-icon {
+    font-size: 14px;
+
+    &-idle {
+      opacity: 0.3;
+      transition: opacity 0.15s;
+    }
   }
 
   tbody tr:last-child td { border-bottom: none; }

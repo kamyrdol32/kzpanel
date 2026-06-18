@@ -2,27 +2,25 @@ import { inject, Injectable } from '@angular/core';
 import { JobFilter } from '@evpanel/shared';
 import { Store } from '@ngrx/store';
 
-import { JobsActions } from '../store/jobs.actions';
+import { JobSortField, JobsActions, SortDir } from '../store/jobs.actions';
 import {
-  selectAllJobs,
   selectJobsError,
   selectJobsFilter,
   selectJobsLoading,
+  selectJobsSort,
   selectSelectedJob,
+  selectSortedJobs,
 } from '../store/jobs.selectors';
 
-/**
- * The single interaction surface for jobs components. Components read these
- * signals and call these methods — they never import the Store directly.
- */
 @Injectable({ providedIn: 'root' })
 export class JobsFacade {
   private readonly store = inject(Store);
 
-  readonly jobs = this.store.selectSignal(selectAllJobs);
+  readonly jobs = this.store.selectSignal(selectSortedJobs);
   readonly loading = this.store.selectSignal(selectJobsLoading);
   readonly error = this.store.selectSignal(selectJobsError);
   readonly filter = this.store.selectSignal(selectJobsFilter);
+  readonly sort = this.store.selectSignal(selectJobsSort);
   readonly selected = this.store.selectSignal(selectSelectedJob);
 
   load(filter: JobFilter = {}): void {
@@ -40,6 +38,10 @@ export class JobsFacade {
   setFilter(filter: JobFilter): void {
     this.store.dispatch(JobsActions.setFilter({ filter }));
     this.store.dispatch(JobsActions.load({ filter }));
+  }
+
+  setSort(sortField: JobSortField, sortDir: SortDir): void {
+    this.store.dispatch(JobsActions.setSort({ sortField, sortDir }));
   }
 
   remove(id: string): void {

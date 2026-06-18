@@ -23,7 +23,6 @@ export class JobsService {
         ...(filter.language ? { language: filter.language } : {}),
       },
       order: { publishedDate: 'DESC', createdAt: 'DESC' },
-      take: 500,
     });
   }
 

@@ -6,14 +6,15 @@ export interface TableColumn<T> {
   label: string;
   /** optional value accessor for computed/nested cells */
   value?: (row: T) => string | number | null;
+  /** if set, clicking this header emits sortChange with this key */
+  sortKey?: string;
 }
 
-/**
- * Generic, presentational data table. Smart parent supplies rows + columns;
- * an optional `actions` template renders a trailing column. No store access.
- * Optional `expanded` template renders a full-width detail row when a row is
- * selected (selected row id is tracked externally via `selectedId`).
- */
+export interface SortState {
+  key: string;
+  dir: 'asc' | 'desc';
+}
+
 @Component({
   selector: 'ev-data-table',
   standalone: true,
@@ -23,8 +24,26 @@ export interface TableColumn<T> {
       <table class="table">
         <thead>
           <tr>
+            @if (rowPrefix()) {
+              <th class="table-prefix-col"></th>
+            }
             @for (col of columns(); track col.key) {
-              <th>{{ col.label }}</th>
+              <th
+                [class.th-sortable]="!!col.sortKey"
+                [class.th-sort-active]="col.sortKey && col.sortKey === activeSort()?.key"
+                (click)="col.sortKey && onHeaderClick(col.sortKey)"
+              >
+                <span class="th-inner">
+                  {{ col.label }}
+                  @if (col.sortKey && col.sortKey === activeSort()?.key) {
+                    <span class="material-symbols-rounded th-sort-icon">
+                      {{ activeSort()!.dir === 'asc' ? 'arrow_upward' : 'arrow_downward' }}
+                    </span>
+                  } @else if (col.sortKey) {
+                    <span class="material-symbols-rounded th-sort-icon th-sort-icon-idle">unfold_more</span>
+                  }
+                </span>
+              </th>
             }
             @if (actions()) {
               <th class="table-actions-col"></th>
@@ -75,14 +94,24 @@ export class DataTableComponent<T> {
   readonly trackBy = input<(row: T) => unknown>(() => (row: T) => row);
   readonly selectedId = input<unknown>(null);
   readonly clickable = input(false);
-  /** optional per-row CSS class(es), e.g. to grey out dismissed rows */
   readonly rowClass = input<(row: T) => string>(() => '');
+  readonly activeSort = input<SortState | null>(null);
 
   readonly rowClick = output<T>();
+  readonly sortChange = output<SortState>();
 
   readonly rowPrefix = contentChild<TemplateRef<{ $implicit: T }>>('rowPrefix');
   readonly actions = contentChild<TemplateRef<{ $implicit: T }>>('actions');
   readonly expanded = contentChild<TemplateRef<{ $implicit: T }>>('expanded');
+
+  onHeaderClick(key: string): void {
+    const current = this.activeSort();
+    const dir: 'asc' | 'desc' =
+      current?.key === key
+        ? current.dir === 'desc' ? 'asc' : 'desc'
+        : 'desc';
+    this.sortChange.emit({ key, dir });
+  }
 
   cell(row: T, col: TableColumn<T>): string | number {
     const raw = col.value ? col.value(row) : (row as Record<string, unknown>)[col.key as string];

@@ -4,7 +4,6 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { JobSource, RemoteType } from '@evpanel/shared';
 import { TranslateModule } from '@ngx-translate/core';
 
-import { CardComponent } from '../../../shared/ui/card/card.component';
 import { EmptyStateComponent } from '../../../shared/ui/empty-state/empty-state.component';
 import { StatusBadgeComponent } from '../../../shared/ui/status-badge/status-badge.component';
 import { ScrapingFacade } from '../facade/scraping.facade';
@@ -16,7 +15,6 @@ import { SCRAPEABLE_SOURCES, SOURCE_FIELDS, SourceField } from '../source-fields
   imports: [
     ReactiveFormsModule,
     DatePipe,
-    CardComponent,
     EmptyStateComponent,
     StatusBadgeComponent,
     TranslateModule,

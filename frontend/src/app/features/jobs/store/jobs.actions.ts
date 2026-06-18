@@ -1,6 +1,9 @@
 import { JobFilter, JobOfferDto } from '@evpanel/shared';
 import { createActionGroup, emptyProps, props } from '@ngrx/store';
 
+export type JobSortField = 'publishedDate' | 'salaryMin' | 'title' | 'company';
+export type SortDir = 'asc' | 'desc';
+
 export const JobsActions = createActionGroup({
   source: 'Jobs',
   events: {
@@ -12,6 +15,7 @@ export const JobsActions = createActionGroup({
     'Select Success': props<{ job: JobOfferDto }>(),
 
     'Set Filter': props<{ filter: JobFilter }>(),
+    'Set Sort': props<{ sortField: JobSortField; sortDir: SortDir }>(),
     'Clear Selection': emptyProps(),
 
     Delete: props<{ id: string }>(),

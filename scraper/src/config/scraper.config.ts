@@ -1,8 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
-import { ScrapeParams } from './scrape-params';
-
 /** Typed access to scraper-related environment configuration. */
 @Injectable()
 export class ScraperConfig {
@@ -23,8 +21,8 @@ export class ScraperConfig {
     return parseInt(this.config.get<string>('SCRAPER_PORT') ?? '3100', 10);
   }
 
-  /** Default search params (only the limit is global; query/location come from targets). */
-  get params(): ScrapeParams {
-    return { limit: parseInt(this.config.get<string>('SCRAPER_LIMIT') ?? '20', 10) };
+  /** Proxy URL passed to Playwright (and respected by Node fetch via HTTP_PROXY env). e.g. http://user:pass@host:port */
+  get proxyUrl(): string | undefined {
+    return this.config.get<string>('PROXY_URL') || undefined;
   }
 }

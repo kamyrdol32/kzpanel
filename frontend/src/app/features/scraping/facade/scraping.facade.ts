@@ -12,6 +12,8 @@ export class ScrapingFacade {
   readonly targets = signal<ScrapeTargetDto[]>([]);
   readonly loading = signal(false);
   readonly running = signal(false);
+  /** id targetu który aktualnie się scrape'uje, null = runAll lub brak */
+  readonly runningId = signal<string | null>(null);
   readonly lastResult = signal<string | null>(null);
 
   load(): void {
@@ -32,26 +34,36 @@ export class ScrapingFacade {
 
   runAll(): void {
     this.running.set(true);
+    this.runningId.set(null);
+    this.lastResult.set(null);
     this.api
       .runAll()
-      .pipe(finalize(() => this.running.set(false)))
+      .pipe(finalize(() => { this.running.set(false); this.runningId.set(null); }))
       .subscribe({
         next: (r) => {
-          this.lastResult.set(`targets: ${r.targetsProcessed}, oferty: ${r.offersUpserted}`);
+          this.lastResult.set(`Cele: ${r.targetsProcessed}, oferty: ${r.offersUpserted}`);
           this.load();
+        },
+        error: (err) => {
+          this.lastResult.set(`Błąd: ${(err as { message?: string }).message ?? 'nieznany'}`);
         },
       });
   }
 
   runOne(id: string): void {
     this.running.set(true);
+    this.runningId.set(id);
+    this.lastResult.set(null);
     this.api
       .runOne(id)
-      .pipe(finalize(() => this.running.set(false)))
+      .pipe(finalize(() => { this.running.set(false); this.runningId.set(null); }))
       .subscribe({
         next: (r) => {
           this.lastResult.set(`oferty: ${r.offersUpserted}`);
           this.load();
+        },
+        error: (err) => {
+          this.lastResult.set(`Błąd: ${(err as { message?: string }).message ?? 'nieznany'}`);
         },
       });
   }

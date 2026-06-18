@@ -8,6 +8,6 @@ export interface ScrapeParams {
   location?: string;
   /** work-mode filter from the target (used e.g. to keep only remote offers) */
   remoteType?: RemoteType;
-  /** max listings to fetch */
-  limit: number;
+  /** max listings to fetch — undefined = no limit */
+  limit?: number;
 }

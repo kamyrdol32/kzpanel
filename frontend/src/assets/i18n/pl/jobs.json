@@ -12,6 +12,34 @@
     "benefits": "Benefity",
     "techStack": "Technologie",
     "emptyTitle": "Brak ofert",
-    "emptyDesc": "Uruchom scraper lub dodaj ofertę ręcznie."
+    "emptyDesc": "Uruchom scraper lub dodaj ofertę ręcznie.",
+    "col": {
+      "title": "Stanowisko",
+      "company": "Firma",
+      "salary": "Wynagrodzenie",
+      "location": "Lokalizacja",
+      "remoteType": "Tryb pracy",
+      "publishedDate": "Data"
+    },
+    "filter": {
+      "search": "Szukaj po stanowisku…",
+      "allPortals": "Wszystkie portale",
+      "allLevels": "Wszystkie poziomy",
+      "allRemote": "Tryb pracy",
+      "allLanguages": "Język",
+      "clear": "Wyczyść"
+    },
+    "detail": {
+      "level": "Poziom",
+      "language": "Język",
+      "source": "Źródło",
+      "published": "Opublikowano",
+      "status": "Status",
+      "statusNew": "Nowa",
+      "statusApplied": "CV wysłane",
+      "statusDismissed": "Nieinteresujące"
+    },
+    "dismissTitle": "Oznacz jako nieinteresujące",
+    "restoreTitle": "Przywróć ofertę"
   }
 }

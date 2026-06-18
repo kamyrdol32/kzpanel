@@ -26,7 +26,6 @@ export class ScrapeService {
       query: req.query,
       location: req.location,
       remoteType: req.remoteType,
-      limit: req.limit ?? this.config.params.limit,
     };
 
     if (this.config.mock) {
@@ -44,7 +43,7 @@ export class ScrapeService {
     this.logger.log(`${req.source} "${req.query ?? ''}": ${stubs.length} listings`);
 
     const offers: JobRaw[] = [];
-    for (const stub of stubs.slice(0, params.limit)) {
+    for (const stub of stubs) {
       offers.push(await strategy.fetchDetails(stub));
     }
     return offers;
