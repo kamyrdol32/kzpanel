@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 
 import { authGuard } from './core/auth/auth.guard';
-import { ShellComponent } from './core/layout/shell.component';
+import { AppLayoutComponent } from './core/layout/app-layout.component';
 
 export const APP_ROUTES: Routes = [
   {
@@ -10,20 +10,10 @@ export const APP_ROUTES: Routes = [
   },
   {
     path: '',
-    component: ShellComponent,
+    component: AppLayoutComponent,
     canActivate: [authGuard],
     children: [
-      { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
-      {
-        path: 'dashboard',
-        loadChildren: () =>
-          import('./features/dashboard/dashboard.routes').then((m) => m.DASHBOARD_ROUTES),
-      },
-      {
-        path: 'projects',
-        loadChildren: () =>
-          import('./features/projects/projects.routes').then((m) => m.PROJECTS_ROUTES),
-      },
+      { path: '', pathMatch: 'full', redirectTo: 'recruitment' },
       {
         path: 'recruitment',
         loadChildren: () =>
@@ -37,11 +27,6 @@ export const APP_ROUTES: Routes = [
         path: 'scraping',
         loadChildren: () =>
           import('./features/scraping/scraping.routes').then((m) => m.SCRAPING_ROUTES),
-      },
-      {
-        path: 'monitoring',
-        loadChildren: () =>
-          import('./features/monitoring/monitoring.routes').then((m) => m.MONITORING_ROUTES),
       },
     ],
   },

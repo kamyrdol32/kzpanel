@@ -1,15 +1,12 @@
 // ──────────────────────────────────────────────────────────────
 // EvPanel Design System — design tokens (theme-agnostic)
-// Palette inspired by EvGaming: gold accents on graphite/black.
 // ──────────────────────────────────────────────────────────────
 
 // Brand palette
-$ev-gold:        #D4AF37;
-$ev-gold-bright: #C5A93A;
-$ev-gold-dark:   #A88C2B;
-$ev-graphite:    #232323;
-$ev-black-900:   #111111;
-$ev-black-800:   #1B1B1B;
+$ev-orange:        #f5770f;
+$ev-orange-hover:  #e06a0c;
+$ev-orange-dim:    #2a1500;
+$ev-orange-border: #4a2200;
 
 // Spacing scale (4px base)
 $space-0: 0;
@@ -24,33 +21,34 @@ $space-8: 64px;
 
 // Border radius
 $radius-sm: 6px;
-$radius-md: 10px;
-$radius-lg: 16px;
+$radius-md: 6px;
+$radius-lg: 12px;
 $radius-pill: 999px;
 
 // Typography
-$font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
-$fs-xs: 12px;
-$fs-sm: 13px;
-$fs-md: 14px;
-$fs-lg: 16px;
-$fs-xl: 20px;
+$font-display: 'Space Grotesk', sans-serif;
+$font-sans:    'Inter', sans-serif;
+$fs-xs:  12px;
+$fs-sm:  13px;
+$fs-md:  14px;
+$fs-lg:  16px;
+$fs-xl:  20px;
 $fs-2xl: 28px;
-$fw-regular: 400;
-$fw-medium: 500;
+$fw-regular:  400;
+$fw-medium:   500;
 $fw-semibold: 600;
-$fw-bold: 700;
+$fw-bold:     700;
 
-// Shadows (subtle, no harsh elevation)
-$shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
-$shadow-md: 0 4px 12px rgba(0, 0, 0, 0.35);
-$shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.45);
+// Shadows
+$shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+$shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
+$shadow-lg: 0 24px 60px rgba(0, 0, 0, 0.45);
 
 // Motion
 $ease-standard: cubic-bezier(0.2, 0, 0, 1);
 $dur-fast: 150ms;
 $dur-base: 200ms;
-$dur-slow: 250ms;
+$dur-slow: 300ms;
 
 // Layout
 $sidebar-width: 248px;

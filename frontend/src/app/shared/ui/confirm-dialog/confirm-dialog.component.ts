@@ -13,13 +13,13 @@ import { TranslateModule } from '@ngx-translate/core';
     @if (open()) {
       <div class="overlay" (click)="cancel.emit()">
         <div class="dialog" (click)="$event.stopPropagation()">
-          <h3 class="dialog__title">{{ title() | translate }}</h3>
-          <p class="dialog__msg">{{ message() | translate }}</p>
-          <div class="dialog__actions">
-            <button class="btn btn--ghost" (click)="cancel.emit()">
+          <h3 class="dialog-title">{{ title() | translate }}</h3>
+          <p class="dialog-msg">{{ message() | translate }}</p>
+          <div class="dialog-actions">
+            <button class="btn btn-ghost" (click)="cancel.emit()">
               {{ cancelLabel() | translate }}
             </button>
-            <button class="btn btn--danger" (click)="confirm.emit()">
+            <button class="btn btn-danger" (click)="confirm.emit()">
               {{ confirmLabel() | translate }}
             </button>
           </div>

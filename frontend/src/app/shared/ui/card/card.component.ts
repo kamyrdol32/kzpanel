@@ -6,9 +6,9 @@ import { Component, input } from '@angular/core';
   template: `
     <section class="card">
       @if (title()) {
-        <header class="card__header">{{ title() }}</header>
+        <header class="card-header">{{ title() }}</header>
       }
-      <div class="card__body"><ng-content /></div>
+      <div class="card-body"><ng-content /></div>
     </section>
   `,
   styles: [
@@ -19,12 +19,12 @@ import { Component, input } from '@angular/core';
         border-radius: 16px;
         box-shadow: var(--ev-shadow-sm);
       }
-      .card__header {
+      .card-header {
         padding: 16px 20px;
         font-weight: 600;
         border-bottom: 1px solid var(--ev-border);
       }
-      .card__body { padding: 20px; }
+      .card-body { padding: 20px; }
     `,
   ],
 })

@@ -7,17 +7,17 @@
     font-size: 18px;
   }
 
-  &--applied {
+  &-applied {
     color: var(--ev-success, #22c55e);
   }
 
-  &--dismissed {
+  &-dismissed {
     color: var(--ev-text-muted);
   }
 }
 
 // ── row state styling (driven by rowClass) ────────────────────────────
-:host ::ng-deep .job-row--dismissed td {
+:host ::ng-deep .job-row-dismissed td {
   opacity: 0.5;
 
   .cell {
@@ -25,7 +25,7 @@
   }
 }
 
-:host ::ng-deep .job-row--applied {
+:host ::ng-deep .job-row-applied {
   background: color-mix(in srgb, var(--ev-success, #22c55e) 8%, transparent);
 }
 
@@ -58,22 +58,22 @@
     color: var(--ev-text);
   }
 
-  &--primary:hover {
+  &-primary:hover {
     color: var(--ev-accent);
   }
 
-  &--danger:hover {
+  &-danger:hover {
     color: var(--ev-danger, #ef4444);
   }
 
-  &--active {
+  &-active {
     color: var(--ev-accent);
     background: var(--ev-surface-2);
   }
 }
 
 // ── chips ──────────────────────────────────────────────────────────────
-.chip--success {
+.chip-success {
   display: inline-flex;
   align-items: center;
   gap: 4px;
@@ -91,13 +91,13 @@
   border-top: 1px solid var(--ev-border);
   background: var(--ev-bg);
 
-  &__grid {
+  &-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: 12px;
   }
 
-  &__section {
+  &-section {
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -105,7 +105,7 @@
     border-top: 1px solid var(--ev-border);
   }
 
-  &__desc {
+  &-desc {
     margin: 0;
     font-size: 13px;
     color: var(--ev-text-muted);
@@ -114,7 +114,7 @@
     overflow-y: auto;
   }
 
-  &__list {
+  &-list {
     margin: 0;
     padding-left: 20px;
     font-size: 13px;
@@ -122,7 +122,7 @@
     color: var(--ev-text-muted);
   }
 
-  &__actions {
+  &-actions {
     display: flex;
     gap: 8px;
     padding-top: 8px;
@@ -139,7 +139,7 @@
   border: 1px solid var(--ev-border);
   border-radius: 10px;
 
-  &__label {
+  &-label {
     font-size: 12px;
     font-weight: 600;
     text-transform: uppercase;
@@ -147,7 +147,7 @@
     color: var(--ev-text-muted);
   }
 
-  &__value {
+  &-value {
     font-size: 14px;
     color: var(--ev-text);
     display: flex;
@@ -167,7 +167,7 @@
   cursor: pointer;
   border: 1px solid transparent;
 
-  &--primary {
+  &-primary {
     background: var(--ev-accent);
     color: #fff;
 
@@ -176,7 +176,7 @@
     }
   }
 
-  &--ghost {
+  &-ghost {
     background: transparent;
     border-color: var(--ev-border);
     color: var(--ev-text);

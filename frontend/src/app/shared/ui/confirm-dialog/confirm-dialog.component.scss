@@ -20,9 +20,9 @@
   padding: $space-5;
   animation: pop $dur-base $ease-standard;
 
-  &__title { margin: 0 0 $space-2; font-size: $fs-lg; font-weight: $fw-semibold; }
-  &__msg { margin: 0 0 $space-5; color: var(--ev-text-muted); font-size: $fs-sm; }
-  &__actions { display: flex; justify-content: flex-end; gap: $space-2; }
+  &-title { margin: 0 0 $space-2; font-size: $fs-lg; font-weight: $fw-semibold; }
+  &-msg { margin: 0 0 $space-5; color: var(--ev-text-muted); font-size: $fs-sm; }
+  &-actions { display: flex; justify-content: flex-end; gap: $space-2; }
 }
 
 .btn {
@@ -33,8 +33,8 @@
   border: 1px solid var(--ev-border);
   transition: background $dur-fast $ease-standard, opacity $dur-fast $ease-standard;
 
-  &--ghost { background: transparent; color: var(--ev-text); &:hover { background: var(--ev-surface-2); } }
-  &--danger { background: var(--ev-danger); color: #fff; border-color: transparent; &:hover { opacity: 0.9; } }
+  &-ghost { background: transparent; color: var(--ev-text); &:hover { background: var(--ev-surface-2); } }
+  &-danger { background: var(--ev-danger); color: #fff; border-color: transparent; &:hover { opacity: 0.9; } }
 }
 
 @keyframes fade { from { opacity: 0; } to { opacity: 1; } }

@@ -1,5 +1,5 @@
 <div class="ev-page">
-  <h1 class="ev-page__title">{{ 'recruitment.title' | translate }}</h1>
+  <h1 class="ev-page-title">{{ 'recruitment.title' | translate }}</h1>
 
   @if (facade.items().length === 0) {
     <ev-empty-state icon="work_history" [title]="'common.noData' | translate" />
@@ -54,51 +54,51 @@
               <tr class="details-row">
                 <td colspan="8">
                   <div class="details" @slideDown>
-                    <div class="details__grid">
+                    <div class="details-grid">
                       <div class="field">
-                        <span class="field__label">{{ 'recruitment.company' | translate }}</span>
-                        <span class="field__value">{{ r.company }}</span>
+                        <span class="field-label">{{ 'recruitment.company' | translate }}</span>
+                        <span class="field-value">{{ r.company }}</span>
                       </div>
                       <div class="field">
-                        <span class="field__label">{{ 'recruitment.position' | translate }}</span>
-                        <span class="field__value">{{ r.position }}</span>
+                        <span class="field-label">{{ 'recruitment.position' | translate }}</span>
+                        <span class="field-value">{{ r.position }}</span>
                       </div>
                       <div class="field">
-                        <span class="field__label">{{ 'recruitment.level' | translate }}</span>
-                        <span class="field__value">{{ r.level }}</span>
+                        <span class="field-label">{{ 'recruitment.level' | translate }}</span>
+                        <span class="field-value">{{ r.level }}</span>
                       </div>
                       <div class="field">
-                        <span class="field__label">{{ 'recruitment.workMode' | translate }}</span>
-                        <span class="field__value">{{ r.workMode }}</span>
+                        <span class="field-label">{{ 'recruitment.workMode' | translate }}</span>
+                        <span class="field-value">{{ r.workMode }}</span>
                       </div>
                       <div class="field">
-                        <span class="field__label">{{ 'recruitment.salary' | translate }}</span>
-                        <span class="field__value">{{ r.salaryMin ? (r.salaryMin + '–' + (r.salaryMax ?? '') + ' ' + (r.currency ?? '')) : '—' }}</span>
+                        <span class="field-label">{{ 'recruitment.salary' | translate }}</span>
+                        <span class="field-value">{{ r.salaryMin ? (r.salaryMin + '–' + (r.salaryMax ?? '') + ' ' + (r.currency ?? '')) : '—' }}</span>
                       </div>
                       <div class="field">
-                        <span class="field__label">{{ 'recruitment.status' | translate }}</span>
-                        <span class="field__value">{{ r.status }}</span>
+                        <span class="field-label">{{ 'recruitment.status' | translate }}</span>
+                        <span class="field-value">{{ r.status }}</span>
                       </div>
                       <div class="field">
-                        <span class="field__label">{{ 'recruitment.applied' | translate }}</span>
-                        <span class="field__value">{{ r.appliedAt ? (r.appliedAt | date: 'dd.MM.yyyy HH:mm') : '—' }}</span>
+                        <span class="field-label">{{ 'recruitment.applied' | translate }}</span>
+                        <span class="field-value">{{ r.appliedAt ? (r.appliedAt | date: 'dd.MM.yyyy HH:mm') : '—' }}</span>
                       </div>
                       <div class="field">
-                        <span class="field__label">{{ 'recruitment.created' | translate }}</span>
-                        <span class="field__value">{{ r.createdAt | date: 'dd.MM.yyyy HH:mm' }}</span>
+                        <span class="field-label">{{ 'recruitment.created' | translate }}</span>
+                        <span class="field-value">{{ r.createdAt | date: 'dd.MM.yyyy HH:mm' }}</span>
                       </div>
                       <div class="field">
-                        <span class="field__label">{{ 'recruitment.updated' | translate }}</span>
-                        <span class="field__value">{{ r.updatedAt | date: 'dd.MM.yyyy HH:mm' }}</span>
+                        <span class="field-label">{{ 'recruitment.updated' | translate }}</span>
+                        <span class="field-value">{{ r.updatedAt | date: 'dd.MM.yyyy HH:mm' }}</span>
                       </div>
                       <div class="field">
-                        <span class="field__label">{{ 'recruitment.jobOffer' | translate }}</span>
-                        <span class="field__value field__value--mono">{{ r.jobOfferId ?? '—' }}</span>
+                        <span class="field-label">{{ 'recruitment.jobOffer' | translate }}</span>
+                        <span class="field-value field-value-mono">{{ r.jobOfferId ?? '—' }}</span>
                       </div>
                     </div>
-                    <div class="field field--full">
-                      <span class="field__label">{{ 'recruitment.notes' | translate }}</span>
-                      <span class="field__value">{{ r.notes || '—' }}</span>
+                    <div class="field field-full">
+                      <span class="field-label">{{ 'recruitment.notes' | translate }}</span>
+                      <span class="field-value">{{ r.notes || '—' }}</span>
                     </div>
                   </div>
                 </td>

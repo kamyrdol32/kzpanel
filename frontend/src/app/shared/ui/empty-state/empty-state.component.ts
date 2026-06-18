@@ -5,10 +5,10 @@ import { Component, input } from '@angular/core';
   standalone: true,
   template: `
     <div class="empty">
-      <span class="material-symbols-rounded empty__icon">{{ icon() }}</span>
-      <p class="empty__title">{{ title() }}</p>
+      <span class="material-symbols-rounded empty-icon">{{ icon() }}</span>
+      <p class="empty-title">{{ title() }}</p>
       @if (description()) {
-        <p class="empty__desc">{{ description() }}</p>
+        <p class="empty-desc">{{ description() }}</p>
       }
       <ng-content />
     </div>
@@ -24,9 +24,9 @@ import { Component, input } from '@angular/core';
         padding: 48px 24px;
         color: var(--ev-text-muted);
       }
-      .empty__icon { font-size: 48px; opacity: 0.5; }
-      .empty__title { font-weight: 600; color: var(--ev-text); margin: 12px 0 4px; }
-      .empty__desc { margin: 0; font-size: 13px; }
+      .empty-icon { font-size: 48px; opacity: 0.5; }
+      .empty-title { font-weight: 600; color: var(--ev-text); margin: 12px 0 4px; }
+      .empty-desc { margin: 0; font-size: 13px; }
     `,
   ],
 })

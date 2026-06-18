@@ -40,16 +40,16 @@
   tbody tr:last-child td { border-bottom: none; }
   tbody tr:hover { background: var(--ev-surface-2); }
 
-  &__row--clickable { cursor: pointer; }
-  &__row--selected td { background: var(--ev-surface-2); }
+  &-row-clickable { cursor: pointer; }
+  &-row-selected td { background: var(--ev-surface-2); }
 
-  &__row--expanded td {
+  &-row-expanded td {
     padding: 0;
     background: var(--ev-surface);
     border-bottom: 1px solid var(--ev-border);
   }
 
-  &__prefix { width: 1%; white-space: nowrap; }
-  &__actions { text-align: right; }
-  &__actions-col { width: 1%; }
+  &-prefix { width: 1%; white-space: nowrap; }
+  &-actions { text-align: right; }
+  &-actions-col { width: 1%; }
 }

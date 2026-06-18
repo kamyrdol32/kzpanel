@@ -1,5 +1,5 @@
 <div class="ev-page">
-  <h1 class="ev-page__title">{{ 'jobs.title' | translate }}</h1>
+  <h1 class="ev-page-title">{{ 'jobs.title' | translate }}</h1>
 
   @if (facade.loading()) {
     <ev-skeleton [count]="6" height="44px" />
@@ -22,11 +22,11 @@
       <!-- prefix cell: status indicator (CV sent / dismissed) -->
       <ng-template #rowPrefix let-job>
         @if (isApplied(job)) {
-          <span class="status-dot status-dot--applied" title="CV wysłane">
+          <span class="status-dot status-dot-applied" title="CV wysłane">
             <span class="material-symbols-rounded">mark_email_read</span>
           </span>
         } @else if (job.dismissed) {
-          <span class="status-dot status-dot--dismissed" title="Zweryfikowane — nieinteresujące">
+          <span class="status-dot status-dot-dismissed" title="Zweryfikowane — nieinteresujące">
             <span class="material-symbols-rounded">visibility_off</span>
           </span>
         }
@@ -36,21 +36,21 @@
       <ng-template #actions let-job>
         <div class="row-actions">
           @if (isApplied(job)) {
-            <span class="chip chip--success">{{ 'jobs.applied' | translate }}</span>
+            <span class="chip chip-success">{{ 'jobs.applied' | translate }}</span>
           } @else {
-            <button class="icon-btn icon-btn--primary" title="Aplikuj — wyślij CV" (click)="apply(job)">
+            <button class="icon-btn icon-btn-primary" title="Aplikuj — wyślij CV" (click)="apply(job)">
               <span class="material-symbols-rounded">send</span>
             </button>
           }
           <button
             class="icon-btn"
-            [class.icon-btn--active]="job.dismissed"
+            [class.icon-btn-active]="job.dismissed"
             [title]="job.dismissed ? 'Przywróć ofertę' : 'Oznacz jako nieinteresujące'"
             (click)="toggleDismissed(job)"
           >
             <span class="material-symbols-rounded">{{ job.dismissed ? 'undo' : 'visibility_off' }}</span>
           </button>
-          <button class="icon-btn icon-btn--danger" [title]="'common.delete' | translate" (click)="remove(job.id)">
+          <button class="icon-btn icon-btn-danger" [title]="'common.delete' | translate" (click)="remove(job.id)">
             <span class="material-symbols-rounded">delete</span>
           </button>
         </div>
@@ -59,28 +59,28 @@
       <!-- expanded detail row -->
       <ng-template #expanded let-job>
         <div class="job-detail">
-          <div class="job-detail__grid">
+          <div class="job-detail-grid">
             <div class="field">
-              <span class="field__label">Poziom</span>
-              <span class="field__value"><ev-status-badge [label]="job.level" tone="info" /></span>
+              <span class="field-label">Poziom</span>
+              <span class="field-value"><ev-status-badge [label]="job.level" tone="info" /></span>
             </div>
             <div class="field">
-              <span class="field__label">Język</span>
-              <span class="field__value"><ev-status-badge [label]="job.language" tone="neutral" /></span>
+              <span class="field-label">Język</span>
+              <span class="field-value"><ev-status-badge [label]="job.language" tone="neutral" /></span>
             </div>
             <div class="field">
-              <span class="field__label">Źródło</span>
-              <span class="field__value"><ev-status-badge [label]="job.source" tone="neutral" /></span>
+              <span class="field-label">Źródło</span>
+              <span class="field-value"><ev-status-badge [label]="job.source" tone="neutral" /></span>
             </div>
             @if (job.publishedDate) {
               <div class="field">
-                <span class="field__label">Opublikowano</span>
-                <span class="field__value">{{ job.publishedDate | date:'dd.MM.yyyy' }}</span>
+                <span class="field-label">Opublikowano</span>
+                <span class="field-value">{{ job.publishedDate | date:'dd.MM.yyyy' }}</span>
               </div>
             }
             <div class="field">
-              <span class="field__label">Status</span>
-              <span class="field__value">
+              <span class="field-label">Status</span>
+              <span class="field-value">
                 @if (isApplied(job)) {
                   <ev-status-badge label="CV wysłane" tone="success" />
                 } @else if (job.dismissed) {
@@ -93,8 +93,8 @@
           </div>
 
           @if (job.techStack?.length) {
-            <div class="job-detail__section">
-              <span class="field__label">Tech stack</span>
+            <div class="job-detail-section">
+              <span class="field-label">Tech stack</span>
               <div class="chips">
                 @for (t of job.techStack; track t) { <span class="chip">{{ t }}</span> }
               </div>
@@ -102,32 +102,32 @@
           }
 
           @if (job.description) {
-            <div class="job-detail__section">
-              <span class="field__label">Opis</span>
-              <p class="job-detail__desc">{{ job.description }}</p>
+            <div class="job-detail-section">
+              <span class="field-label">Opis</span>
+              <p class="job-detail-desc">{{ job.description }}</p>
             </div>
           }
 
           @if (job.requirements?.length) {
-            <div class="job-detail__section">
-              <span class="field__label">Wymagania</span>
-              <ul class="job-detail__list">@for (r of job.requirements; track r) { <li>{{ r }}</li> }</ul>
+            <div class="job-detail-section">
+              <span class="field-label">Wymagania</span>
+              <ul class="job-detail-list">@for (r of job.requirements; track r) { <li>{{ r }}</li> }</ul>
             </div>
           }
 
-          <div class="job-detail__actions">
+          <div class="job-detail-actions">
             @if (isApplied(job)) {
-              <span class="chip chip--success">
+              <span class="chip chip-success">
                 <span class="material-symbols-rounded" style="font-size:16px">mark_email_read</span>
                 {{ 'jobs.applied' | translate }}
               </span>
             } @else {
-              <button class="btn btn--primary" (click)="apply(job)">
+              <button class="btn btn-primary" (click)="apply(job)">
                 <span class="material-symbols-rounded" style="font-size:16px">send</span>
                 {{ 'jobs.apply' | translate }}
               </button>
             }
-            <button class="btn btn--ghost" (click)="toggleDismissed(job)">
+            <button class="btn btn-ghost" (click)="toggleDismissed(job)">
               <span class="material-symbols-rounded" style="font-size:16px">
                 {{ job.dismissed ? 'undo' : 'visibility_off' }}
               </span>

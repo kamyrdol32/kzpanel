@@ -1,7 +1,7 @@
 @if (facade.selected(); as job) {
   <div class="ev-page">
     <div class="ev-row" style="justify-content: space-between">
-      <h1 class="ev-page__title" style="margin: 0">{{ job.title }}</h1>
+      <h1 class="ev-page-title" style="margin: 0">{{ job.title }}</h1>
       <a class="apply-btn" [href]="job.sourceUrl" target="_blank" rel="noopener noreferrer">
         {{ 'jobs.apply' | translate }}
         <span class="material-symbols-rounded" style="font-size:18px">open_in_new</span>

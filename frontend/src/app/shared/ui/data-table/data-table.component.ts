@@ -27,7 +27,7 @@ export interface TableColumn<T> {
               <th>{{ col.label }}</th>
             }
             @if (actions()) {
-              <th class="table__actions-col"></th>
+              <th class="table-actions-col"></th>
             }
           </tr>
         </thead>
@@ -35,12 +35,12 @@ export interface TableColumn<T> {
           @for (row of rows(); track trackBy()(row)) {
             <tr
               [class]="rowClass()(row)"
-              [class.table__row--clickable]="!!clickable()"
-              [class.table__row--selected]="selectedId() === trackBy()(row)"
+              [class.table-row-clickable]="!!clickable()"
+              [class.table-row-selected]="selectedId() === trackBy()(row)"
               (click)="clickable() && rowClick.emit(row)"
             >
               @if (rowPrefix(); as prefTpl) {
-                <td class="table__prefix" (click)="$event.stopPropagation()">
+                <td class="table-prefix" (click)="$event.stopPropagation()">
                   <ng-container [ngTemplateOutlet]="prefTpl" [ngTemplateOutletContext]="{ $implicit: row }" />
                 </td>
               }
@@ -48,14 +48,14 @@ export interface TableColumn<T> {
                 <td><span class="cell" [title]="cell(row, col)">{{ cell(row, col) }}</span></td>
               }
               @if (actions(); as tpl) {
-                <td class="table__actions" (click)="$event.stopPropagation()">
+                <td class="table-actions" (click)="$event.stopPropagation()">
                   <ng-container [ngTemplateOutlet]="tpl" [ngTemplateOutletContext]="{ $implicit: row }" />
                 </td>
               }
             </tr>
             @if (expanded(); as expTpl) {
               @if (selectedId() === trackBy()(row)) {
-                <tr class="table__row--expanded">
+                <tr class="table-row-expanded">
                   <td [attr.colspan]="columns().length + (actions() ? 1 : 0) + (rowPrefix() ? 1 : 0)">
                     <ng-container [ngTemplateOutlet]="expTpl" [ngTemplateOutletContext]="{ $implicit: row }" />
                   </td>

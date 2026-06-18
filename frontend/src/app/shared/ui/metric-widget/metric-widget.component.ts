@@ -5,10 +5,10 @@ import { Component, input } from '@angular/core';
   standalone: true,
   template: `
     <div class="metric">
-      <div class="metric__icon"><span class="material-symbols-rounded">{{ icon() }}</span></div>
-      <div class="metric__body">
-        <div class="metric__value">{{ value() }}</div>
-        <div class="metric__label">{{ label() }}</div>
+      <div class="metric-icon"><span class="material-symbols-rounded">{{ icon() }}</span></div>
+      <div class="metric-body">
+        <div class="metric-value">{{ value() }}</div>
+        <div class="metric-label">{{ label() }}</div>
       </div>
     </div>
   `,
@@ -23,7 +23,7 @@ import { Component, input } from '@angular/core';
         border-radius: 16px;
         padding: 20px;
       }
-      .metric__icon {
+      .metric-icon {
         display: grid;
         place-items: center;
         width: 44px;
@@ -32,8 +32,8 @@ import { Component, input } from '@angular/core';
         background: var(--ev-surface-2);
         color: var(--ev-accent);
       }
-      .metric__value { font-size: 28px; font-weight: 700; line-height: 1; }
-      .metric__label { color: var(--ev-text-muted); font-size: 13px; margin-top: 4px; }
+      .metric-value { font-size: 28px; font-weight: 700; line-height: 1; }
+      .metric-label { color: var(--ev-text-muted); font-size: 13px; margin-top: 4px; }
     `,
   ],
 })

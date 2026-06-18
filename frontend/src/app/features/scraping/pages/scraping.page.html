@@ -1,6 +1,6 @@
 <div class="ev-page">
   <div class="ev-row" style="justify-content: space-between">
-    <h1 class="ev-page__title" style="margin: 0">{{ 'scraping.title' | translate }}</h1>
+    <h1 class="ev-page-title" style="margin: 0">{{ 'scraping.title' | translate }}</h1>
     <div class="ev-row">
       @if (facade.lastResult(); as r) {
         <span class="muted">{{ r }}</span>
@@ -57,9 +57,9 @@
       <div class="targets">
         @for (t of facade.targets(); track t.id) {
           <div class="target">
-            <div class="target__main">
+            <div class="target-main">
               <ev-status-badge [label]="t.source" tone="info" />
-              <span class="target__query">{{ t.query }}</span>
+              <span class="target-query">{{ t.query }}</span>
               <span class="muted">{{ t.location ?? '—' }}{{ t.remoteType ? ' · ' + t.remoteType : '' }}</span>
             </div>
             <div class="ev-row">

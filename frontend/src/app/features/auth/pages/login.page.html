@@ -1,23 +1,29 @@
 <div class="login">
-  <form class="login__card" [formGroup]="form" (ngSubmit)="submit()">
-    <div class="login__brand"><span>Ev</span>Panel</div>
-    <h1 class="login__title">{{ 'auth.signIn' | translate }}</h1>
+  <form class="login-card" [formGroup]="form" (ngSubmit)="submit()">
+    <div class="login-brand">KŻ<span>.</span></div>
+    <h1 class="login-title">{{ 'auth.signIn' | translate }}</h1>
 
-    <label class="login__label">
+    <label class="login-label">
       {{ 'auth.username' | translate }}
       <input type="text" formControlName="username" autocomplete="username" />
     </label>
 
-    <label class="login__label">
+    <label class="login-label">
       {{ 'auth.password' | translate }}
       <input type="password" formControlName="password" autocomplete="current-password" />
     </label>
 
+    <label class="login-remember">
+      <input type="checkbox" formControlName="rememberMe" />
+      <span class="login-remember-box"></span>
+      {{ 'auth.rememberMe' | translate }}
+    </label>
+
     @if (error()) {
-      <p class="login__error">{{ error()! | translate }}</p>
+      <p class="login-error">{{ error()! | translate }}</p>
     }
 
-    <button type="submit" class="login__submit" [disabled]="loading() || form.invalid">
+    <button type="submit" class="login-submit" [disabled]="loading() || form.invalid">
       {{ (loading() ? 'common.loading' : 'auth.signIn') | translate }}
     </button>
   </form>

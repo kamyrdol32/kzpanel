@@ -1,0 +1,45 @@
+<div class="app-layout">
+  <nav class="navbar" [class.scrolled]="scrolled()">
+    <a class="nav-logo" routerLink="/">KŻ<span>.</span></a>
+
+    <ul class="nav-links">
+      <li class="nav-dropdown" [class.is-open]="dropdownOpen()">
+        <button class="nav-link nav-dropdown-trigger" (click)="toggleDropdown()">
+          {{ 'nav.jobs' | translate }}
+          <svg class="nav-dropdown-chevron" width="12" height="12" viewBox="0 0 12 12" fill="none">
+            <path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+
+        <ul class="nav-dropdown-menu">
+          @for (item of dropdownItems; track item.path) {
+            <li>
+              <a
+                class="nav-dropdown-item"
+                [routerLink]="item.path"
+                routerLinkActive="active"
+                (click)="closeDropdown()"
+              >{{ item.labelKey | translate }}</a>
+            </li>
+          }
+        </ul>
+      </li>
+    </ul>
+
+    <div class="nav-right">
+      <button class="lang-toggle" (click)="language.toggle()">
+        <span class="lang-opt" [class.active]="language.lang() === 'pl'">PL</span>
+        <span class="lang-sep">/</span>
+        <span class="lang-opt" [class.active]="language.lang() === 'en'">EN</span>
+      </button>
+
+      <button class="nav-cta" (click)="logout()">
+        {{ 'common.logout' | translate }}
+      </button>
+    </div>
+  </nav>
+
+  <main class="layout-content">
+    <router-outlet />
+  </main>
+</div>

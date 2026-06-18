@@ -44,8 +44,8 @@
   border: 1px solid var(--ev-border);
   border-radius: $radius-md;
 
-  &__main { display: flex; align-items: center; gap: $space-3; }
-  &__query { font-weight: $fw-semibold; }
+  &-main { display: flex; align-items: center; gap: $space-3; }
+  &-query { font-weight: $fw-semibold; }
 }
 
 .small { font-size: $fs-xs; }

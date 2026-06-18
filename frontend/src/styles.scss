@@ -5,15 +5,66 @@
   box-sizing: border-box;
 }
 
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+// Global orange glows
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  background:
+    radial-gradient(ellipse 300px 260px at 10%  30%, rgba(245, 119, 15, 0.09) 0%, transparent 65%),
+    radial-gradient(ellipse 280px 220px at 90%  20%, rgba(245, 119, 15, 0.08) 0%, transparent 65%),
+    radial-gradient(ellipse 240px 180px at 75%  80%, rgba(245, 119, 15, 0.07) 0%, transparent 60%),
+    radial-gradient(ellipse 200px 160px at 20%  85%, rgba(245, 119, 15, 0.06) 0%, transparent 60%);
+}
+
+// Global grid
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0.3;
+  background-image:
+    linear-gradient(var(--ev-border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--ev-border) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
+}
+
 html,
 body {
   margin: 0;
   height: 100%;
   font-family: $font-sans;
-  font-size: $fs-md;
-  background: var(--ev-bg);
   color: var(--ev-text);
   -webkit-font-smoothing: antialiased;
+}
+
+// Root font-size is the rem basis. Kept at 16px so rem-based styles
+// (navbar, utilities from DESIGN.md) render at their intended scale.
+// Base background lives on html only so the body::before/::after
+// layers (z-index: -1) paint above it and stay visible behind content.
+// A solid background on body would cover those negative-z layers.
+html {
+  font-size: 16px;
+  background: var(--ev-bg);
+}
+
+// Content default stays at the app's dense 14px scale.
+body {
+  font-size: $fs-md;
 }
 
 a {
@@ -22,12 +73,24 @@ a {
   &:hover { color: var(--ev-accent-strong); }
 }
 
+// Focus ring
+:focus-visible {
+  outline: 2px solid var(--ev-accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+// Scrollbar
 ::-webkit-scrollbar { width: 10px; height: 10px; }
 ::-webkit-scrollbar-thumb {
-  background: var(--ev-surface-2);
+  background: var(--ev-surface-3);
   border-radius: $radius-pill;
 }
 
+// Material icons
 .material-symbols-rounded {
   font-family: 'Material Symbols Rounded';
   font-weight: normal;
@@ -37,16 +100,45 @@ a {
   user-select: none;
 }
 
-// Utility helpers used across feature templates
-.ev-page { padding: $space-5; }
-.ev-page__title {
-  font-size: $fs-2xl;
-  font-weight: $fw-semibold;
-  margin: 0 0 $space-5;
+// Animations
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
-.ev-row { display: flex; align-items: center; gap: $space-3; }
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.3; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+// ── Page utilities ───────────────────────────────────────────
+.ev-page { padding: $space-5; }
+
+.ev-page-title {
+  font-family: $font-display;
+  font-size: $fs-2xl;
+  font-weight: $fw-bold;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+  margin: 0 0 $space-5;
+  color: var(--ev-text);
+}
+
+.ev-row  { display: flex; align-items: center; gap: $space-3; }
 .ev-grid { display: grid; gap: $space-4; }
-.muted { color: var(--ev-text-muted); }
+.muted   { color: var(--ev-text-muted); }
 
 .link {
   color: var(--ev-accent);
@@ -77,22 +169,73 @@ a {
 
 .chips { display: flex; flex-wrap: wrap; gap: $space-2; }
 .chip {
-  padding: 2px 10px;
-  border-radius: $radius-pill;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.3rem 0.7rem;
+  border-radius: 3px;
   background: var(--ev-surface-2);
-  border: 1px solid var(--ev-border);
+  border: 1px solid var(--ev-border-2);
+  color: var(--ev-text-muted);
   font-size: $fs-xs;
+  font-weight: $fw-medium;
+  letter-spacing: 0.04em;
+
+  &-accent {
+    background: var(--ev-accent-dim);
+    border-color: var(--ev-accent-border);
+    color: var(--ev-accent);
+  }
 }
 
 .apply-btn {
-  padding: 9px 18px;
+  padding: 0.75rem 1.75rem;
   border: none;
   border-radius: $radius-md;
   background: var(--ev-accent);
-  color: #1b1b1b;
+  color: #fff;
+  font-family: $font-display;
   font-weight: $fw-semibold;
+  font-size: 0.9rem;
   cursor: pointer;
-  transition: background $dur-fast $ease-standard;
-  &:hover:not(:disabled) { background: var(--ev-accent-strong); }
+  transition: background $dur-base $ease-standard, transform $dur-base $ease-standard;
+  &:hover:not(:disabled) {
+    background: var(--ev-accent-strong);
+    transform: translateY(-1px);
+  }
   &:disabled { opacity: 0.5; cursor: not-allowed; }
+}
+
+// Section label (per DESIGN.md)
+.section-label {
+  font-size: 0.72rem;
+  font-weight: $fw-medium;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--ev-accent);
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+
+  &::before {
+    content: '';
+    flex: 0 0 32px;
+    height: 1px;
+    background: var(--ev-accent);
+  }
+}
+
+// Card (per DESIGN.md)
+.ev-card {
+  background: var(--ev-surface);
+  border: 1px solid var(--ev-border);
+  border-radius: $radius-lg;
+  transition: border-color $dur-slow $ease-standard, transform $dur-slow $ease-standard, box-shadow $dur-slow $ease-standard;
+
+  &:hover {
+    border-color: var(--ev-accent-border);
+    transform: translateY(-4px);
+    box-shadow: var(--ev-shadow-lg);
+  }
 }

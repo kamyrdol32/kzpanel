@@ -55,8 +55,8 @@ export class JobsListPage implements OnInit {
 
   protected readonly rowClass = (job: JobOfferDto): string => {
     const classes: string[] = [];
-    if (job.dismissed) classes.push('job-row--dismissed');
-    if (this.appliedJobIds().has(job.id)) classes.push('job-row--applied');
+    if (job.dismissed) classes.push('job-row-dismissed');
+    if (this.appliedJobIds().has(job.id)) classes.push('job-row-applied');
     return classes.join(' ');
   };
 

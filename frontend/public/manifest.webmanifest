@@ -1,8 +1,8 @@
 {
-  "name": "EvPanel",
-  "short_name": "EvPanel",
-  "theme_color": "#111111",
-  "background_color": "#111111",
+  "name": "KŻ Panel",
+  "short_name": "KŻ Panel",
+  "theme_color": "#080808",
+  "background_color": "#080808",
   "display": "standalone",
   "scope": "/",
   "start_url": "/",
