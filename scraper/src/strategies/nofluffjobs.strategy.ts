@@ -23,14 +23,13 @@ export class NoFluffJobsStrategy implements JobScraperStrategy {
   private readonly logger = new Logger(NoFluffJobsStrategy.name);
 
   async fetchList(params: ScrapeParams): Promise<JobStub[]> {
-    const allPostings: NfjPosting[] = [];
-    let page = 1;
-    let totalPages = 1;
-    let actualPageSize = 0;
+    const byId = new Map<string, NfjPosting>();
+    const maxPages = 50;
+    let totalCount: number | null = null;
 
     try {
-      do {
-        const url = `${API}/search/posting?pageTo=${page}&salaryCurrency=PLN&salaryPeriod=month&region=pl`;
+      for (let page = 1; page <= maxPages; page++) {
+        const url = `${API}/search/posting?page=${page}&salaryCurrency=PLN&salaryPeriod=month&region=pl`;
         const res = await fetch(url, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'User-Agent': UA },
@@ -43,28 +42,31 @@ export class NoFluffJobsStrategy implements JobScraperStrategy {
         }
         const data = (await res.json()) as { postings?: NfjPosting[]; totalCount?: number };
         const batch = data.postings ?? [];
-        allPostings.push(...batch);
 
-        if (page === 1 && data.totalCount != null) {
-          actualPageSize = batch.length || 1;
-          totalPages = Math.ceil(data.totalCount / actualPageSize);
-          this.logger.log(`"${params.query ?? ''}" — ${data.totalCount} total, ${actualPageSize}/page → ${totalPages} page(s)`);
+        if (page === 1) {
+          totalCount = data.totalCount ?? null;
+          this.logger.log(`"${params.query ?? ''}" — ${totalCount ?? '?'} total reported`);
         }
 
         if (batch.length === 0) {
           break;
         }
 
-        page++;
-      } while (page <= totalPages);
+        const before = byId.size;
+        for (const p of batch) {
+          if (p?.id) {
+            byId.set(p.id, p);
+          }
+        }
+        if (byId.size === before) {
+          break;
+        }
+      }
 
+      const allPostings = [...byId.values()];
       const q = (params.query ?? '').toLowerCase();
       let postings = q
-        ? allPostings.filter(
-            (p) =>
-              p.technology?.toLowerCase() === q ||
-              (p.title ?? '').toLowerCase().includes(q),
-          )
+        ? allPostings.filter((p) => this.matchesQuery(p, q))
         : allPostings;
 
       if (params.remoteType === RemoteType.REMOTE) {
@@ -75,7 +77,7 @@ export class NoFluffJobsStrategy implements JobScraperStrategy {
         );
       }
 
-      this.logger.log(`"${params.query ?? ''}" → ${postings.length} postings matched (fetched ${allPostings.length}, remote=${params.remoteType === RemoteType.REMOTE})`);
+      this.logger.log(`"${params.query ?? ''}" → ${postings.length} postings matched (fetched ${allPostings.length} unique, remote=${params.remoteType === RemoteType.REMOTE})`);
 
       return postings
         .filter((p) => p?.id)
@@ -170,6 +172,22 @@ export class NoFluffJobsStrategy implements JobScraperStrategy {
   private detectLanguage(text: string): Language {
     return /[ąćęłńóśźż]/i.test(text) ? Language.PL : Language.EN;
   }
+
+  /**
+   * Mirrors the NFJ site search: an offer matches the query if the keyword
+   * appears in its primary technology, its title, or any of its tiles
+   * (category/requirement tags). This keeps fullstack roles where the keyword
+   * is a real requirement but not the primary tag (e.g. Java + Angular).
+   */
+  private matchesQuery(p: NfjPosting, q: string): boolean {
+    if (p.technology?.toLowerCase().includes(q)) {
+      return true;
+    }
+    if ((p.title ?? '').toLowerCase().includes(q)) {
+      return true;
+    }
+    return (p.tiles?.values ?? []).some((v) => (v.value ?? '').toLowerCase().includes(q));
+  }
 }
 
 // ── Loose shapes for the public API (only fields we read) ──────
@@ -182,6 +200,7 @@ interface NfjPosting {
   fullyRemote?: boolean;
   location?: { places?: { city?: string }[] };
   salary?: { from?: number; to?: number; currency?: string };
+  tiles?: { values?: { value?: string; type?: string }[] };
 }
 interface NfjDetail {
   requirements?: { musts?: { value: string }[]; nices?: { value: string }[] };
