@@ -22,29 +22,53 @@ export class JustJoinITStrategy implements JobScraperStrategy {
   private readonly logger = new Logger(JustJoinITStrategy.name);
 
   async fetchList(params: ScrapeParams): Promise<JobStub[]> {
-    const perPage = Math.min(params.limit ?? 20, 100);
-    const q = encodeURIComponent(params.query ?? '');
-    const url = `${API}?page=1&perPage=${perPage}&sortBy=published&orderBy=DESC&keywords%5B%5D=${q}`;
+    const perPage = 100;
+    const q = (params.query ?? '').toLowerCase();
+    const encodedQuery = encodeURIComponent(params.query ?? '');
+    const allOffers: JjitOffer[] = [];
+    let page = 1;
+    let totalPages = 1;
 
     try {
-      const res = await fetch(url, {
-        headers: { 'User-Agent': UA, Version: '2' },
-        signal: AbortSignal.timeout(15_000),
-      });
-      if (!res.ok) {
-        this.logger.warn(`offers returned HTTP ${res.status}`);
-        return [];
-      }
-      const data = (await res.json()) as { data?: JjitOffer[]; meta?: { totalItems?: number } };
-      let offers = data.data ?? [];
+      do {
+        const url = `${API}?page=${page}&perPage=${perPage}&sortBy=published&orderBy=DESC&keywords%5B%5D=${encodedQuery}`;
+        const res = await fetch(url, {
+          headers: { 'User-Agent': UA, Version: '2' },
+          signal: AbortSignal.timeout(15_000),
+        });
+        if (!res.ok) {
+          this.logger.warn(`page ${page} returned HTTP ${res.status}`);
+          break;
+        }
+        const data = (await res.json()) as { data?: JjitOffer[]; meta?: { totalItems?: number } };
+        const batch = data.data ?? [];
+        allOffers.push(...batch);
+
+        if (page === 1 && data.meta?.totalItems) {
+          totalPages = Math.ceil(data.meta.totalItems / perPage);
+          this.logger.log(`"${params.query ?? ''}" — ${data.meta.totalItems} total, ${totalPages} page(s)`);
+        }
+
+        if (batch.length < perPage) {
+          break;
+        }
+
+        page++;
+      } while (page <= totalPages);
+
+      let offers = q
+        ? allOffers.filter(
+            (o) =>
+              (o.title ?? '').toLowerCase().includes(q) ||
+              (o.requiredSkills ?? []).some((s) => s.name?.toLowerCase().includes(q)),
+          )
+        : allOffers;
 
       if (params.remoteType === RemoteType.REMOTE) {
         offers = offers.filter((o) => o.workplaceType === 'remote');
       }
 
-      this.logger.log(
-        `"${params.query ?? ''}" → ${offers.length}/${data.meta?.totalItems ?? '?'} offers (remote=${params.remoteType === RemoteType.REMOTE})`,
-      );
+      this.logger.log(`"${params.query ?? ''}" → ${offers.length} offers matched (fetched ${allOffers.length}, remote=${params.remoteType === RemoteType.REMOTE})`);
 
       return offers
         .filter((o) => o.slug)

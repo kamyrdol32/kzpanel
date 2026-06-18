@@ -23,25 +23,50 @@ export class NoFluffJobsStrategy implements JobScraperStrategy {
   private readonly logger = new Logger(NoFluffJobsStrategy.name);
 
   async fetchList(params: ScrapeParams): Promise<JobStub[]> {
-    const pageSize = Math.min(params.limit ?? 20, 50);
-    const url = `${API}/search/posting?pageTo=1&pageSize=${pageSize}&salaryCurrency=PLN&salaryPeriod=month&region=pl`;
+    const allPostings: NfjPosting[] = [];
+    let page = 1;
+    let totalPages = 1;
+    let actualPageSize = 0;
 
     try {
-      const res = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'User-Agent': UA },
-        body: JSON.stringify({ rawSearch: params.query ?? '' }),
-        signal: AbortSignal.timeout(15_000),
-      });
-      if (!res.ok) {
-        this.logger.warn(`search returned HTTP ${res.status}`);
-        return [];
-      }
-      const data = (await res.json()) as { postings?: NfjPosting[]; totalCount?: number };
-      let postings = data.postings ?? [];
+      do {
+        const url = `${API}/search/posting?pageTo=${page}&salaryCurrency=PLN&salaryPeriod=month&region=pl`;
+        const res = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'User-Agent': UA },
+          body: JSON.stringify({ rawSearch: params.query ?? '' }),
+          signal: AbortSignal.timeout(15_000),
+        });
+        if (!res.ok) {
+          this.logger.warn(`page ${page} returned HTTP ${res.status}`);
+          break;
+        }
+        const data = (await res.json()) as { postings?: NfjPosting[]; totalCount?: number };
+        const batch = data.postings ?? [];
+        allPostings.push(...batch);
 
-      // Client-side filter for "remote only" (mirrors the site's "praca-zdalna").
-      // NoFluffJobs rarely sets fullyRemote, so also accept a "Remote" place.
+        if (page === 1 && data.totalCount != null) {
+          actualPageSize = batch.length || 1;
+          totalPages = Math.ceil(data.totalCount / actualPageSize);
+          this.logger.log(`"${params.query ?? ''}" — ${data.totalCount} total, ${actualPageSize}/page → ${totalPages} page(s)`);
+        }
+
+        if (batch.length === 0) {
+          break;
+        }
+
+        page++;
+      } while (page <= totalPages);
+
+      const q = (params.query ?? '').toLowerCase();
+      let postings = q
+        ? allPostings.filter(
+            (p) =>
+              p.technology?.toLowerCase() === q ||
+              (p.title ?? '').toLowerCase().includes(q),
+          )
+        : allPostings;
+
       if (params.remoteType === RemoteType.REMOTE) {
         postings = postings.filter(
           (p) =>
@@ -50,9 +75,7 @@ export class NoFluffJobsStrategy implements JobScraperStrategy {
         );
       }
 
-      this.logger.log(
-        `"${params.query ?? ''}" → ${postings.length}/${data.totalCount ?? '?'} postings (remote=${params.remoteType === RemoteType.REMOTE})`,
-      );
+      this.logger.log(`"${params.query ?? ''}" → ${postings.length} postings matched (fetched ${allPostings.length}, remote=${params.remoteType === RemoteType.REMOTE})`);
 
       return postings
         .filter((p) => p?.id)
