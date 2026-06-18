@@ -10,12 +10,20 @@ const JOB_URL = (id: string): string => `https://nofluffjobs.com/pl/job/${id}`;
 const UA = 'Mozilla/5.0 (compatible; EvPanel-Scraper/1.0)';
 
 /**
- * NoFluffJobs strategy — uses the portal's public JSON API (verified shape):
- *   list:    POST /api/search/posting  body { rawSearch }
+ * NoFluffJobs strategy — mirrors the portal's own technology search.
+ *
+ * The site's /pl/{tech} pages (e.g. /pl/Angular) post to the infinite-scroll
+ * search endpoint with the criterion `requirement = [tech]` and the content
+ * type `application/infiniteSearch+json`. With that content type the `pageTo`
+ * query param actually paginates (with plain application/json it is ignored
+ * and the server keeps returning the first page).
+ *
+ *   list:    POST /api/search/posting  (Content-Type infiniteSearch+json)
+ *            body { criteriaSearch: { requirement: [query] } }
  *   details: GET  /api/posting/{id}
- * Maps salary/seniority/remote/tech/requirements/benefits into the JobOffer model.
- * Reference URL this mirrors:
- *   https://nofluffjobs.com/pl/praca-zdalna/Angular?criteria=seniority=junior,mid
+ *
+ * For queries that are not a known requirement tag we fall back to free-text
+ * `rawSearch` and filter the results locally.
  */
 @Injectable()
 export class NoFluffJobsStrategy implements JobScraperStrategy {
@@ -23,51 +31,19 @@ export class NoFluffJobsStrategy implements JobScraperStrategy {
   private readonly logger = new Logger(NoFluffJobsStrategy.name);
 
   async fetchList(params: ScrapeParams): Promise<JobStub[]> {
-    const byId = new Map<string, NfjPosting>();
-    const maxPages = 50;
-    let totalCount: number | null = null;
+    const query = (params.query ?? '').trim();
 
     try {
-      for (let page = 1; page <= maxPages; page++) {
-        const url = `${API}/search/posting?page=${page}&salaryCurrency=PLN&salaryPeriod=month&region=pl`;
-        const res = await fetch(url, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'User-Agent': UA },
-          body: JSON.stringify({ rawSearch: params.query ?? '' }),
-          signal: AbortSignal.timeout(15_000),
-        });
-        if (!res.ok) {
-          this.logger.warn(`page ${page} returned HTTP ${res.status}`);
-          break;
-        }
-        const data = (await res.json()) as { postings?: NfjPosting[]; totalCount?: number };
-        const batch = data.postings ?? [];
+      let postings = query
+        ? await this.fetchByRequirement(query)
+        : await this.fetchPages({ rawSearch: '' });
 
-        if (page === 1) {
-          totalCount = data.totalCount ?? null;
-          this.logger.log(`"${params.query ?? ''}" — ${totalCount ?? '?'} total reported`);
-        }
-
-        if (batch.length === 0) {
-          break;
-        }
-
-        const before = byId.size;
-        for (const p of batch) {
-          if (p?.id) {
-            byId.set(p.id, p);
-          }
-        }
-        if (byId.size === before) {
-          break;
-        }
+      if (query && postings.length === 0) {
+        this.logger.log(`"${query}" — no requirement match, falling back to rawSearch`);
+        const raw = await this.fetchPages({ rawSearch: query });
+        const q = query.toLowerCase();
+        postings = raw.filter((p) => this.matchesQuery(p, q));
       }
-
-      const allPostings = [...byId.values()];
-      const q = (params.query ?? '').toLowerCase();
-      let postings = q
-        ? allPostings.filter((p) => this.matchesQuery(p, q))
-        : allPostings;
 
       if (params.remoteType === RemoteType.REMOTE) {
         postings = postings.filter(
@@ -77,7 +53,7 @@ export class NoFluffJobsStrategy implements JobScraperStrategy {
         );
       }
 
-      this.logger.log(`"${params.query ?? ''}" → ${postings.length} postings matched (fetched ${allPostings.length} unique, remote=${params.remoteType === RemoteType.REMOTE})`);
+      this.logger.log(`"${query}" → ${postings.length} postings (remote=${params.remoteType === RemoteType.REMOTE})`);
 
       return postings
         .filter((p) => p?.id)
@@ -92,6 +68,58 @@ export class NoFluffJobsStrategy implements JobScraperStrategy {
       this.logger.warn(`fetchList failed: ${(err as Error).message}`);
       return [];
     }
+  }
+
+  private fetchByRequirement(query: string): Promise<NfjPosting[]> {
+    return this.fetchPages({ rawSearch: '', criteriaSearch: { requirement: [query] } });
+  }
+
+  /**
+   * Paginate the infinite-scroll search until a page comes back empty or
+   * adds no new offers. Deduplicates by id (the API may repeat offers across
+   * adjacent pages).
+   */
+  private async fetchPages(body: NfjSearchBody): Promise<NfjPosting[]> {
+    const byId = new Map<string, NfjPosting>();
+    const maxPages = 50;
+    let totalCount: number | null = null;
+
+    for (let pageTo = 1; pageTo <= maxPages; pageTo++) {
+      const url = `${API}/search/posting?pageTo=${pageTo}&pageSize=100&salaryCurrency=PLN&salaryPeriod=month&region=pl`;
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/infiniteSearch+json', 'User-Agent': UA },
+        body: JSON.stringify(body),
+        signal: AbortSignal.timeout(15_000),
+      });
+      if (!res.ok) {
+        this.logger.warn(`pageTo ${pageTo} returned HTTP ${res.status}`);
+        break;
+      }
+      const data = (await res.json()) as { postings?: NfjPosting[]; totalCount?: number };
+      const batch = data.postings ?? [];
+
+      if (pageTo === 1) {
+        totalCount = data.totalCount ?? null;
+        this.logger.log(`NFJ search — ${totalCount ?? '?'} total reported`);
+      }
+
+      if (batch.length === 0) {
+        break;
+      }
+
+      const before = byId.size;
+      for (const p of batch) {
+        if (p?.id) {
+          byId.set(p.id, p);
+        }
+      }
+      if (byId.size === before) {
+        break;
+      }
+    }
+
+    return [...byId.values()];
   }
 
   async fetchDetails(stub: JobStub): Promise<JobRaw> {
@@ -191,6 +219,10 @@ export class NoFluffJobsStrategy implements JobScraperStrategy {
 }
 
 // ── Loose shapes for the public API (only fields we read) ──────
+interface NfjSearchBody {
+  rawSearch: string;
+  criteriaSearch?: { requirement?: string[] };
+}
 interface NfjPosting {
   id: string;
   name?: string;
