@@ -230,6 +230,20 @@ select {
   to { transform: rotate(360deg); }
 }
 
+.offer-count {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--ev-surface-2);
+  font-size: $fs-xs;
+  font-weight: $fw-semibold;
+  color: var(--ev-text-muted);
+
+  .material-symbols-rounded { font-size: 14px; }
+}
+
 .last-run {
   display: inline-flex;
   align-items: center;

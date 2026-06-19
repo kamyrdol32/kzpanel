@@ -85,19 +85,7 @@ export class JobsListPage implements OnInit, OnDestroy {
     return set;
   });
 
-  protected readonly columns: TableColumn<JobOfferDto>[] = [
-    { key: 'title', label: this.t.instant('jobs.col.title'), sortKey: 'title' },
-    { key: 'company', label: this.t.instant('jobs.col.company'), sortKey: 'company' },
-    {
-      key: 'salary',
-      label: this.t.instant('jobs.col.salary'),
-      sortKey: 'salaryMin',
-      value: (j) => (j.salaryMin ? `${j.salaryMin}–${j.salaryMax ?? ''} ${j.currency ?? ''}` : null),
-    },
-    { key: 'location', label: this.t.instant('jobs.col.location') },
-    { key: 'remoteType', label: this.t.instant('jobs.col.remoteType') },
-    { key: 'publishedDate', label: this.t.instant('jobs.col.publishedDate'), sortKey: 'publishedDate' },
-  ];
+  protected columns: TableColumn<JobOfferDto>[] = [];
 
   protected readonly trackById = (job: JobOfferDto): string => job.id;
 
@@ -109,6 +97,20 @@ export class JobsListPage implements OnInit, OnDestroy {
   };
 
   ngOnInit(): void {
+    this.columns = [
+      { key: 'title', label: this.t.instant('jobs.col.title'), sortKey: 'title' },
+      { key: 'company', label: this.t.instant('jobs.col.company'), sortKey: 'company' },
+      {
+        key: 'salary',
+        label: this.t.instant('jobs.col.salary'),
+        sortKey: 'salaryMin',
+        value: (j) => (j.salaryMin ? `${j.salaryMin}–${j.salaryMax ?? ''} ${j.currency ?? ''}` : null),
+      },
+      { key: 'location', label: this.t.instant('jobs.col.location') },
+      { key: 'remoteType', label: this.t.instant('jobs.col.remoteType') },
+      { key: 'publishedDate', label: this.t.instant('jobs.col.publishedDate'), sortKey: 'publishedDate' },
+    ];
+
     this.facade.load();
     this.recruitmentFacade.load();
 
@@ -160,6 +162,10 @@ export class JobsListPage implements OnInit, OnDestroy {
     if (!this.isApplied(job)) {
       this.recruitmentFacade.applyToOffer(job).subscribe();
     }
+  }
+
+  openSource(job: JobOfferDto): void {
+    window.open(job.sourceUrl, '_blank', 'noopener,noreferrer');
   }
 
   toggleDismissed(job: JobOfferDto): void {

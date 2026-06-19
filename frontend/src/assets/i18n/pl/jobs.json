@@ -2,6 +2,7 @@
   "jobs": {
     "title": "Oferty pracy",
     "apply": "Aplikuj",
+    "openSource": "Przejdź do źródła",
     "applied": "CV wysłane",
     "dismiss": "Nieinteresujące",
     "restore": "Przywróć",

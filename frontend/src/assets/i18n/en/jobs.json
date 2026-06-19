@@ -2,6 +2,7 @@
   "jobs": {
     "title": "Job offers",
     "apply": "Apply",
+    "openSource": "Go to source",
     "applied": "CV sent",
     "dismiss": "Not interested",
     "restore": "Restore",

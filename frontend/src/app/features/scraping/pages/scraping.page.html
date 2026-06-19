@@ -88,6 +88,10 @@
               </div>
             </div>
             <div class="target-right">
+              <span class="offer-count" [title]="'scraping.offerCount' | translate">
+                <span class="material-symbols-rounded">description</span>
+                {{ t.offerCount }}
+              </span>
               <span class="last-run">
                 <span class="material-symbols-rounded">schedule</span>
                 {{ t.lastRunAt ? (t.lastRunAt | date: 'dd.MM.yy HH:mm') : '—' }}

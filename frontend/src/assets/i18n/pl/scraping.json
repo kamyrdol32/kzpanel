@@ -14,6 +14,7 @@
     "add": "Dodaj do scrapowania",
     "scrapeNow": "Scrapuj teraz",
     "empty": "Brak skonfigurowanych celów scrapowania",
-    "lastRun": "Ostatni przebieg"
+    "lastRun": "Ostatni przebieg",
+    "offerCount": "Liczba pobranych ofert"
   }
 }

@@ -14,6 +14,7 @@
     "add": "Add to scraping",
     "scrapeNow": "Scrape now",
     "empty": "No scraping targets configured",
-    "lastRun": "Last run"
+    "lastRun": "Last run",
+    "offerCount": "Number of fetched offers"
   }
 }

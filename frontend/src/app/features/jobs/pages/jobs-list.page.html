@@ -77,6 +77,9 @@
 
       <ng-template #actions let-job>
         <div class="row-actions">
+          <button class="icon-btn" [title]="'jobs.openSource' | translate" (click)="openSource(job)">
+            <span class="material-symbols-rounded">open_in_new</span>
+          </button>
           @if (isApplied(job)) {
             <span class="chip chip-success">{{ 'jobs.applied' | translate }}</span>
           } @else {
@@ -157,6 +160,10 @@
           }
 
           <div class="job-detail-actions">
+            <button class="btn btn-ghost" (click)="openSource(job)">
+              <span class="material-symbols-rounded" style="font-size:16px">open_in_new</span>
+              {{ 'jobs.openSource' | translate }}
+            </button>
             @if (isApplied(job)) {
               <span class="chip chip-success">
                 <span class="material-symbols-rounded" style="font-size:16px">mark_email_read</span>
