@@ -16,8 +16,24 @@ export class ScrapeTargetsService {
     private readonly offers: Repository<JobOffer>,
   ) {}
 
-  findAll(): Promise<ScrapeTarget[]> {
-    return this.repo.find({ order: { createdAt: 'DESC' } });
+  async findAll(): Promise<Array<ScrapeTarget & { offerCount: number }>> {
+    const targets = await this.repo.find({ order: { createdAt: 'DESC' } });
+
+    const counts = await this.offers
+      .createQueryBuilder('o')
+      .select('o.scrapeTargetId', 'targetId')
+      .addSelect('COUNT(*)', 'count')
+      .where('o.scrapeTargetId IS NOT NULL')
+      .andWhere('o.deletedAt IS NULL')
+      .groupBy('o.scrapeTargetId')
+      .getRawMany<{ targetId: string; count: string }>();
+
+    const countByTarget = new Map(counts.map((c) => [c.targetId, Number(c.count)]));
+
+    return targets.map((target) => ({
+      ...target,
+      offerCount: countByTarget.get(target.id) ?? 0,
+    }));
   }
 
   async findOne(id: string): Promise<ScrapeTarget> {

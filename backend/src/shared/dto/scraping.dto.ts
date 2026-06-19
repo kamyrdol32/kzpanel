@@ -10,6 +10,7 @@ export interface ScrapeTargetDto extends BaseEntityDto {
   remoteType: RemoteType | null;
   enabled: boolean;
   lastRunAt: string | null;
+  offerCount: number;
 }
 
 export interface CreateScrapeTargetRequest {

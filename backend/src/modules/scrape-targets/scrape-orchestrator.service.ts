@@ -55,8 +55,14 @@ export class ScrapeOrchestratorService {
 
     let count = 0;
     for (const raw of raws) {
-      await this.upsert(this.normalize(raw), target.id);
-      count++;
+      try {
+        await this.upsert(this.normalize(raw), target.id);
+        count++;
+      } catch (err) {
+        this.logger.warn(
+          `${target.source} "${target.query}" — skipped offer ${raw.sourceUrl}: ${(err as Error).message}`,
+        );
+      }
     }
 
     await this.targets.update(target.id, { lastRunAt: new Date() });
@@ -110,17 +116,18 @@ export class ScrapeOrchestratorService {
   }
 
   /**
-   * Insert new or update existing, deduplicating by normalized (source, title,
-   * company). Collapses portal quirks like the same role published once per
-   * region (different URLs) into a single offer.
+   * Insert new or update existing, keyed on the offer's natural identity
+   * (source, sourceUrl) — the same pair the DB enforces as unique. Matching on
+   * this key (rather than title/company) keeps the upsert consistent with the
+   * constraint: a re-scraped offer updates its row instead of triggering a
+   * duplicate-key insert that would abort the whole run.
    */
   private async upsert(data: Partial<JobOffer>, scrapeTargetId: string): Promise<void> {
     const payload = { ...data, scrapeTargetId };
     const existing = await this.offers
       .createQueryBuilder('o')
       .where('o.source = :source', { source: data.source })
-      .andWhere('LOWER(o.title) = LOWER(:title)', { title: data.title })
-      .andWhere('LOWER(o.company) = LOWER(:company)', { company: data.company })
+      .andWhere('o.sourceUrl = :sourceUrl', { sourceUrl: data.sourceUrl })
       .getOne();
 
     if (existing) {
