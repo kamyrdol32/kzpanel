@@ -1,11 +1,11 @@
 import { JobSource, Language } from '../shared';
 import { Injectable, Logger, OnModuleDestroy } from '@nestjs/common';
-import { Browser, BrowserContext, chromium } from 'playwright-core';
+import { Browser, BrowserContext, Page, chromium } from 'playwright-core';
 
 import { ScrapeParams } from '../config/scrape-params';
 import { JobRaw, JobStub } from '../strategies/job-scraper.strategy';
 
-import { SITE_SELECTORS } from './site-selectors';
+import { SiteConfig } from './site-config';
 
 const USER_AGENTS = [
   'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36',
@@ -52,13 +52,23 @@ export class PlaywrightFetcher implements OnModuleDestroy {
     await this.browser?.close();
   }
 
-  async scrapeList(source: JobSource, params: ScrapeParams): Promise<JobStub[]> {
-    const cfg = SITE_SELECTORS[source];
-    if (!cfg) {
-      this.logger.warn(`No Playwright selectors configured for ${source}`);
-      return [];
+  /**
+   * Run a callback against a fresh page in its own browser context, cleaning up
+   * afterwards. Portals with bespoke list logic (e.g. paginated JSON embedded in
+   * the page) use this directly instead of the selector-driven helpers below.
+   */
+  async withPage<T>(fn: (page: Page) => Promise<T>): Promise<T> {
+    let ctx: BrowserContext | undefined;
+    try {
+      ctx = await this.newContext();
+      const page = await ctx.newPage();
+      return await fn(page);
+    } finally {
+      await ctx?.close();
     }
+  }
 
+  async scrapeList(source: JobSource, cfg: SiteConfig, params: ScrapeParams): Promise<JobStub[]> {
     let ctx: BrowserContext | undefined;
     try {
       ctx = await this.newContext();
@@ -93,8 +103,7 @@ export class PlaywrightFetcher implements OnModuleDestroy {
     }
   }
 
-  async scrapeDetails(source: JobSource, stub: JobStub): Promise<JobRaw> {
-    const cfg = SITE_SELECTORS[source];
+  async scrapeDetails(source: JobSource, cfg: SiteConfig, stub: JobStub): Promise<JobRaw> {
     const base: JobRaw = {
       title: stub.title,
       company: stub.company,
@@ -103,16 +112,27 @@ export class PlaywrightFetcher implements OnModuleDestroy {
       techStack: [],
       language: Language.PL,
     };
-    if (!cfg) return base;
 
     let ctx: BrowserContext | undefined;
     try {
       ctx = await this.newContext();
       const page = await ctx.newPage();
       await page.goto(stub.sourceUrl, { waitUntil: 'domcontentloaded', timeout: 30_000 });
-      await page.waitForTimeout(800 + Math.floor(Math.random() * 600));
 
       const { salary, location, techChip, description } = cfg.detail;
+
+      // SPA detail pages render the requirements/tech list after load — wait for
+      // the tech selector to appear instead of a blind fixed delay.
+      if (techChip) {
+        await page
+          .locator(techChip)
+          .first()
+          .waitFor({ state: 'attached', timeout: 8_000 })
+          .catch(() => undefined);
+      } else {
+        await page.waitForTimeout(800 + Math.floor(Math.random() * 600));
+      }
+
       const techStack = techChip
         ? (await page.locator(techChip).allTextContents()).map((t) => t.trim()).filter(Boolean)
         : [];
