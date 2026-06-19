@@ -88,6 +88,24 @@ export const SITE_SELECTORS: Partial<Record<JobSource, SiteConfig>> = {
     },
   },
 
+  // ── NoFluffJobs ─────────────────────────────────────────────
+  [JobSource.NOFLUFFJOBS]: {
+    origin: 'https://nofluffjobs.com',
+    searchUrl: (p) => `https://nofluffjobs.com/pl/${enc(p.query)}`,
+    list: {
+      card: 'a[href^="/pl/job/"]',
+      title: '.posting-title__position',
+      company: '.posting-title__company, .company-name',
+      link: 'self',
+    },
+    detail: {
+      salary: '.salary h4',
+      location: '.posting-info__location',
+      techChip: '.posting-tag',
+      description: '.posting-details-description',
+    },
+  },
+
   // ── LinkedIn (guest job search; often gated/anti-bot) ────────
   [JobSource.LINKEDIN]: {
     origin: 'https://www.linkedin.com',
