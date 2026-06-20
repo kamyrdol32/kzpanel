@@ -18,5 +18,37 @@
     "jobs": "Oferty pracy",
     "scraping": "Scrapowanie",
     "monitoring": "Monitoring"
+  },
+  "enum": {
+    "remote": {
+      "ONSITE": "Stacjonarnie",
+      "HYBRID": "Hybrydowo",
+      "REMOTE": "Zdalnie"
+    },
+    "level": {
+      "INTERN": "Stażysta",
+      "JUNIOR": "Junior",
+      "MID": "Mid",
+      "SENIOR": "Senior",
+      "LEAD": "Lead"
+    },
+    "employment": {
+      "B2B": "B2B",
+      "PERMANENT": "Umowa o pracę",
+      "MANDATE": "Umowa zlecenie",
+      "OTHER": "Inna"
+    },
+    "language": {
+      "PL": "Polski",
+      "EN": "Angielski"
+    }
+  },
+  "settings": {
+    "title": "Ustawienia",
+    "account": "Konto",
+    "username": "Login",
+    "email": "E-mail",
+    "role": "Rola",
+    "preferences": "Preferencje"
   }
 }

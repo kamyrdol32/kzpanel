@@ -11,6 +11,10 @@ export interface ScrapeTargetDto extends BaseEntityDto {
   enabled: boolean;
   lastRunAt: string | null;
   offerCount: number;
+  /** Owner account id. */
+  userId: string;
+  /** Owner username — only populated in the admin "others" listing. */
+  ownerUsername?: string;
 }
 
 export interface CreateScrapeTargetRequest {
@@ -61,8 +65,9 @@ export interface ScrapedOfferDto {
   /** raw salary text e.g. "18 000 - 24 000 PLN"; parsed by the backend */
   salaryRaw?: string | null;
   location?: string | null;
-  remoteType?: RemoteType;
-  level?: JobLevel;
+  remoteTypes?: RemoteType[];
+  levels?: JobLevel[];
+  employmentTypes?: string[];
   techStack?: string[];
   requirements?: string[];
   mustHave?: string[];

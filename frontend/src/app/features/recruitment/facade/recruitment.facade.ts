@@ -1,9 +1,11 @@
 import { inject, Injectable, signal } from '@angular/core';
 import {
   CreateRecruitmentRequest,
+  JobLevel,
   JobOfferDto,
   RecruitmentDto,
   RecruitmentStatus,
+  RemoteType,
 } from '@evpanel/shared';
 import { Observable, tap } from 'rxjs';
 
@@ -35,8 +37,8 @@ export class RecruitmentFacade {
     const payload: CreateRecruitmentRequest = {
       company: job.company,
       position: job.title,
-      level: job.level,
-      workMode: job.remoteType,
+      level: job.levels?.[0] ?? JobLevel.MID,
+      workMode: job.remoteTypes?.[0] ?? RemoteType.REMOTE,
       salaryMin: job.salaryMin ?? undefined,
       salaryMax: job.salaryMax ?? undefined,
       currency: job.currency ?? undefined,

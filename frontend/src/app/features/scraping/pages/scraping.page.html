@@ -114,4 +114,43 @@
       </div>
     }
   </section>
+
+  <!-- Admin-only: other accounts' scrapers -->
+  @if (facade.isAdmin() && facade.otherTargets().length > 0) {
+    <section class="targets-section">
+      <div class="section-header">
+        <span class="material-symbols-rounded section-icon">groups</span>
+        <span>{{ 'scraping.othersList' | translate }}</span>
+        <span class="count-badge">{{ facade.otherTargets().length }}</span>
+      </div>
+
+      <div class="targets">
+        @for (t of facade.otherTargets(); track t.id) {
+          <div class="target">
+            <div class="target-left">
+              <ev-status-badge [label]="t.source" tone="info" />
+              <div class="target-meta">
+                <span class="target-query">{{ t.query }}</span>
+                <span class="target-sub">
+                  {{ t.ownerUsername }}{{ t.location ? ' · ' + t.location : '' }}
+                </span>
+              </div>
+            </div>
+            <div class="target-right">
+              <span class="offer-count" [title]="'scraping.offerCount' | translate">
+                <span class="material-symbols-rounded">description</span>
+                {{ t.offerCount }}
+              </span>
+              <button class="icon-btn" [disabled]="facade.running()" [title]="'scraping.scrapeNow' | translate" (click)="facade.runOne(t.id)">
+                <span class="material-symbols-rounded">play_arrow</span>
+              </button>
+              <button class="icon-btn danger" [title]="'common.delete' | translate" (click)="facade.remove(t.id)">
+                <span class="material-symbols-rounded">delete</span>
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+    </section>
+  }
 </div>

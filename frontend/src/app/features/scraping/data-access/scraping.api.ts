@@ -16,6 +16,11 @@ export class ScrapingApi {
     return this.api.get<ScrapeTargetDto[]>('/scrape-targets');
   }
 
+  /** Admin-only: scrapers owned by other accounts. */
+  listOthers(): Observable<ScrapeTargetDto[]> {
+    return this.api.get<ScrapeTargetDto[]>('/scrape-targets/others');
+  }
+
   create(body: CreateScrapeTargetRequest): Observable<ScrapeTargetDto> {
     return this.api.post<ScrapeTargetDto>('/scrape-targets', body);
   }

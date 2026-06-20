@@ -1,49 +1,99 @@
 <div class="ev-page">
-  <div class="ev-row" style="justify-content: space-between; align-items: center; margin-bottom: 16px">
-    <h1 class="ev-page-title" style="margin: 0">{{ 'jobs.title' | translate }}</h1>
-    @if (!facade.loading() && facade.jobs().length > 0) {
-      <span class="jobs-count">{{ facade.jobs().length }}</span>
+  @if (!selectedScraper()) {
+    <!-- Step 1: pick a scraper -->
+    <div class="ev-row" style="margin-bottom: 16px">
+      <h1 class="ev-page-title" style="margin: 0">{{ 'jobs.title' | translate }}</h1>
+    </div>
+
+    @if (scrapersLoading()) {
+      <ev-skeleton [count]="4" height="64px" />
+    } @else if (scrapers().length === 0 && otherScrapers().length === 0) {
+      <ev-empty-state
+        icon="travel_explore"
+        [title]="'jobs.noScrapers' | translate"
+        [description]="'jobs.noScrapersDesc' | translate"
+      />
+    } @else {
+      <section class="scraper-section">
+        <h2 class="scraper-section-title">{{ 'jobs.myScrapers' | translate }}</h2>
+        @if (scrapers().length === 0) {
+          <p class="scraper-empty">{{ 'jobs.noScrapers' | translate }}</p>
+        } @else {
+          <div class="scraper-grid">
+            @for (s of scrapers(); track s.id) {
+              <button class="scraper-card" type="button" (click)="selectScraper(s)">
+                <ev-status-badge [label]="s.source" tone="info" />
+                <span class="scraper-card-query">{{ s.query }}</span>
+                <span class="scraper-card-count">{{ s.offerCount }} {{ 'jobs.offersShort' | translate }}</span>
+              </button>
+            }
+          </div>
+        }
+      </section>
+
+      @if (isAdmin() && otherScrapers().length > 0) {
+        <section class="scraper-section scraper-section-admin">
+          <h2 class="scraper-section-title">{{ 'jobs.allScrapers' | translate }}</h2>
+          <div class="scraper-grid">
+            @for (s of otherScrapers(); track s.id) {
+              <button class="scraper-card" type="button" (click)="selectScraper(s)">
+                <ev-status-badge [label]="s.source" tone="info" />
+                <span class="scraper-card-query">{{ s.query }}</span>
+                <span class="scraper-card-owner">{{ s.ownerUsername }}</span>
+                <span class="scraper-card-count">{{ s.offerCount }} {{ 'jobs.offersShort' | translate }}</span>
+              </button>
+            }
+          </div>
+        </section>
+      }
     }
-  </div>
-
-  <!-- Filter bar -->
-  <div class="filter-bar" [formGroup]="filterForm">
-    <div class="filter-row">
-      <div class="search-wrap">
-        <span class="material-symbols-rounded search-icon">search</span>
-        <input class="search-input" type="text" formControlName="search" [placeholder]="'jobs.filter.search' | translate" />
-      </div>
-
-      <select class="filter-select" formControlName="source">
-        <option value="">{{ 'jobs.filter.allPortals' | translate }}</option>
-        @for (s of sources; track s) { <option [value]="s">{{ s }}</option> }
-      </select>
-
-      <select class="filter-select" formControlName="level">
-        <option value="">{{ 'jobs.filter.allLevels' | translate }}</option>
-        @for (l of levels; track l) { <option [value]="l">{{ l }}</option> }
-      </select>
-
-      <select class="filter-select" formControlName="remoteType">
-        <option value="">{{ 'jobs.filter.allRemote' | translate }}</option>
-        @for (r of remoteTypes; track r) { <option [value]="r">{{ r }}</option> }
-      </select>
-
-      <select class="filter-select" formControlName="language">
-        <option value="">{{ 'jobs.filter.allLanguages' | translate }}</option>
-        @for (l of languages; track l) { <option [value]="l">{{ l }}</option> }
-      </select>
-
-      @if (activeFilters()) {
-        <button class="clear-btn" type="button" (click)="clearFilters()">
-          <span class="material-symbols-rounded">close</span>
-          {{ 'jobs.filter.clear' | translate }}
+  } @else {
+    <!-- Step 2: offers of the selected scraper -->
+    <div class="ev-row" style="justify-content: space-between; align-items: center; margin-bottom: 16px">
+      <div class="ev-row" style="align-items: center; gap: 10px">
+        <button class="back-btn" type="button" [title]="'jobs.backToScrapers' | translate" (click)="backToScrapers()">
+          <span class="material-symbols-rounded">arrow_back</span>
         </button>
+        <h1 class="ev-page-title" style="margin: 0">{{ selectedScraper()!.source }} · {{ selectedScraper()!.query }}</h1>
+      </div>
+      @if (!facade.loading() && facade.jobs().length > 0) {
+        <span class="jobs-count">{{ facade.jobs().length }}</span>
       }
     </div>
-  </div>
 
-  @if (facade.loading()) {
+    <!-- Filter bar (portal implied by the scraper) -->
+    <div class="filter-bar" [formGroup]="filterForm">
+      <div class="filter-row">
+        <div class="search-wrap">
+          <span class="material-symbols-rounded search-icon">search</span>
+          <input class="search-input" type="text" formControlName="search" [placeholder]="'jobs.filter.search' | translate" />
+        </div>
+
+        <select class="filter-select" formControlName="level">
+          <option value="">{{ 'jobs.filter.allLevels' | translate }}</option>
+          @for (l of levels; track l) { <option [value]="l">{{ l }}</option> }
+        </select>
+
+        <select class="filter-select" formControlName="remoteType">
+          <option value="">{{ 'jobs.filter.allRemote' | translate }}</option>
+          @for (r of remoteTypes; track r) { <option [value]="r">{{ r }}</option> }
+        </select>
+
+        <select class="filter-select" formControlName="language">
+          <option value="">{{ 'jobs.filter.allLanguages' | translate }}</option>
+          @for (l of languages; track l) { <option [value]="l">{{ l }}</option> }
+        </select>
+
+        @if (activeFilters()) {
+          <button class="clear-btn" type="button" (click)="clearFilters()">
+            <span class="material-symbols-rounded">close</span>
+            {{ 'jobs.filter.clear' | translate }}
+          </button>
+        }
+      </div>
+    </div>
+
+    @if (facade.loading()) {
     <ev-skeleton [count]="6" height="44px" />
   } @else if (facade.jobs().length === 0) {
     <ev-empty-state
@@ -77,9 +127,6 @@
 
       <ng-template #actions let-job>
         <div class="row-actions">
-          <button class="icon-btn" [title]="'jobs.openSource' | translate" (click)="openSource(job)">
-            <span class="material-symbols-rounded">open_in_new</span>
-          </button>
           @if (isApplied(job)) {
             <span class="chip chip-success">{{ 'jobs.applied' | translate }}</span>
           } @else {
@@ -87,6 +134,9 @@
               <span class="material-symbols-rounded">send</span>
             </button>
           }
+          <button class="icon-btn" [title]="'jobs.openSource' | translate" (click)="openSource(job)">
+            <span class="material-symbols-rounded">open_in_new</span>
+          </button>
           <button
             class="icon-btn"
             [class.icon-btn-active]="job.dismissed"
@@ -102,68 +152,9 @@
       </ng-template>
 
       <ng-template #expanded let-job>
-        <div class="job-detail">
-          <div class="job-detail-grid">
-            <div class="field">
-              <span class="field-label">{{ 'jobs.detail.level' | translate }}</span>
-              <span class="field-value"><ev-status-badge [label]="job.level" tone="info" /></span>
-            </div>
-            <div class="field">
-              <span class="field-label">{{ 'jobs.detail.language' | translate }}</span>
-              <span class="field-value"><ev-status-badge [label]="job.language" tone="neutral" /></span>
-            </div>
-            <div class="field">
-              <span class="field-label">{{ 'jobs.detail.source' | translate }}</span>
-              <span class="field-value"><ev-status-badge [label]="job.source" tone="neutral" /></span>
-            </div>
-            @if (job.publishedDate) {
-              <div class="field">
-                <span class="field-label">{{ 'jobs.detail.published' | translate }}</span>
-                <span class="field-value">{{ job.publishedDate | date:'dd.MM.yyyy' }}</span>
-              </div>
-            }
-            <div class="field">
-              <span class="field-label">{{ 'jobs.detail.status' | translate }}</span>
-              <span class="field-value">
-                @if (isApplied(job)) {
-                  <ev-status-badge [label]="'jobs.detail.statusApplied' | translate" tone="success" />
-                } @else if (job.dismissed) {
-                  <ev-status-badge [label]="'jobs.detail.statusDismissed' | translate" tone="neutral" />
-                } @else {
-                  <ev-status-badge [label]="'jobs.detail.statusNew' | translate" tone="info" />
-                }
-              </span>
-            </div>
-          </div>
-
-          @if (job.techStack?.length) {
-            <div class="job-detail-section">
-              <span class="field-label">{{ 'jobs.techStack' | translate }}</span>
-              <div class="chips">
-                @for (t of job.techStack; track t) { <span class="chip">{{ t }}</span> }
-              </div>
-            </div>
-          }
-
-          @if (job.description) {
-            <div class="job-detail-section">
-              <span class="field-label">{{ 'jobs.description' | translate }}</span>
-              <p class="job-detail-desc">{{ job.description }}</p>
-            </div>
-          }
-
-          @if (job.requirements?.length) {
-            <div class="job-detail-section">
-              <span class="field-label">{{ 'jobs.requirements' | translate }}</span>
-              <ul class="job-detail-list">@for (r of job.requirements; track r) { <li>{{ r }}</li> }</ul>
-            </div>
-          }
-
-          <div class="job-detail-actions">
-            <button class="btn btn-ghost" (click)="openSource(job)">
-              <span class="material-symbols-rounded" style="font-size:16px">open_in_new</span>
-              {{ 'jobs.openSource' | translate }}
-            </button>
+        <div class="jd">
+          <!-- quick actions -->
+          <div class="jd-actions">
             @if (isApplied(job)) {
               <span class="chip chip-success">
                 <span class="material-symbols-rounded" style="font-size:16px">mark_email_read</span>
@@ -175,12 +166,94 @@
                 {{ 'jobs.apply' | translate }}
               </button>
             }
+            <button class="btn btn-ghost" (click)="openSource(job)">
+              <span class="material-symbols-rounded" style="font-size:16px">open_in_new</span>
+              {{ 'jobs.openSource' | translate }}
+            </button>
             <button class="btn btn-ghost" (click)="toggleDismissed(job)">
               <span class="material-symbols-rounded" style="font-size:16px">
                 {{ job.dismissed ? 'undo' : 'visibility_off' }}
               </span>
               {{ job.dismissed ? ('jobs.restore' | translate) : ('jobs.dismiss' | translate) }}
             </button>
+            <button class="btn btn-ghost btn-danger" (click)="remove(job.id)">
+              <span class="material-symbols-rounded" style="font-size:16px">delete</span>
+              {{ 'common.delete' | translate }}
+            </button>
+          </div>
+
+          <!-- meta chips -->
+          <div class="jd-meta">
+            @if (job.salaryMin) {
+              <span class="jd-meta-item jd-meta-salary">
+                <span class="material-symbols-rounded">payments</span>
+                {{ job.salaryMin }}@if (job.salaryMax && job.salaryMax !== job.salaryMin) {–{{ job.salaryMax }}} {{ job.currency }}
+              </span>
+            }
+            @for (rt of job.remoteTypes; track rt) {
+              <span class="jd-meta-item"><span class="material-symbols-rounded">home_work</span>{{ 'enum.remote.' + rt | translate }}</span>
+            }
+            @for (et of job.employmentTypes; track et) {
+              <span class="jd-meta-item"><span class="material-symbols-rounded">contract</span>{{ 'enum.employment.' + et | translate }}</span>
+            }
+            @for (lvl of job.levels; track lvl) {
+              <span class="jd-meta-item"><span class="material-symbols-rounded">trending_up</span>{{ 'enum.level.' + lvl | translate }}</span>
+            }
+            @if (job.location) {
+              <span class="jd-meta-item"><span class="material-symbols-rounded">location_on</span>{{ job.location }}</span>
+            }
+            @if (job.publishedDate) {
+              <span class="jd-meta-item"><span class="material-symbols-rounded">schedule</span>{{ job.publishedDate | date:'dd.MM.yyyy' }}</span>
+            }
+            <span class="jd-meta-item"><span class="material-symbols-rounded">public</span>{{ job.source }}</span>
+          </div>
+
+          <!-- two-column content -->
+          <div class="jd-body">
+            <div class="jd-main">
+              @if (job.description) {
+                <section class="jd-section">
+                  <h4 class="jd-section-title">{{ 'jobs.description' | translate }}</h4>
+                  <p class="jd-text">{{ job.description }}</p>
+                </section>
+              }
+              @if (job.responsibilities?.length) {
+                <section class="jd-section">
+                  <h4 class="jd-section-title">{{ 'jobs.responsibilities' | translate }}</h4>
+                  <ul class="jd-list">@for (r of job.responsibilities; track r) { <li>{{ r }}</li> }</ul>
+                </section>
+              }
+              @if (!job.description && !job.responsibilities?.length) {
+                <p class="muted">{{ 'jobs.noDescription' | translate }}</p>
+              }
+            </div>
+
+            <aside class="jd-side">
+              @if (extraTech(job).length) {
+                <section class="jd-section">
+                  <h4 class="jd-section-title">{{ 'jobs.techStack' | translate }}</h4>
+                  <div class="chips">@for (t of extraTech(job); track t) { <span class="chip">{{ t }}</span> }</div>
+                </section>
+              }
+              @if (job.mustHave?.length) {
+                <section class="jd-section">
+                  <h4 class="jd-section-title">{{ 'jobs.mustHave' | translate }}</h4>
+                  <ul class="jd-list">@for (m of job.mustHave; track m) { <li>{{ m }}</li> }</ul>
+                </section>
+              }
+              @if (job.niceToHave?.length) {
+                <section class="jd-section">
+                  <h4 class="jd-section-title">{{ 'jobs.niceToHave' | translate }}</h4>
+                  <ul class="jd-list">@for (n of job.niceToHave; track n) { <li>{{ n }}</li> }</ul>
+                </section>
+              }
+              @if (job.benefits?.length) {
+                <section class="jd-section">
+                  <h4 class="jd-section-title">{{ 'jobs.benefits' | translate }}</h4>
+                  <ul class="jd-list">@for (b of job.benefits; track b) { <li>{{ b }}</li> }</ul>
+                </section>
+              }
+            </aside>
           </div>
         </div>
       </ng-template>
@@ -211,4 +284,5 @@
       </div>
     }
   }
+}
 </div>

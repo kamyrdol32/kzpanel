@@ -33,9 +33,30 @@
         <span class="lang-opt" [class.active]="language.lang() === 'en'">EN</span>
       </button>
 
-      <button class="nav-cta" (click)="logout()">
-        {{ 'common.logout' | translate }}
-      </button>
+      <div class="profile" [class.is-open]="profileOpen()">
+        <button class="profile-trigger" (click)="toggleProfile()">
+          <span class="profile-avatar">{{ initial() }}</span>
+          <span class="profile-name">{{ user()?.username }}</span>
+          <svg class="profile-chevron" width="12" height="12" viewBox="0 0 12 12" fill="none">
+            <path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+
+        <ul class="profile-menu">
+          <li>
+            <a class="profile-item" routerLink="/settings" (click)="closeProfile()">
+              <span class="material-symbols-rounded">settings</span>
+              {{ 'settings.title' | translate }}
+            </a>
+          </li>
+          <li>
+            <button class="profile-item profile-item-danger" (click)="closeProfile(); logout()">
+              <span class="material-symbols-rounded">logout</span>
+              {{ 'common.logout' | translate }}
+            </button>
+          </li>
+        </ul>
+      </div>
     </div>
   </nav>
 

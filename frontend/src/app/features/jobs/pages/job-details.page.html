@@ -8,11 +8,14 @@
       </a>
     </div>
 
-    <p class="muted">{{ job.company }} · {{ job.location ?? '—' }} · {{ job.remoteType }}</p>
+    <p class="muted">
+      {{ job.company }} · {{ job.location ?? '—' }}
+      @for (rt of job.remoteTypes; track rt) { · {{ 'enum.remote.' + rt | translate }} }
+    </p>
 
-    <div class="ev-row" style="gap: 8px; margin-bottom: 16px">
-      <ev-status-badge [label]="job.level" tone="info" />
-      <ev-status-badge [label]="job.language" tone="neutral" />
+    <div class="ev-row" style="gap: 8px; margin-bottom: 16px; flex-wrap: wrap">
+      @for (lvl of job.levels; track lvl) { <ev-status-badge [label]="'enum.level.' + lvl | translate" tone="info" /> }
+      <ev-status-badge [label]="'enum.language.' + job.language | translate" tone="neutral" />
       <ev-status-badge [label]="job.source" tone="neutral" />
     </div>
 

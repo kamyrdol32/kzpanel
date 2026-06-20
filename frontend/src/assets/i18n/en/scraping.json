@@ -3,6 +3,7 @@
     "title": "Job scraping",
     "addTitle": "Add scraping target",
     "targetList": "Configured scrapers",
+    "othersList": "Other users' scrapers",
     "source": "Portal",
     "selectSource": "— select a service —",
     "pickFirst": "Pick a service to see available filters.",

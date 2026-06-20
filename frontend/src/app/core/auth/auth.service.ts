@@ -3,8 +3,10 @@ import { computed, inject, Injectable, signal } from '@angular/core';
 import {
   AuthTokens,
   AuthUser,
+  JwtPayload,
   LoginResponse,
   RegisterRequest,
+  Role,
 } from '@evpanel/shared';
 import { Observable, tap } from 'rxjs';
 
@@ -21,6 +23,37 @@ export class AuthService {
   private readonly _user = signal<AuthUser | null>(null);
   readonly user = this._user.asReadonly();
   readonly isAuthenticated = computed(() => !!this.tokens.accessToken);
+
+  constructor() {
+    // Rehydrate the user from the stored access token after a reload, so the
+    // profile (avatar/login) shows up without needing to log in again.
+    this._user.set(this.userFromToken());
+  }
+
+  /** Build a user from the JWT payload (sub/username/role) carried in the access token. */
+  private userFromToken(): AuthUser | null {
+    const token = this.tokens.accessToken;
+    if (!token) {
+      return null;
+    }
+    try {
+      const part = token.split('.')[1];
+      const json = atob(part.replace(/-/g, '+').replace(/_/g, '/'));
+      const payload = JSON.parse(decodeURIComponent(escape(json))) as JwtPayload & { exp?: number };
+      if (payload.exp && payload.exp * 1000 < Date.now()) {
+        return null;
+      }
+      return {
+        id: payload.sub,
+        username: payload.username,
+        role: payload.role ?? Role.USER,
+        email: null,
+        isActive: true,
+      };
+    } catch {
+      return null;
+    }
+  }
 
   login(username: string, password: string): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${this.base}/login`, { username, password }).pipe(

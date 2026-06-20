@@ -1,15 +1,20 @@
-import { inject, Injectable, signal } from '@angular/core';
-import { CreateScrapeTargetRequest, ScrapeTargetDto } from '@evpanel/shared';
+import { computed, inject, Injectable, signal } from '@angular/core';
+import { CreateScrapeTargetRequest, Role, ScrapeTargetDto } from '@evpanel/shared';
 import { finalize } from 'rxjs';
 
+import { AuthService } from '../../../core/auth/auth.service';
 import { ScrapingApi } from '../data-access/scraping.api';
 
 /** Single interaction surface for the scraping panel (signal-based facade). */
 @Injectable({ providedIn: 'root' })
 export class ScrapingFacade {
   private readonly api = inject(ScrapingApi);
+  private readonly auth = inject(AuthService);
 
   readonly targets = signal<ScrapeTargetDto[]>([]);
+  /** Other accounts' scrapers — admin-only, shown in a separate section. */
+  readonly otherTargets = signal<ScrapeTargetDto[]>([]);
+  readonly isAdmin = computed(() => this.auth.user()?.role === Role.ADMIN);
   readonly loading = signal(false);
   readonly running = signal(false);
   /** id targetu który aktualnie się scrape'uje, null = runAll lub brak */
@@ -22,6 +27,10 @@ export class ScrapingFacade {
       .list()
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({ next: (rows) => this.targets.set(rows) });
+
+    if (this.isAdmin()) {
+      this.api.listOthers().subscribe({ next: (rows) => this.otherTargets.set(rows) });
+    }
   }
 
   add(body: CreateScrapeTargetRequest): void {

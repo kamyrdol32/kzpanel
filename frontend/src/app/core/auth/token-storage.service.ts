@@ -19,6 +19,11 @@ export class TokenStorageService {
     localStorage.setItem(REFRESH, refresh);
   }
 
+  /** Replace just the access token (sliding-session renewal). */
+  setAccess(access: string): void {
+    localStorage.setItem(ACCESS, access);
+  }
+
   clear(): void {
     localStorage.removeItem(ACCESS);
     localStorage.removeItem(REFRESH);

@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, ElementRef, HostListener, inject, OnInit, signal } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -27,6 +27,11 @@ export class AppLayoutComponent implements OnInit {
 
   protected readonly scrolled = signal(false);
   protected readonly dropdownOpen = signal(false);
+  protected readonly profileOpen = signal(false);
+
+  protected readonly user = this.auth.user;
+  /** First letter of the username for the avatar. */
+  protected readonly initial = computed(() => (this.user()?.username ?? '?').charAt(0).toUpperCase());
 
   protected readonly dropdownItems: NavItem[] = [
     { path: '/recruitment', labelKey: 'nav.recruitment' },
@@ -43,6 +48,7 @@ export class AppLayoutComponent implements OnInit {
   onDocumentClick(event: Event): void {
     if (!this.el.nativeElement.contains(event.target)) {
       this.dropdownOpen.set(false);
+      this.profileOpen.set(false);
     }
   }
 
@@ -56,6 +62,14 @@ export class AppLayoutComponent implements OnInit {
 
   closeDropdown(): void {
     this.dropdownOpen.set(false);
+  }
+
+  toggleProfile(): void {
+    this.profileOpen.update((v) => !v);
+  }
+
+  closeProfile(): void {
+    this.profileOpen.set(false);
   }
 
   logout(): void {

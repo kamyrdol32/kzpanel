@@ -28,6 +28,10 @@ export const APP_ROUTES: Routes = [
         loadChildren: () =>
           import('./features/scraping/scraping.routes').then((m) => m.SCRAPING_ROUTES),
       },
+      {
+        path: 'settings',
+        loadComponent: () => import('./features/settings/settings.page').then((m) => m.SettingsPage),
+      },
     ],
   },
   { path: '**', redirectTo: '' },

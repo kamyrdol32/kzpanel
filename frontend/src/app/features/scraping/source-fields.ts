@@ -39,6 +39,10 @@ export const SOURCE_FIELDS: Record<string, SourceField[]> = {
   [JobSource.BULLDOGJOB]: [
     { key: 'query', labelKey: 'scraping.fieldTech', type: 'text', required: true, placeholder: 'Angular' },
   ],
+  [JobSource.THEPROTOCOL]: [
+    { key: 'query', labelKey: 'scraping.fieldKeyword', type: 'text', required: true, placeholder: 'Angular' },
+    { key: 'remoteType', labelKey: 'scraping.remote', type: 'select', options: remoteOptions },
+  ],
   [JobSource.LINKEDIN]: [
     { key: 'query', labelKey: 'scraping.fieldKeyword', type: 'text', required: true, placeholder: 'Angular' },
     { key: 'location', labelKey: 'scraping.location', type: 'text', placeholder: 'Warszawa' },

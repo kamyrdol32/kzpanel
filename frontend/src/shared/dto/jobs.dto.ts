@@ -9,8 +9,9 @@ export interface JobOfferDto extends BaseEntityDto {
   salaryMax: number | null;
   currency: string | null;
   location: string | null;
-  remoteType: RemoteType;
-  level: JobLevel;
+  remoteTypes: RemoteType[];
+  levels: JobLevel[];
+  employmentTypes: string[];
   language: Language;
   source: JobSource;
   sourceUrl: string;
@@ -40,6 +41,8 @@ export interface JobFilter {
   level?: JobLevel;
   remoteType?: RemoteType;
   language?: Language;
+  /** Restrict to offers found by a specific scrape target. */
+  scrapeTargetId?: string;
 }
 
 /** Raw normalized offer produced by a scraper strategy before persistence. */

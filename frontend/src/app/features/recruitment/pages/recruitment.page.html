@@ -26,7 +26,7 @@
               </td>
               <td class="trunc" [title]="r.company">{{ r.company }}</td>
               <td class="trunc" [title]="r.position">{{ r.position }}</td>
-              <td>{{ r.level }}</td>
+              <td>{{ 'enum.level.' + r.level | translate }}</td>
               <td>{{ r.salaryMin ? (r.salaryMin + '–' + (r.salaryMax ?? '') + ' ' + (r.currency ?? '')) : '—' }}</td>
               <td>{{ r.appliedAt ? (r.appliedAt | date: 'shortDate') : '—' }}</td>
               <td>
@@ -65,11 +65,11 @@
                       </div>
                       <div class="field">
                         <span class="field-label">{{ 'recruitment.level' | translate }}</span>
-                        <span class="field-value">{{ r.level }}</span>
+                        <span class="field-value">{{ 'enum.level.' + r.level | translate }}</span>
                       </div>
                       <div class="field">
                         <span class="field-label">{{ 'recruitment.workMode' | translate }}</span>
-                        <span class="field-value">{{ r.workMode }}</span>
+                        <span class="field-value">{{ 'enum.remote.' + r.workMode | translate }}</span>
                       </div>
                       <div class="field">
                         <span class="field-label">{{ 'recruitment.salary' | translate }}</span>

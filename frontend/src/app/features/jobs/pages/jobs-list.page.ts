@@ -1,11 +1,14 @@
 import { DatePipe } from '@angular/common';
 import { Component, computed, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
-import { JobFilter, JobLevel, JobOfferDto, JobSource, Language, RemoteType } from '@evpanel/shared';
+import { JobFilter, JobLevel, JobOfferDto, Language, RemoteType, Role, ScrapeTargetDto } from '@evpanel/shared';
+import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { debounceTime, distinctUntilChanged, Subject, takeUntil } from 'rxjs';
 
+import { AuthService } from '../../../core/auth/auth.service';
 import { RecruitmentFacade } from '../../recruitment/facade/recruitment.facade';
+import { ScrapingApi } from '../../scraping/data-access/scraping.api';
 import { DataTableComponent, SortState, TableColumn } from '../../../shared/ui/data-table/data-table.component';
 import { EmptyStateComponent } from '../../../shared/ui/empty-state/empty-state.component';
 import { SkeletonLoaderComponent } from '../../../shared/ui/skeleton-loader/skeleton-loader.component';
@@ -34,9 +37,23 @@ export class JobsListPage implements OnInit, OnDestroy {
   protected readonly recruitmentFacade = inject(RecruitmentFacade);
   private readonly fb = inject(FormBuilder);
   private readonly t = inject(TranslateService);
+  private readonly scrapingApi = inject(ScrapingApi);
+  private readonly auth = inject(AuthService);
+  private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
   private readonly destroy$ = new Subject<void>();
 
+  /** scraper id from the URL we still need to resolve once scrapers load */
+  private pendingScraperId: string | null = null;
+
   protected readonly PAGE_SIZE = 100;
+
+  // ── scraper selection (offers are browsed per scraper) ───────────────
+  protected readonly scrapers = signal<ScrapeTargetDto[]>([]);
+  protected readonly otherScrapers = signal<ScrapeTargetDto[]>([]);
+  protected readonly selectedScraper = signal<ScrapeTargetDto | null>(null);
+  protected readonly scrapersLoading = signal(false);
+  protected readonly isAdmin = computed(() => this.auth.user()?.role === Role.ADMIN);
 
   protected readonly expandedId = signal<string | null>(null);
   protected readonly currentPage = signal(1);
@@ -62,14 +79,12 @@ export class JobsListPage implements OnInit, OnDestroy {
     return this.facade.jobs().slice((page - 1) * this.PAGE_SIZE, page * this.PAGE_SIZE);
   });
 
-  protected readonly sources = Object.values(JobSource).filter((s) => s !== JobSource.MANUAL);
   protected readonly levels = Object.values(JobLevel);
   protected readonly remoteTypes = Object.values(RemoteType);
   protected readonly languages = Object.values(Language);
 
   protected readonly filterForm = this.fb.nonNullable.group({
     search: [''],
-    source: ['' as JobSource | ''],
     level: ['' as JobLevel | ''],
     remoteType: ['' as RemoteType | ''],
     language: ['' as Language | ''],
@@ -86,6 +101,20 @@ export class JobsListPage implements OnInit, OnDestroy {
   });
 
   protected columns: TableColumn<JobOfferDto>[] = [];
+
+  /** Tech-stack tags not already listed among the requirements (avoids duplication). */
+  protected extraTech(job: JobOfferDto): string[] {
+    const must = new Set((job.mustHave ?? []).map((m) => m.toLowerCase()));
+    return (job.techStack ?? []).filter((t) => !must.has(t.toLowerCase()));
+  }
+
+  /** Join + translate an array of enum values (e.g. ["REMOTE","HYBRID"]). */
+  private translateEnum(values: string[] | undefined, group: string): string | null {
+    if (!values?.length) {
+      return null;
+    }
+    return values.map((v) => this.t.instant(`enum.${group}.${v}`)).join(', ');
+  }
 
   protected readonly trackById = (job: JobOfferDto): string => job.id;
 
@@ -107,26 +136,110 @@ export class JobsListPage implements OnInit, OnDestroy {
         value: (j) => (j.salaryMin ? `${j.salaryMin}–${j.salaryMax ?? ''} ${j.currency ?? ''}` : null),
       },
       { key: 'location', label: this.t.instant('jobs.col.location') },
-      { key: 'remoteType', label: this.t.instant('jobs.col.remoteType') },
-      { key: 'publishedDate', label: this.t.instant('jobs.col.publishedDate'), sortKey: 'publishedDate' },
+      {
+        key: 'employmentTypes',
+        label: this.t.instant('jobs.col.employmentType'),
+        value: (j) => this.translateEnum(j.employmentTypes, 'employment'),
+      },
+      {
+        key: 'remoteTypes',
+        label: this.t.instant('jobs.col.remoteType'),
+        value: (j) => this.translateEnum(j.remoteTypes, 'remote'),
+      },
+      {
+        key: 'levels',
+        label: this.t.instant('jobs.col.level'),
+        value: (j) => this.translateEnum(j.levels, 'level'),
+      },
     ];
 
-    this.facade.load();
     this.recruitmentFacade.load();
+    this.loadScrapers();
+
+    // Selection lives in the URL (?scraper=ID) so the browser/back button moves
+    // between the scraper list and a scraper's offers naturally.
+    this.route.queryParamMap.pipe(takeUntil(this.destroy$)).subscribe((params) => {
+      const id = params.get('scraper');
+      if (!id) {
+        this.selectedScraper.set(null);
+        this.pendingScraperId = null;
+        return;
+      }
+      if (this.selectedScraper()?.id === id) {
+        return;
+      }
+      const found = [...this.scrapers(), ...this.otherScrapers()].find((s) => s.id === id);
+      if (found) {
+        this.applyScraper(found);
+      } else {
+        this.pendingScraperId = id;
+      }
+    });
 
     this.filterForm.valueChanges
       .pipe(debounceTime(300), distinctUntilChanged(), takeUntil(this.destroy$))
       .subscribe((v) => {
-        const filter: JobFilter = {};
+        const scraper = this.selectedScraper();
+        if (!scraper) {
+          return;
+        }
+        const filter: JobFilter = { scrapeTargetId: scraper.id };
         if (v.search?.trim()) filter.search = v.search.trim();
-        if (v.source) filter.source = v.source as JobSource;
         if (v.level) filter.level = v.level as JobLevel;
         if (v.remoteType) filter.remoteType = v.remoteType as RemoteType;
         if (v.language) filter.language = v.language as Language;
-        this.activeFilters.set(!!(v.search || v.source || v.level || v.remoteType || v.language));
+        this.activeFilters.set(!!(v.search || v.level || v.remoteType || v.language));
         this.currentPage.set(1);
         this.facade.setFilter(filter);
       });
+  }
+
+  private loadScrapers(): void {
+    this.scrapersLoading.set(true);
+    this.scrapingApi.list().subscribe({
+      next: (rows) => {
+        this.scrapers.set(rows);
+        this.resolvePending();
+      },
+      complete: () => this.scrapersLoading.set(false),
+    });
+    if (this.isAdmin()) {
+      this.scrapingApi.listOthers().subscribe({
+        next: (rows) => {
+          this.otherScrapers.set(rows);
+          this.resolvePending();
+        },
+      });
+    }
+  }
+
+  /** Apply a scraper id carried in the URL once its scraper data is available. */
+  private resolvePending(): void {
+    if (!this.pendingScraperId) {
+      return;
+    }
+    const found = [...this.scrapers(), ...this.otherScrapers()].find((s) => s.id === this.pendingScraperId);
+    if (found) {
+      this.pendingScraperId = null;
+      this.applyScraper(found);
+    }
+  }
+
+  private applyScraper(scraper: ScrapeTargetDto): void {
+    this.selectedScraper.set(scraper);
+    this.expandedId.set(null);
+    this.currentPage.set(1);
+    this.clearFilters();
+    this.facade.setFilter({ scrapeTargetId: scraper.id });
+  }
+
+  /** User clicked a scraper — record it in the URL; the query-param subscription applies it. */
+  selectScraper(scraper: ScrapeTargetDto): void {
+    this.router.navigate([], { relativeTo: this.route, queryParams: { scraper: scraper.id } });
+  }
+
+  backToScrapers(): void {
+    this.router.navigate([], { relativeTo: this.route, queryParams: {} });
   }
 
   ngOnDestroy(): void {
@@ -153,7 +266,7 @@ export class JobsListPage implements OnInit, OnDestroy {
   }
 
   clearFilters(): void {
-    this.filterForm.reset({ search: '', source: '', level: '', remoteType: '', language: '' });
+    this.filterForm.reset({ search: '', level: '', remoteType: '', language: '' });
     this.activeFilters.set(false);
   }
 
