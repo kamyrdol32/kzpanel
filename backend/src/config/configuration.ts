@@ -30,8 +30,8 @@ export default (): AppConfig => ({
   },
   jwt: {
     accessSecret: process.env.JWT_ACCESS_SECRET ?? 'dev-access-secret',
-    accessTtl: process.env.JWT_ACCESS_TTL ?? '900s',
+    accessTtl: process.env.JWT_ACCESS_TTL ?? '7d',
     refreshSecret: process.env.JWT_REFRESH_SECRET ?? 'dev-refresh-secret',
-    refreshTtl: process.env.JWT_REFRESH_TTL ?? '30d',
+    refreshTtl: process.env.JWT_REFRESH_TTL ?? '90d',
   },
 });

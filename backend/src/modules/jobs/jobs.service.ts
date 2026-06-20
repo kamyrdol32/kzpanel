@@ -1,7 +1,9 @@
-import { JobFilter } from '../../shared';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { JobFilter, Role } from '../../shared';
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ILike, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
+
+import { ScrapeTarget } from '../scrape-targets/scrape-target.entity';
 
 import { UpdateJobDto } from './dto/update-job.dto';
 import { JobOffer } from './job-offer.entity';
@@ -11,19 +13,46 @@ export class JobsService {
   constructor(
     @InjectRepository(JobOffer)
     private readonly offers: Repository<JobOffer>,
+    @InjectRepository(ScrapeTarget)
+    private readonly targets: Repository<ScrapeTarget>,
   ) {}
 
-  async findAll(filter: JobFilter): Promise<JobOffer[]> {
-    return this.offers.find({
-      where: {
-        ...(filter.search ? { title: ILike(`%${filter.search}%`) } : {}),
-        ...(filter.source ? { source: filter.source } : {}),
-        ...(filter.level ? { level: filter.level } : {}),
-        ...(filter.remoteType ? { remoteType: filter.remoteType } : {}),
-        ...(filter.language ? { language: filter.language } : {}),
-      },
-      order: { publishedDate: 'DESC', createdAt: 'DESC' },
-    });
+  async findAll(filter: JobFilter, user: { sub: string; role: Role }): Promise<JobOffer[]> {
+    // Offers are browsed per scraper; make sure the caller owns the one asked for.
+    if (filter.scrapeTargetId) {
+      const target = await this.targets.findOne({ where: { id: filter.scrapeTargetId } });
+      if (!target) throw new NotFoundException('Scrape target not found');
+      if (target.userId !== user.sub && user.role !== Role.ADMIN) {
+        throw new ForbiddenException('Not your scrape target');
+      }
+    }
+
+    const qb = this.offers.createQueryBuilder('o');
+
+    if (filter.search) {
+      qb.andWhere('o.title ILIKE :search', { search: `%${filter.search}%` });
+    }
+    if (filter.source) {
+      qb.andWhere('o.source = :source', { source: filter.source });
+    }
+    if (filter.language) {
+      qb.andWhere('o.language = :language', { language: filter.language });
+    }
+    if (filter.scrapeTargetId) {
+      qb.andWhere('o.scrapeTargetId = :scrapeTargetId', { scrapeTargetId: filter.scrapeTargetId });
+    }
+    // level / remoteType are arrays — match offers whose array contains the value
+    if (filter.level) {
+      qb.andWhere('o.levels @> :level::jsonb', { level: JSON.stringify([filter.level]) });
+    }
+    if (filter.remoteType) {
+      qb.andWhere('o.remoteTypes @> :remoteType::jsonb', { remoteType: JSON.stringify([filter.remoteType]) });
+    }
+
+    return qb
+      .orderBy('o.publishedDate', 'DESC', 'NULLS LAST')
+      .addOrderBy('o.createdAt', 'DESC')
+      .getMany();
   }
 
   async findOne(id: string): Promise<JobOffer> {

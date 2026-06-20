@@ -27,9 +27,17 @@ export class ScrapeOrchestratorService {
     private readonly targets: Repository<ScrapeTarget>,
   ) {}
 
-  /** Runs all enabled targets, or a single target when targetId is given. */
-  async runTargets(targetId?: string): Promise<ScrapeRunResult> {
-    const where = targetId ? { id: targetId } : { enabled: true };
+  /**
+   * Runs scrape targets. With `targetId` → that one target; with `userId` →
+   * every enabled target owned by that account (manual "scrape all" from the
+   * panel); with neither → every enabled target (the scheduled cron).
+   */
+  async runTargets(opts: { targetId?: string; userId?: string } = {}): Promise<ScrapeRunResult> {
+    const where = opts.targetId
+      ? { id: opts.targetId }
+      : opts.userId
+        ? { enabled: true, userId: opts.userId }
+        : { enabled: true };
     const targets = await this.targets.find({ where });
     this.logger.log(`Scrape run — ${targets.length} target(s)`);
 
@@ -54,9 +62,11 @@ export class ScrapeOrchestratorService {
     });
 
     let count = 0;
+    const seenUrls: string[] = [];
     for (const raw of raws) {
       try {
         await this.upsert(this.normalize(raw), target.id);
+        seenUrls.push(raw.sourceUrl);
         count++;
       } catch (err) {
         this.logger.warn(
@@ -65,9 +75,30 @@ export class ScrapeOrchestratorService {
       }
     }
 
+    // Prune offers this target no longer returns (e.g. after a query/filter change)
+    // so stale results don't linger. Only when the run actually produced offers.
+    if (seenUrls.length > 0) {
+      const pruned = await this.pruneStale(target.id, seenUrls);
+      if (pruned > 0) {
+        this.logger.log(`${target.source} "${target.query}": pruned ${pruned} stale offer(s)`);
+      }
+    }
+
     await this.targets.update(target.id, { lastRunAt: new Date() });
     this.logger.log(`${target.source} "${target.query}": ${count} offer(s) upserted`);
     return count;
+  }
+
+  /** Hard-delete this target's offers whose URL was not in the latest run. */
+  private async pruneStale(scrapeTargetId: string, keepUrls: string[]): Promise<number> {
+    const res = await this.offers
+      .createQueryBuilder()
+      .delete()
+      .from(JobOffer)
+      .where('scrapeTargetId = :scrapeTargetId', { scrapeTargetId })
+      .andWhere('sourceUrl NOT IN (:...keepUrls)', { keepUrls })
+      .execute();
+    return res.affected ?? 0;
   }
 
   private normalize(raw: ScrapedOfferDto): Partial<JobOffer> {
@@ -84,8 +115,9 @@ export class ScrapeOrchestratorService {
       salaryMax: raw.salaryMax ?? salary.max,
       currency: raw.currency ?? salary.currency,
       location: raw.location ?? null,
-      ...(raw.remoteType ? { remoteType: raw.remoteType } : {}),
-      ...(raw.level ? { level: raw.level } : {}),
+      remoteTypes: raw.remoteTypes ?? [],
+      levels: raw.levels ?? [],
+      employmentTypes: raw.employmentTypes ?? [],
       techStack: raw.techStack ?? [],
       requirements: raw.requirements ?? [],
       mustHave: raw.mustHave ?? [],
@@ -116,17 +148,16 @@ export class ScrapeOrchestratorService {
   }
 
   /**
-   * Insert new or update existing, keyed on the offer's natural identity
-   * (source, sourceUrl) — the same pair the DB enforces as unique. Matching on
-   * this key (rather than title/company) keeps the upsert consistent with the
-   * constraint: a re-scraped offer updates its row instead of triggering a
-   * duplicate-key insert that would abort the whole run.
+   * Insert new or update existing, keyed on (scrapeTargetId, sourceUrl) — the
+   * pair the DB enforces as unique. Dedup is per scraper: the same offer URL
+   * found by another scraper is a separate row, so re-scraping a target updates
+   * its own copy instead of clashing with another scraper's.
    */
   private async upsert(data: Partial<JobOffer>, scrapeTargetId: string): Promise<void> {
     const payload = { ...data, scrapeTargetId };
     const existing = await this.offers
       .createQueryBuilder('o')
-      .where('o.source = :source', { source: data.source })
+      .where('o.scrapeTargetId = :scrapeTargetId', { scrapeTargetId })
       .andWhere('o.sourceUrl = :sourceUrl', { sourceUrl: data.sourceUrl })
       .getOne();
 

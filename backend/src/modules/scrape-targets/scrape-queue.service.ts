@@ -4,8 +4,12 @@ import { ScrapeRunResult } from '../../shared';
 
 import { ScrapeOrchestratorService } from './scrape-orchestrator.service';
 
-interface QueueEntry {
+interface RunOptions {
   targetId?: string;
+  userId?: string;
+}
+
+interface QueueEntry extends RunOptions {
   resolve: (result: ScrapeRunResult) => void;
   reject: (err: unknown) => void;
 }
@@ -18,10 +22,10 @@ export class ScrapeQueueService {
 
   constructor(private readonly orchestrator: ScrapeOrchestratorService) {}
 
-  enqueue(targetId?: string): Promise<ScrapeRunResult> {
+  enqueue(opts: RunOptions = {}): Promise<ScrapeRunResult> {
     return new Promise<ScrapeRunResult>((resolve, reject) => {
-      this.queue.push({ targetId, resolve, reject });
-      this.logger.log(`Enqueued scrape${targetId ? ` for target ${targetId}` : ' (all)'}. Queue length: ${this.queue.length}`);
+      this.queue.push({ ...opts, resolve, reject });
+      this.logger.log(`Enqueued scrape${opts.targetId ? ` for target ${opts.targetId}` : opts.userId ? ` for user ${opts.userId}` : ' (all)'}. Queue length: ${this.queue.length}`);
       void this.drain();
     });
   }
@@ -41,8 +45,8 @@ export class ScrapeQueueService {
     while (this.queue.length > 0) {
       const entry = this.queue.shift()!;
       try {
-        this.logger.log(`Starting scrape${entry.targetId ? ` for target ${entry.targetId}` : ' (all)'}`);
-        const result = await this.orchestrator.runTargets(entry.targetId);
+        this.logger.log(`Starting scrape${entry.targetId ? ` for target ${entry.targetId}` : entry.userId ? ` for user ${entry.userId}` : ' (all)'}`);
+        const result = await this.orchestrator.runTargets({ targetId: entry.targetId, userId: entry.userId });
         entry.resolve(result);
       } catch (err) {
         this.logger.error(`Scrape task failed: ${(err as Error).message}`);

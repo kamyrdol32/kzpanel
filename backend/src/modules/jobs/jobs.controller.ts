@@ -1,7 +1,9 @@
 import { Body, Controller, Delete, Get, Param, Patch, Query, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
+import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
+import { JwtPayload } from '../../shared';
 
 import { JobQueryDto } from './dto/job-query.dto';
 import { UpdateJobDto } from './dto/update-job.dto';
@@ -15,8 +17,8 @@ export class JobsController {
   constructor(private readonly jobs: JobsService) {}
 
   @Get()
-  findAll(@Query() query: JobQueryDto) {
-    return this.jobs.findAll(query);
+  findAll(@Query() query: JobQueryDto, @CurrentUser() user: JwtPayload) {
+    return this.jobs.findAll(query, user);
   }
 
   @Get(':id')

@@ -11,7 +11,11 @@ async function bootstrap(): Promise<void> {
   const config = app.get(ConfigService);
 
   app.setGlobalPrefix('api');
-  app.enableCors({ origin: config.get('corsOrigin'), credentials: true });
+  app.enableCors({
+    origin: config.get('corsOrigin'),
+    credentials: true,
+    exposedHeaders: ['x-access-token'],
+  });
   app.useGlobalPipes(
     new ValidationPipe({ whitelist: true, transform: true, forbidNonWhitelisted: true }),
   );

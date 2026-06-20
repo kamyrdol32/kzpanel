@@ -4,7 +4,9 @@ import { Column, Entity, Index } from 'typeorm';
 import { BaseEntity } from '../../common/entities/base.entity';
 
 @Entity('job_offers')
-@Index(['source', 'sourceUrl'], { unique: true })
+// Dedup is per scrape target — the same offer URL may legitimately be found by
+// several scrapers (different queries), and each keeps its own copy.
+@Index(['scrapeTargetId', 'sourceUrl'], { unique: true })
 export class JobOffer extends BaseEntity {
   @Index()
   @Column()
@@ -25,11 +27,17 @@ export class JobOffer extends BaseEntity {
   @Column({ type: 'varchar', nullable: true })
   location!: string | null;
 
-  @Column({ type: 'enum', enum: RemoteType, default: RemoteType.REMOTE })
-  remoteType!: RemoteType;
+  /** Work modes — an offer may allow several (e.g. remote + hybrid). */
+  @Column({ type: 'jsonb', default: () => "'[]'" })
+  remoteTypes!: RemoteType[];
 
-  @Column({ type: 'enum', enum: JobLevel, default: JobLevel.MID })
-  level!: JobLevel;
+  /** Seniority levels — an offer may target several (e.g. mid + senior). */
+  @Column({ type: 'jsonb', default: () => "'[]'" })
+  levels!: JobLevel[];
+
+  /** Employment forms — B2B / PERMANENT / MANDATE / OTHER; an offer may allow several. */
+  @Column({ type: 'jsonb', default: () => "'[]'" })
+  employmentTypes!: string[];
 
   @Column({ type: 'enum', enum: Language, default: Language.PL })
   language!: Language;

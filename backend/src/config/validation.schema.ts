@@ -12,7 +12,7 @@ export const validationSchema = Joi.object({
   POSTGRES_DB: Joi.string().required(),
 
   JWT_ACCESS_SECRET: Joi.string().required(),
-  JWT_ACCESS_TTL: Joi.string().default('900s'),
+  JWT_ACCESS_TTL: Joi.string().default('7d'),
   JWT_REFRESH_SECRET: Joi.string().required(),
-  JWT_REFRESH_TTL: Joi.string().default('30d'),
+  JWT_REFRESH_TTL: Joi.string().default('90d'),
 });

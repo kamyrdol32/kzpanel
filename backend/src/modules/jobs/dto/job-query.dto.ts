@@ -27,4 +27,9 @@ export class JobQueryDto implements JobFilter {
   @IsOptional()
   @IsEnum(Language)
   language?: Language;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  scrapeTargetId?: string;
 }
