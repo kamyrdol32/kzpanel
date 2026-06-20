@@ -85,10 +85,20 @@ export class BulldogJobStrategy implements JobScraperStrategy {
     }));
   }
 
-  // The listing already carries every field — just map it, no extra request.
+  /**
+   * The listing covers most fields, but the full description, the real work
+   * modes (on-site / hybrid / remote) and the publish date live only on the
+   * offer page's embedded __NEXT_DATA__ — the listing carries just a coarse
+   * `remote` boolean and no body. We fetch the offer page once and read them.
+   */
   async fetchDetails(stub: JobStub): Promise<JobRaw> {
     const j = stub.meta as BdjJob | undefined;
     const salary = this.parseSalary(j?.denominatedSalaryLong);
+    const detail = await this.fetchDetail(stub.sourceUrl);
+
+    const remoteTypes = detail.remoteTypes.length
+      ? detail.remoteTypes
+      : [j?.remote ? RemoteType.REMOTE : RemoteType.ONSITE];
 
     return {
       title: stub.title,
@@ -99,11 +109,78 @@ export class BulldogJobStrategy implements JobScraperStrategy {
       salaryMax: salary.max,
       currency: salary.currency,
       location: j?.city || (j?.remote ? 'Remote' : null),
-      remoteType: j?.remote ? RemoteType.REMOTE : RemoteType.ONSITE,
-      level: this.mapLevel(j?.experienceLevel),
+      remoteTypes,
+      levels: j?.experienceLevel ? [this.mapLevel(j.experienceLevel)] : [],
+      employmentTypes: this.mapEmployment(j),
       techStack: j?.technologyTags ?? [],
+      description: detail.description ?? undefined,
       language: Language.PL,
+      publishedDate: detail.publishedAt ? new Date(detail.publishedAt) : null,
     };
+  }
+
+  /** Read work modes + full description + publish date from the offer page. */
+  private async fetchDetail(url: string): Promise<{ remoteTypes: RemoteType[]; description: string | null; publishedAt: string | null }> {
+    const empty = { remoteTypes: [] as RemoteType[], description: null, publishedAt: null };
+    try {
+      const res = await fetch(url, {
+        headers: { 'User-Agent': 'Mozilla/5.0 (compatible; EvPanel-Scraper/1.0)' },
+        signal: AbortSignal.timeout(15_000),
+      });
+      if (!res.ok) {
+        return empty;
+      }
+      const html = await res.text();
+      const m = html.match(/<script id="__NEXT_DATA__"[^>]*>([\s\S]*?)<\/script>/);
+      if (!m) {
+        return empty;
+      }
+      const job = JSON.parse(m[1])?.props?.pageProps?.data?.job as BdjDetail | undefined;
+      const remoteTypes = new Set<RemoteType>();
+      for (const mode of job?.workModes ?? []) {
+        remoteTypes.add(this.mapWorkMode(mode.toLowerCase()));
+      }
+      return {
+        remoteTypes: [...remoteTypes],
+        description: this.htmlToText(job?.details),
+        publishedAt: job?.publishedAt ?? null,
+      };
+    } catch {
+      return empty;
+    }
+  }
+
+  private htmlToText(html?: string | null): string | null {
+    if (!html) {
+      return null;
+    }
+    return html
+      .replace(/<\/(p|li|h[1-6]|div|br)>/gi, '\n')
+      .replace(/<br\s*\/?>/gi, '\n')
+      .replace(/<[^>]+>/g, '')
+      .replace(/&nbsp;/g, ' ')
+      .replace(/&amp;/g, '&')
+      .replace(/\n{3,}/g, '\n\n')
+      .replace(/[ \t]+\n/g, '\n')
+      .trim();
+  }
+
+  private mapWorkMode(mode: string): RemoteType {
+    if (mode.includes('remote')) {
+      return RemoteType.REMOTE;
+    }
+    if (mode.includes('hybrid')) {
+      return RemoteType.HYBRID;
+    }
+    return RemoteType.ONSITE;
+  }
+
+  private mapEmployment(j?: BdjJob): string[] {
+    const out: string[] = [];
+    if (j?.contractB2b) out.push('B2B');
+    if (j?.contractEmployment) out.push('PERMANENT');
+    if (j?.contractOther) out.push('OTHER');
+    return out;
   }
 
   /** Parse "17 600 - 20 800" / "20 800" into numeric min/max. */
@@ -150,6 +227,14 @@ interface BdjJob {
   experienceLevel?: string;
   technologyTags?: string[];
   denominatedSalaryLong?: BdjSalary;
+  contractB2b?: boolean;
+  contractEmployment?: boolean;
+  contractOther?: boolean;
+}
+interface BdjDetail {
+  workModes?: string[];
+  details?: string | null;
+  publishedAt?: string | null;
 }
 interface NextData {
   props?: { pageProps?: { jobs?: BdjJob[]; totalCount?: number } };

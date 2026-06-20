@@ -7,6 +7,7 @@ import { JustJoinITStrategy } from './justjoinit.strategy';
 import { LinkedInStrategy } from './linkedin.strategy';
 import { NoFluffJobsStrategy } from './nofluffjobs.strategy';
 import { PracujPlStrategy } from './pracujpl.strategy';
+import { TheProtocolStrategy } from './theprotocol.strategy';
 
 /** Maps a JobSource to its strategy and exposes the full active set. */
 @Injectable()
@@ -19,9 +20,10 @@ export class StrategyRegistry {
     linkedIn: LinkedInStrategy,
     bulldog: BulldogJobStrategy,
     pracuj: PracujPlStrategy,
+    theProtocol: TheProtocolStrategy,
   ) {
     this.strategies = new Map(
-      [noFluff, justJoin, linkedIn, bulldog, pracuj].map((s) => [s.source, s]),
+      [noFluff, justJoin, linkedIn, bulldog, pracuj, theProtocol].map((s) => [s.source, s]),
     );
   }
 

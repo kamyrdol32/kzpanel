@@ -2,6 +2,7 @@ import { JobLevel, JobSource, Language, RemoteType } from '../shared';
 import { Injectable, Logger } from '@nestjs/common';
 
 import { ScrapeParams } from '../config/scrape-params';
+import { PlaywrightFetcher } from '../playwright/playwright.fetcher';
 
 import { JobRaw, JobScraperStrategy, JobStub } from './job-scraper.strategy';
 
@@ -20,6 +21,8 @@ const UA = 'Mozilla/5.0 (compatible; EvPanel-Scraper/1.0)';
 export class JustJoinITStrategy implements JobScraperStrategy {
   readonly source = JobSource.JUSTJOINIT;
   private readonly logger = new Logger(JustJoinITStrategy.name);
+
+  constructor(private readonly fetcher: PlaywrightFetcher) {}
 
   async fetchList(params: ScrapeParams): Promise<JobStub[]> {
     const perPage = 100;
@@ -99,12 +102,50 @@ export class JustJoinITStrategy implements JobScraperStrategy {
       salaryMax: salary.max,
       currency: salary.currency,
       location: o?.city ?? null,
-      remoteType: this.mapWorkplace(o?.workplaceType),
-      level: this.mapLevel(o?.experienceLevel),
+      remoteTypes: [this.mapWorkplace(o?.workplaceType)],
+      levels: o?.experienceLevel ? [this.mapLevel(o.experienceLevel)] : [],
+      employmentTypes: this.mapEmployment(o?.employmentTypes),
       techStack: (o?.requiredSkills ?? []).map((s) => s.name).filter(Boolean),
+      mustHave: (o?.requiredSkills ?? []).map((s) => s.name).filter(Boolean),
+      niceToHave: (o?.niceToHaveSkills ?? []).map((s) => s.name).filter(Boolean),
+      description: (await this.fetchDescription(stub.sourceUrl)) ?? undefined,
       language: /[ąćęłńóśźż]/i.test(stub.title) ? Language.PL : Language.EN,
       publishedDate: o?.publishedAt ? new Date(o.publishedAt) : null,
     };
+  }
+
+  /**
+   * JJIT offer pages are a JS-only SPA (no API/SSR for the body), so we render
+   * the page and read the text under the "Job description" heading. Best-effort
+   * — returns null if the layout doesn't match.
+   */
+  private async fetchDescription(url: string): Promise<string | null> {
+    return this.fetcher.extractDetail(url, async (page) => {
+      await page
+        .waitForFunction(() => /job description|opis stanowiska/i.test(document.body.innerText), undefined, { timeout: 12_000 })
+        .catch(() => undefined);
+      return page.evaluate(() => {
+        const norm = (s: string | null | undefined): string => (s ?? '').replace(/\s+/g, ' ').trim();
+        const heading = Array.from(document.querySelectorAll('h1,h2,h3,h4')).find((h) =>
+          /job description|opis stanowiska/i.test(h.textContent ?? ''),
+        );
+        const container = heading?.parentElement;
+        const text = norm(container?.textContent).replace(/^(Job description|Opis stanowiska)/i, '').trim();
+        return text.length > 30 ? text : null;
+      });
+    });
+  }
+
+  private mapEmployment(types?: JjitEmployment[]): string[] {
+    const out = new Set<string>();
+    for (const t of types ?? []) {
+      const type = (t.type ?? '').toLowerCase();
+      if (type.includes('b2b')) out.add('B2B');
+      else if (type.includes('permanent') || type.includes('employment')) out.add('PERMANENT');
+      else if (type.includes('mandate') || type.includes('zlecenie')) out.add('MANDATE');
+      else if (type) out.add('OTHER');
+    }
+    return [...out];
   }
 
   /** JustJoinIT salaries may be yearly — normalize to monthly for consistency. */
@@ -156,6 +197,7 @@ interface JjitEmployment {
   to?: number | null;
   currency?: string;
   unit?: string; // "month" | "year"
+  type?: string; // "b2b" | "permanent" | "mandate_contract" | ...
 }
 interface JjitOffer {
   slug: string;
@@ -166,5 +208,6 @@ interface JjitOffer {
   experienceLevel?: string;
   employmentTypes?: JjitEmployment[];
   requiredSkills?: { name: string }[] | null;
+  niceToHaveSkills?: { name: string }[] | null;
   publishedAt?: string;
 }

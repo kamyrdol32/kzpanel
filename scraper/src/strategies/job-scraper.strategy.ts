@@ -23,8 +23,9 @@ export interface JobRaw {
   salaryMax?: number | null;
   currency?: string | null;
   location?: string | null;
-  remoteType?: RemoteType;
-  level?: JobLevel;
+  remoteTypes?: RemoteType[];
+  levels?: JobLevel[];
+  employmentTypes?: string[];
   techStack?: string[];
   requirements?: string[];
   mustHave?: string[];

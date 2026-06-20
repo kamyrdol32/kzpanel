@@ -1,11 +1,24 @@
 import { JobSource, Language } from '../shared';
 import { Injectable, Logger, OnModuleDestroy } from '@nestjs/common';
-import { Browser, BrowserContext, Page, chromium } from 'playwright-core';
+import { Browser, BrowserContext, Page, chromium as coreChromium } from 'playwright-core';
+import { addExtra } from 'playwright-extra';
 
 import { ScrapeParams } from '../config/scrape-params';
 import { JobRaw, JobStub } from '../strategies/job-scraper.strategy';
 
 import { SiteConfig } from './site-config';
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const StealthPlugin = require('puppeteer-extra-plugin-stealth');
+
+// Wrap playwright-core's chromium with the stealth plugin so portals behind
+// bot-protection (e.g. pracuj.pl / Cloudflare "managed challenge") don't block
+// headless scraping. executablePath/proxy still flow through to the launch.
+const chromium = addExtra(coreChromium as never) as unknown as {
+  use: (plugin: unknown) => void;
+  launch: typeof coreChromium.launch;
+};
+chromium.use(StealthPlugin());
 
 const USER_AGENTS = [
   'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36',
@@ -48,8 +61,30 @@ export class PlaywrightFetcher implements OnModuleDestroy {
     return ctx;
   }
 
+  private detailCtx?: BrowserContext;
+  private detailPage?: Page;
+
   async onModuleDestroy(): Promise<void> {
+    await this.detailCtx?.close().catch(() => undefined);
     await this.browser?.close();
+  }
+
+  /**
+   * Navigate a single, reused page to a detail URL and run an extractor against
+   * it. Reusing one context/page keeps per-offer detail scraping cheap (just a
+   * navigation, no fresh-context setup each time). Returns null on any failure.
+   */
+  async extractDetail<T>(url: string, fn: (page: Page) => Promise<T>): Promise<T | null> {
+    try {
+      if (!this.detailPage) {
+        this.detailCtx = await this.newContext();
+        this.detailPage = await this.detailCtx.newPage();
+      }
+      await this.detailPage.goto(url, { waitUntil: 'domcontentloaded', timeout: 30_000 });
+      return await fn(this.detailPage);
+    } catch {
+      return null;
+    }
   }
 
   /**

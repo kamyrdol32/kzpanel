@@ -6,6 +6,8 @@ import { PlaywrightFetcher } from '../playwright/playwright.fetcher';
 
 import { JobRaw, JobScraperStrategy, JobStub } from './job-scraper.strategy';
 
+const API = 'https://nofluffjobs.com/api';
+const UA = 'Mozilla/5.0 (compatible; EvPanel-Scraper/1.0)';
 const SEARCH_URL = (query: string): string => `https://nofluffjobs.com/pl/${encodeURIComponent(query)}`;
 const JOB_URL = (path: string): string => `https://nofluffjobs.com${path}`;
 
@@ -86,12 +88,16 @@ export class NoFluffJobsStrategy implements JobScraperStrategy {
     }));
   }
 
-  // The card already carries every field — just map it, no extra request.
+  /**
+   * The card covers salary/location/tech; the rich content (description,
+   * must/nice-to-have, responsibilities, benefits) comes from NFJ's stable
+   * per-offer detail API (a different endpoint than the flaky search API).
+   */
   async fetchDetails(stub: JobStub): Promise<JobRaw> {
     const c = stub.meta as NfjCard | undefined;
     const salary = this.parseSalary(c?.salaryRaw);
 
-    return {
+    const base: JobRaw = {
       title: stub.title,
       company: stub.company,
       sourceUrl: stub.sourceUrl,
@@ -101,10 +107,64 @@ export class NoFluffJobsStrategy implements JobScraperStrategy {
       currency: salary.currency,
       salaryRaw: c?.salaryRaw ?? null,
       location: c?.location ?? null,
-      remoteType: this.isRemote(c?.location) ? RemoteType.REMOTE : RemoteType.HYBRID,
+      remoteTypes: [this.isRemote(c?.location) ? RemoteType.REMOTE : RemoteType.HYBRID],
       techStack: c?.tech ?? [],
       language: Language.PL,
     };
+
+    const id = (c?.path ?? '').split('/').filter(Boolean).pop();
+    if (!id) {
+      return base;
+    }
+
+    try {
+      const res = await fetch(`${API}/posting/${id}`, {
+        headers: { 'User-Agent': UA },
+        signal: AbortSignal.timeout(15_000),
+      });
+      if (!res.ok) {
+        return base;
+      }
+      const d = (await res.json()) as NfjDetail;
+      const musts = (d.requirements?.musts ?? []).map((m) => m.value).filter(Boolean);
+      const nices = (d.requirements?.nices ?? []).map((m) => m.value).filter(Boolean);
+      const responsibilities = (d.specs?.dailyTasks ?? []).filter((t) => typeof t === 'string');
+      const benefits = (d.benefits?.benefits ?? []).filter((b) => typeof b === 'string');
+      const description = this.htmlToText(d.requirements?.description) || responsibilities[0] || null;
+
+      return {
+        ...base,
+        description: description ?? undefined,
+        techStack: musts.length ? musts : base.techStack,
+        requirements: musts,
+        mustHave: musts,
+        niceToHave: nices,
+        responsibilities,
+        benefits,
+        language: this.detectLanguage(`${stub.title} ${musts.join(' ')} ${responsibilities.join(' ')}`),
+      };
+    } catch {
+      return base;
+    }
+  }
+
+  private detectLanguage(text: string): Language {
+    return /[ąćęłńóśźż]/i.test(text) ? Language.PL : Language.EN;
+  }
+
+  private htmlToText(html?: string | null): string | null {
+    if (!html) {
+      return null;
+    }
+    return html
+      .replace(/<\/(p|li|h[1-6]|div|br)>/gi, '\n')
+      .replace(/<br\s*\/?>/gi, '\n')
+      .replace(/<[^>]+>/g, '')
+      .replace(/&nbsp;/g, ' ')
+      .replace(/&amp;/g, '&')
+      .replace(/\n{3,}/g, '\n\n')
+      .replace(/[ \t]+\n/g, '\n')
+      .trim();
   }
 
   /**
@@ -181,4 +241,15 @@ interface NfjCard {
   location: string | null;
   salaryRaw: string | null;
   tech: string[];
+}
+
+// ── Shape of the per-offer detail API response (fields we read) ──
+interface NfjDetail {
+  requirements?: {
+    musts?: { value: string }[];
+    nices?: { value: string }[];
+    description?: string | null;
+  };
+  specs?: { dailyTasks?: string[] };
+  benefits?: { benefits?: string[] };
 }

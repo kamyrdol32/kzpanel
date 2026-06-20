@@ -12,6 +12,7 @@ import { LinkedInStrategy } from './strategies/linkedin.strategy';
 import { NoFluffJobsStrategy } from './strategies/nofluffjobs.strategy';
 import { PracujPlStrategy } from './strategies/pracujpl.strategy';
 import { StrategyRegistry } from './strategies/strategy.registry';
+import { TheProtocolStrategy } from './strategies/theprotocol.strategy';
 
 /**
  * Stateless scraper worker: a single guarded endpoint (POST /scrape) backed by
@@ -31,6 +32,7 @@ import { StrategyRegistry } from './strategies/strategy.registry';
     LinkedInStrategy,
     BulldogJobStrategy,
     PracujPlStrategy,
+    TheProtocolStrategy,
     ScrapeService,
   ],
 })

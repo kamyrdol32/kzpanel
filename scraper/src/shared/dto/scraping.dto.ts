@@ -60,8 +60,9 @@ export interface ScrapedOfferDto {
   /** raw salary text e.g. "18 000 - 24 000 PLN"; parsed by the backend */
   salaryRaw?: string | null;
   location?: string | null;
-  remoteType?: RemoteType;
-  level?: JobLevel;
+  remoteTypes?: RemoteType[];
+  levels?: JobLevel[];
+  employmentTypes?: string[];
   techStack?: string[];
   requirements?: string[];
   mustHave?: string[];
