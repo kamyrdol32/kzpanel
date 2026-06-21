@@ -19,6 +19,7 @@ export class LanguageService {
     this._lang.set(lang);
     localStorage.setItem(STORAGE_KEY, lang);
     this.translate.use(lang);
+    document.documentElement.lang = lang;
   }
 
   toggle(): void {
