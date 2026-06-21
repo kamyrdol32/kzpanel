@@ -79,6 +79,9 @@
     padding: 0;
     background: var(--ev-surface);
     border-bottom: 1px solid var(--ev-border);
+    // The base `td { white-space: nowrap }` (for cell truncation) must not leak
+    // into the expanded panel, or its lists/description overflow their columns.
+    white-space: normal;
   }
 
   &-prefix { width: 1%; white-space: nowrap; }

@@ -1,5 +1,5 @@
 // ── expanded offer detail panel ───────────────────────────────────────
-.jd {
+.offer-detail {
   padding: 20px 24px 24px;
   border-top: 1px solid var(--ev-border);
   background: var(--ev-bg);
@@ -10,32 +10,47 @@
   max-width: 100%;
   overflow: hidden;
 
+  // Header mirrors the body grid so the meta column lines up with the side column.
+  &-header {
+    display: grid;
+    grid-template-columns: 1.7fr 1fr;
+    gap: 28px;
+    align-items: start;
+
+    @media (max-width: 860px) {
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+  }
+
   &-actions {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
+    align-content: flex-start;
   }
 
   &-meta {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: 10px;
+    min-width: 0;
   }
 
   &-meta-item {
     display: inline-flex;
     align-items: center;
-    gap: 5px;
-    padding: 4px 10px;
-    border-radius: 8px;
+    gap: 7px;
+    padding: 8px 14px;
+    border-radius: 10px;
     background: var(--ev-surface);
     border: 1px solid var(--ev-border);
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 500;
     color: var(--ev-text);
 
     .material-symbols-rounded {
-      font-size: 15px;
+      font-size: 18px;
       color: var(--ev-text-muted);
     }
   }

@@ -152,9 +152,10 @@
       </ng-template>
 
       <ng-template #expanded let-job>
-        <div class="jd">
-          <!-- quick actions -->
-          <div class="jd-actions">
+        <div class="offer-detail">
+          <!-- header: actions (left) + meta (right) on one row -->
+          <div class="offer-detail-header">
+          <div class="offer-detail-actions">
             @if (isApplied(job)) {
               <span class="chip chip-success">
                 <span class="material-symbols-rounded" style="font-size:16px">mark_email_read</span>
@@ -183,44 +184,45 @@
           </div>
 
           <!-- meta chips -->
-          <div class="jd-meta">
+          <div class="offer-detail-meta">
             @if (job.salaryMin) {
-              <span class="jd-meta-item jd-meta-salary">
+              <span class="offer-detail-meta-item offer-detail-meta-salary">
                 <span class="material-symbols-rounded">payments</span>
                 {{ job.salaryMin }}@if (job.salaryMax && job.salaryMax !== job.salaryMin) {–{{ job.salaryMax }}} {{ job.currency }}
               </span>
             }
             @for (rt of job.remoteTypes; track rt) {
-              <span class="jd-meta-item"><span class="material-symbols-rounded">home_work</span>{{ 'enum.remote.' + rt | translate }}</span>
+              <span class="offer-detail-meta-item"><span class="material-symbols-rounded">home_work</span>{{ 'enum.remote.' + rt | translate }}</span>
             }
             @for (et of job.employmentTypes; track et) {
-              <span class="jd-meta-item"><span class="material-symbols-rounded">contract</span>{{ 'enum.employment.' + et | translate }}</span>
+              <span class="offer-detail-meta-item"><span class="material-symbols-rounded">contract</span>{{ 'enum.employment.' + et | translate }}</span>
             }
             @for (lvl of job.levels; track lvl) {
-              <span class="jd-meta-item"><span class="material-symbols-rounded">trending_up</span>{{ 'enum.level.' + lvl | translate }}</span>
+              <span class="offer-detail-meta-item"><span class="material-symbols-rounded">trending_up</span>{{ 'enum.level.' + lvl | translate }}</span>
             }
             @if (job.location) {
-              <span class="jd-meta-item"><span class="material-symbols-rounded">location_on</span>{{ job.location }}</span>
+              <span class="offer-detail-meta-item"><span class="material-symbols-rounded">location_on</span>{{ job.location }}</span>
             }
             @if (job.publishedDate) {
-              <span class="jd-meta-item"><span class="material-symbols-rounded">schedule</span>{{ job.publishedDate | date:'dd.MM.yyyy' }}</span>
+              <span class="offer-detail-meta-item"><span class="material-symbols-rounded">schedule</span>{{ job.publishedDate | date:'dd.MM.yyyy' }}</span>
             }
-            <span class="jd-meta-item"><span class="material-symbols-rounded">public</span>{{ job.source }}</span>
+            <span class="offer-detail-meta-item"><span class="material-symbols-rounded">public</span>{{ job.source }}</span>
+          </div>
           </div>
 
           <!-- two-column content -->
-          <div class="jd-body">
-            <div class="jd-main">
+          <div class="offer-detail-body">
+            <div class="offer-detail-main">
               @if (job.description) {
-                <section class="jd-section">
-                  <h4 class="jd-section-title">{{ 'jobs.description' | translate }}</h4>
-                  <p class="jd-text">{{ job.description }}</p>
+                <section class="offer-detail-section">
+                  <h4 class="offer-detail-section-title">{{ 'jobs.description' | translate }}</h4>
+                  <p class="offer-detail-text">{{ job.description }}</p>
                 </section>
               }
               @if (job.responsibilities?.length) {
-                <section class="jd-section">
-                  <h4 class="jd-section-title">{{ 'jobs.responsibilities' | translate }}</h4>
-                  <ul class="jd-list">@for (r of job.responsibilities; track r) { <li>{{ r }}</li> }</ul>
+                <section class="offer-detail-section">
+                  <h4 class="offer-detail-section-title">{{ 'jobs.responsibilities' | translate }}</h4>
+                  <ul class="offer-detail-list">@for (r of job.responsibilities; track r) { <li>{{ r }}</li> }</ul>
                 </section>
               }
               @if (!job.description && !job.responsibilities?.length) {
@@ -228,29 +230,29 @@
               }
             </div>
 
-            <aside class="jd-side">
+            <aside class="offer-detail-side">
               @if (extraTech(job).length) {
-                <section class="jd-section">
-                  <h4 class="jd-section-title">{{ 'jobs.techStack' | translate }}</h4>
+                <section class="offer-detail-section">
+                  <h4 class="offer-detail-section-title">{{ 'jobs.techStack' | translate }}</h4>
                   <div class="chips">@for (t of extraTech(job); track t) { <span class="chip">{{ t }}</span> }</div>
                 </section>
               }
               @if (job.mustHave?.length) {
-                <section class="jd-section">
-                  <h4 class="jd-section-title">{{ 'jobs.mustHave' | translate }}</h4>
-                  <ul class="jd-list">@for (m of job.mustHave; track m) { <li>{{ m }}</li> }</ul>
+                <section class="offer-detail-section">
+                  <h4 class="offer-detail-section-title">{{ 'jobs.mustHave' | translate }}</h4>
+                  <ul class="offer-detail-list">@for (m of job.mustHave; track m) { <li>{{ m }}</li> }</ul>
                 </section>
               }
               @if (job.niceToHave?.length) {
-                <section class="jd-section">
-                  <h4 class="jd-section-title">{{ 'jobs.niceToHave' | translate }}</h4>
-                  <ul class="jd-list">@for (n of job.niceToHave; track n) { <li>{{ n }}</li> }</ul>
+                <section class="offer-detail-section">
+                  <h4 class="offer-detail-section-title">{{ 'jobs.niceToHave' | translate }}</h4>
+                  <ul class="offer-detail-list">@for (n of job.niceToHave; track n) { <li>{{ n }}</li> }</ul>
                 </section>
               }
               @if (job.benefits?.length) {
-                <section class="jd-section">
-                  <h4 class="jd-section-title">{{ 'jobs.benefits' | translate }}</h4>
-                  <ul class="jd-list">@for (b of job.benefits; track b) { <li>{{ b }}</li> }</ul>
+                <section class="offer-detail-section">
+                  <h4 class="offer-detail-section-title">{{ 'jobs.benefits' | translate }}</h4>
+                  <ul class="offer-detail-list">@for (b of job.benefits; track b) { <li>{{ b }}</li> }</ul>
                 </section>
               }
             </aside>
