@@ -52,6 +52,7 @@ export class TheProtocolStrategy implements JobScraperStrategy {
               byUrl.set(c.url, c);
             }
           }
+
           if (byUrl.size === before) {
             break;
           }
@@ -153,9 +154,11 @@ export class TheProtocolStrategy implements JobScraperStrategy {
     if (/zdaln/.test(text)) {
       out.add(RemoteType.REMOTE);
     }
+
     if (/hybryd/.test(text)) {
       out.add(RemoteType.HYBRID);
     }
+
     if (/stacjonar/.test(text)) {
       out.add(RemoteType.ONSITE);
     }
@@ -168,12 +171,15 @@ export class TheProtocolStrategy implements JobScraperStrategy {
     if (/b2b/.test(text)) {
       out.add('B2B');
     }
+
     if (/uop|umowa o pracę|umowę o pracę/.test(text)) {
       out.add('PERMANENT');
     }
+
     if (/zlecenie|\buz\b/.test(text)) {
       out.add('MANDATE');
     }
+
     if (/dzieło|\buod\b/.test(text)) {
       out.add('OTHER');
     }

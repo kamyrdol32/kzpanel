@@ -67,6 +67,7 @@ export class AuthService {
     if (!user || !(await bcrypt.compare(password, user.passwordHash))) {
       throw new UnauthorizedException('Invalid credentials');
     }
+
     if (!user.isActive) {
       throw new UnauthorizedException('Account not activated');
     }

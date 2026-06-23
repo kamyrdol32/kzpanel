@@ -56,6 +56,7 @@ export class LinkedInStrategy implements JobScraperStrategy {
               byUrl.set(c.url, c);
             }
           }
+
           if (byUrl.size === before) {
             break;
           }

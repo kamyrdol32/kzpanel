@@ -60,6 +60,7 @@ export class BulldogJobStrategy implements JobScraperStrategy {
               byId.set(j.id, j);
             }
           }
+
           if (byId.size === before) {
             break;
           }
@@ -169,6 +170,7 @@ export class BulldogJobStrategy implements JobScraperStrategy {
     if (mode.includes('remote')) {
       return RemoteType.REMOTE;
     }
+
     if (mode.includes('hybrid')) {
       return RemoteType.HYBRID;
     }
@@ -180,9 +182,11 @@ export class BulldogJobStrategy implements JobScraperStrategy {
     if (j?.contractB2b) {
       out.push('B2B');
     }
+
     if (j?.contractEmployment) {
       out.push('PERMANENT');
     }
+
     if (j?.contractOther) {
       out.push('OTHER');
     }

@@ -77,6 +77,7 @@ export class JobsListPage implements OnInit, OnDestroy {
     for (let p = Math.max(2, current - 1); p <= Math.min(total - 1, current + 1); p++) {
       pages.push(p);
     }
+
     if (current < total - 2) {
       pages.push(-1);
     }
@@ -142,9 +143,11 @@ export class JobsListPage implements OnInit, OnDestroy {
     if (job.dismissed) {
       classes.push('job-row-dismissed');
     }
+
     if (job.staleAt) {
       classes.push('job-row-stale');
     }
+
     if (this.appliedJobIds().has(job.id)) {
       classes.push('job-row-applied');
     }
@@ -191,6 +194,7 @@ export class JobsListPage implements OnInit, OnDestroy {
         this.pendingScraperId = null;
         return;
       }
+
       if (this.selectedScraper()?.id === id) {
         return;
       }
@@ -213,12 +217,15 @@ export class JobsListPage implements OnInit, OnDestroy {
         if (v.search?.trim()) {
           filter.search = v.search.trim();
         }
+
         if (v.level) {
           filter.level = v.level as JobLevel;
         }
+
         if (v.remoteType) {
           filter.remoteType = v.remoteType as RemoteType;
         }
+
         if (v.language) {
           filter.language = v.language as Language;
         }

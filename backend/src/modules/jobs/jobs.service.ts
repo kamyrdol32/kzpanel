@@ -24,6 +24,7 @@ export class JobsService {
       if (!target) {
         throw new NotFoundException('Scrape target not found');
       }
+
       if (target.userId !== user.sub && user.role !== Role.ADMIN) {
         throw new ForbiddenException('Not your scrape target');
       }
@@ -34,12 +35,15 @@ export class JobsService {
     if (filter.search) {
       qb.andWhere('o.title ILIKE :search', { search: `%${filter.search}%` });
     }
+
     if (filter.source) {
       qb.andWhere('o.source = :source', { source: filter.source });
     }
+
     if (filter.language) {
       qb.andWhere('o.language = :language', { language: filter.language });
     }
+
     if (filter.scrapeTargetId) {
       qb.andWhere('o.scrapeTargetId = :scrapeTargetId', { scrapeTargetId: filter.scrapeTargetId });
     }
@@ -47,6 +51,7 @@ export class JobsService {
     if (filter.level) {
       qb.andWhere('o.levels @> :level::jsonb', { level: JSON.stringify([filter.level]) });
     }
+
     if (filter.remoteType) {
       qb.andWhere('o.remoteTypes @> :remoteType::jsonb', { remoteType: JSON.stringify([filter.remoteType]) });
     }
