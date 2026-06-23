@@ -10,9 +10,6 @@ import { dataSourceOptions } from './database/data-source';
 import { HealthModule } from './health/health.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { JobsModule } from './modules/jobs/jobs.module';
-import { MonitoringModule } from './modules/monitoring/monitoring.module';
-import { NotificationsModule } from './modules/notifications/notifications.module';
-import { ProjectsModule } from './modules/projects/projects.module';
 import { RecruitmentModule } from './modules/recruitment/recruitment.module';
 import { ScrapeTargetsModule } from './modules/scrape-targets/scrape-targets.module';
 import { UsersModule } from './modules/users/users.module';
@@ -30,17 +27,12 @@ import { UsersModule } from './modules/users/users.module';
       useFactory: () => ({ ...dataSourceOptions, autoLoadEntities: true }),
     }),
     ScheduleModule.forRoot(),
-    // cross-cutting
     AuditModule,
     HealthModule,
-    // domain
     UsersModule,
     AuthModule,
-    ProjectsModule,
     RecruitmentModule,
     JobsModule,
-    MonitoringModule,
-    NotificationsModule,
     ScrapeTargetsModule,
   ],
 })

@@ -48,36 +48,6 @@ export enum JobSource {
   MANUAL = 'MANUAL',
 }
 
-/** Monitored service status. */
-export enum ServiceStatus {
-  ONLINE = 'ONLINE',
-  OFFLINE = 'OFFLINE',
-  UNKNOWN = 'UNKNOWN',
-}
-
-/** Project lifecycle status. */
-export enum ProjectStatus {
-  ACTIVE = 'ACTIVE',
-  PAUSED = 'PAUSED',
-  ARCHIVED = 'ARCHIVED',
-  MAINTENANCE = 'MAINTENANCE',
-}
-
-/** Deployment outcome. */
-export enum DeploymentStatus {
-  SUCCESS = 'SUCCESS',
-  FAILED = 'FAILED',
-  ROLLED_BACK = 'ROLLED_BACK',
-}
-
-/** Notification category. */
-export enum NotificationType {
-  INFO = 'INFO',
-  SUCCESS = 'SUCCESS',
-  WARNING = 'WARNING',
-  ERROR = 'ERROR',
-}
-
 /** Audit log action. */
 export enum AuditAction {
   CREATE = 'CREATE',
