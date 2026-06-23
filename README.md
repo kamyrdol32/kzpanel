@@ -2,17 +2,13 @@
 
 Aggregates IT job offers from six Polish and global boards into one place, deduplicates them per saved search, and lets you track which ones you applied to.
 
-## Demo
-
-🔗 **Live:** [evpanel.kamilzeglen.pl](https://evpanel.kamilzeglen.pl)
-
 ## Authors
 
 | Author | Backend | Frontend |
 | :---: | :---: | :---: |
 | **Kamil Żegleń** ([kamyrdol32](https://github.com/kamyrdol32)) | 100% | 100% |
 
-## Tech stack
+## Tech Stack
 
 | Layer | Technologies |
 |-------|-------------|
@@ -46,14 +42,16 @@ Aggregates IT job offers from six Polish and global boards into one place, dedup
 - **backend** — owns auth, persistence, orchestration and offer normalization.
 - **scraper** — one guarded endpoint (`POST /scrape`); given a source + query it runs the matching strategy and returns raw offers. No state, no database access.
 
-## Requirements
+## Installation
+
+### Requirements
 
 - Docker & Docker Compose
 - External PostgreSQL (not included in the compose stack)
 
-## Environment variables
+### Environment Variables
 
-### `backend/.env`
+**`backend/.env`**
 
 ```bash
 POSTGRES_HOST=
@@ -74,14 +72,14 @@ SCRAPER_URL=http://scraper:3100
 SCRAPER_INTERNAL_TOKEN=
 ```
 
-### `scraper/.env`
+**`scraper/.env`**
 
 ```bash
 SCRAPER_PORT=3100
 INTERNAL_TOKEN=
 ```
 
-## Getting started
+### Run with Docker
 
 ```bash
 cp backend/.env.example backend/.env
@@ -92,7 +90,7 @@ docker compose up -d --build
 Nginx serves the app on port `80` (`/` → frontend, `/api` → backend).
 Database migrations run automatically on backend start.
 
-### Run locally (without Docker)
+### Run locally
 
 ```bash
 cd backend  && npm install && npm run start:dev
@@ -111,3 +109,16 @@ cd backend
 npm run migration:generate -- src/database/migrations/MigrationName
 npm run migration:run
 ```
+
+## Demo
+
+🔗 **Live:** [evpanel.kamilzeglen.pl](https://evpanel.kamilzeglen.pl)
+
+## Screenshots
+
+<!--
+Add screenshots after first deploy.
+Example:
+### Job offers list
+![Job offers list](https://i.imgur.com/example.png)
+-->
