@@ -6,11 +6,11 @@ const REFRESH = 'ev-refresh-token';
 /** Thin wrapper around token persistence (swap to httpOnly cookies later). */
 @Injectable({ providedIn: 'root' })
 export class TokenStorageService {
-  get accessToken(): string | null {
+  getAccessToken(): string | null {
     return localStorage.getItem(ACCESS);
   }
 
-  get refreshToken(): string | null {
+  getRefreshToken(): string | null {
     return localStorage.getItem(REFRESH);
   }
 

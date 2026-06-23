@@ -1,84 +1,113 @@
-# EvPanel 2.0
+# EvPanel
 
-Private operational application: project management hub, service monitoring,
-recruitment pipeline, job offer aggregator, and admin dashboard for personal apps.
+Aggregates IT job offers from six Polish and global boards into one place, deduplicates them per saved search, and lets you track which ones you applied to.
 
-> **This is not a portfolio.** It is a production-grade SaaS-class system designed
-> for long-term, multi-module growth.
+## Demo
 
-## Stack
+🔗 **Live:** [evpanel.kamilzeglen.pl](https://evpanel.kamilzeglen.pl)
 
-| Layer    | Technologies |
-|----------|-------------|
-| Frontend | Angular 20 (standalone, signals), RxJS, NgRx (Store/Effects/Entity), Angular Material, SCSS, ngx-translate, PWA |
-| Backend  | NestJS, TypeScript, PostgreSQL, TypeORM, JWT + Passport, Swagger, class-validator/transformer |
-| Scraper  | Stateless NestJS worker (endpoint + Playwright, Strategy Pattern) |
-| DevOps   | Docker, Docker Compose, Nginx (reverse proxy), healthchecks |
+## Authors
 
-## Repo structure
+| Author | Backend | Frontend |
+| :---: | :---: | :---: |
+| **Kamil Żegleń** ([kamyrdol32](https://github.com/kamyrdol32)) | 100% | 100% |
+
+## Tech stack
+
+| Layer | Technologies |
+|-------|-------------|
+| Frontend | Angular 20 (standalone, signals), NgRx (Store/Effects/Entity), RxJS, SCSS, ngx-translate, PWA |
+| Backend | NestJS, TypeScript, PostgreSQL, TypeORM (migrations), JWT + Passport, Swagger, class-validator |
+| Scraper | NestJS, Playwright (+ stealth), Strategy Pattern |
+| Tooling | Docker, Docker Compose, Nginx, ESLint + Prettier, TypeScript strict |
+
+## Highlights
+
+- **Six sources, one inbox** — NoFluffJobs, JustJoinIT, Pracuj.pl, BulldogJob, LinkedIn and theProtocol, each behind its own scraping strategy.
+- **Dedicated scraper microservice** — a stateless NestJS + Playwright worker. API-based boards use their JSON APIs; JS-rendered / Cloudflare-protected ones are driven through a stealth browser.
+- **Per-account saved searches** — every scraper belongs to the user who created it; offers are deduplicated per scraper so two searches on different boards never clash.
+- **Rich, normalized offers** — title, company, salary, work modes, contract types, seniority levels, tech stack, requirements and full description — mapped into one model regardless of source.
+- **Polished SPA** — Angular standalone components with signals, NgRx behind a facade layer, i18n (PL/EN), light/dark themes, PWA, and a sliding JWT session.
+
+## Architecture
 
 ```
-frontend/   Angular 20 SPA + Nginx (Dockerfile, nginx.conf, src/shared contracts)
-backend/    NestJS API (JWT, Swagger, TypeORM, migrations, Dockerfile, src/shared contracts)
-scraper/    Stateless worker (endpoint + Playwright, Dockerfile, src/shared contracts)
+┌────────────┐      ┌────────────┐      ┌──────────────────┐
+│  frontend  │ ───▶ │  backend   │ ───▶ │  scraper worker  │
+│ Angular SPA│ HTTP │ NestJS API │ HTTP │ NestJS+Playwright │
+└────────────┘      └─────┬──────┘      └──────────────────┘
+                          │
+                    ┌─────▼──────┐
+                    │ PostgreSQL │  (external)
+                    └────────────┘
 ```
 
-Each package is self-contained: it has its own `Dockerfile`, and contracts (enums/DTOs)
-are duplicated locally in `src/shared` (`@evpanel/shared` alias in the frontend tsconfig,
-relative paths in backend/scraper).
+- **frontend** — Angular SPA, served by Nginx which also reverse-proxies `/api`.
+- **backend** — owns auth, persistence, orchestration and offer normalization.
+- **scraper** — one guarded endpoint (`POST /scrape`); given a source + query it runs the matching strategy and returns raw offers. No state, no database access.
 
-Full architecture: see `docs/ARCHITECTURE.md` (if generated) or the project plan.
+## Requirements
 
-## Database (external)
+- Docker & Docker Compose
+- External PostgreSQL (not included in the compose stack)
 
-The project uses a **shared, external PostgreSQL** (separate repo:
-`C:\Users\<user>\docker\postgres`) — it does not spin up its own database. Start that
-server once, then point `.env` at it (defaults: `localhost:5432`, database/role/password `evpanel`).
+## Environment variables
 
-## Quick start (dev)
+### `backend/.env`
 
 ```bash
-cp backend/.env.example backend/.env   # fill in secrets
-cp scraper/.env.example scraper/.env   # fill in secrets
-# then run each service natively (see below)
+POSTGRES_HOST=
+POSTGRES_PORT=5432
+POSTGRES_USER=
+POSTGRES_PASSWORD=
+POSTGRES_DB=
+
+JWT_SECRET=
+JWT_REFRESH_SECRET=
+JWT_EXPIRES_IN=15m
+JWT_REFRESH_EXPIRES_IN=7d
+
+PORT=3000
+CORS_ORIGIN=https://evpanel.kamilzeglen.pl
+
+SCRAPER_URL=http://scraper:3100
+SCRAPER_INTERNAL_TOKEN=
 ```
 
-- Frontend: http://localhost:4200
-- Backend API: http://localhost:3000/api
-- Swagger: http://localhost:3000/api/docs
-- Health: http://localhost:3000/api/health
-
-## Running locally without Docker
-
-Each package independently:
+### `scraper/.env`
 
 ```bash
-cd backend && npm i && npm run start:dev
-cd scraper && npm i && npm run start:dev
-cd frontend && npm i && npm start
+SCRAPER_PORT=3100
+INTERNAL_TOKEN=
 ```
 
-## Production
+## Getting started
 
 ```bash
-cp backend/.env.example backend/.env   # fill in secrets
-cp scraper/.env.example scraper/.env   # fill in secrets
+cp backend/.env.example backend/.env
+cp scraper/.env.example scraper/.env
 docker compose up -d --build
 ```
 
-App served by Nginx on port `80` (`/` → frontend, `/api` → backend).
+Nginx serves the app on port `80` (`/` → frontend, `/api` → backend).
+Database migrations run automatically on backend start.
 
-## Migrations (backend)
+### Run locally (without Docker)
+
+```bash
+cd backend  && npm install && npm run start:dev
+cd scraper  && npm install && npm run start:dev
+cd frontend && npm install && npm start
+```
+
+- App: http://localhost:4200
+- Swagger: http://localhost:3000/api/docs
+- Health: http://localhost:3000/api/health
+
+### Database migrations
 
 ```bash
 cd backend
 npm run migration:generate -- src/database/migrations/MigrationName
 npm run migration:run
 ```
-
-## Conventions
-
-- TypeScript `strict`, ESLint + Prettier (config at root).
-- Frontend: standalone components, `OnPush`, **Facade-only** (components do not touch the Store directly).
-- Backend: domain modules, DTO + validation, thin services.
-- Commits: Conventional Commits.

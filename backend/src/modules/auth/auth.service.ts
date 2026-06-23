@@ -4,6 +4,7 @@ import { AuthTokens, JwtPayload, LoginResponse, Role } from '../../shared';
 import {
   BadRequestException,
   Injectable,
+  Logger,
   UnauthorizedException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -21,6 +22,8 @@ const SALT_ROUNDS = 12;
 
 @Injectable()
 export class AuthService {
+  private readonly logger = new Logger(AuthService.name);
+
   constructor(
     private readonly users: UsersService,
     private readonly jwt: JwtService,
@@ -30,7 +33,7 @@ export class AuthService {
   ) {}
 
   // ── Registration / activation ───────────────────────────────
-  async register(username: string, password: string, email?: string): Promise<{ activationToken: string }> {
+  async register(username: string, password: string, email?: string): Promise<{ activationToken?: string }> {
     const existing = await this.users.findByUsernameWithSecrets(username);
     if (existing) throw new BadRequestException('Username already taken');
 
@@ -43,7 +46,9 @@ export class AuthService {
       isActive: false,
       activationToken,
     });
-    return { activationToken };
+    // The token would normally be delivered by an activation email. Until that
+    // infrastructure exists it is exposed only outside production.
+    return { activationToken: this.devToken(activationToken, 'activation') };
   }
 
   async activate(token: string): Promise<void> {
@@ -87,14 +92,15 @@ export class AuthService {
   }
 
   // ── Password management ─────────────────────────────────────
-  async forgotPassword(email: string): Promise<{ resetToken: string } | void> {
+  async forgotPassword(email: string): Promise<{ resetToken?: string }> {
     const user = await this.users.findByEmailWithSecrets(email);
-    if (!user) return; // do not leak which emails exist
+    // Always answer the same way so the endpoint can't be used to probe which
+    // emails are registered.
+    if (!user) return {};
     const resetToken = randomUUID();
     const expires = new Date(Date.now() + 1000 * 60 * 30);
     await this.users.update(user.id, { resetToken, resetTokenExpiresAt: expires });
-    // TODO: email the reset link; token returned for dev convenience
-    return { resetToken };
+    return { resetToken: this.devToken(resetToken, 'password-reset') };
   }
 
   async resetPassword(token: string, newPassword: string): Promise<void> {
@@ -152,5 +158,19 @@ export class AuthService {
     } catch {
       throw new UnauthorizedException('Invalid refresh token');
     }
+  }
+
+  /**
+   * Activation / reset tokens are meant to reach the user by email. That
+   * infrastructure isn't wired up yet, so in production the token is only logged
+   * server-side and never returned to the client; outside production it is
+   * returned to keep local development frictionless.
+   */
+  private devToken(token: string, kind: string): string | undefined {
+    if (this.config.get('NODE_ENV') === 'production') {
+      this.logger.log(`Generated ${kind} token (would be emailed to the user)`);
+      return undefined;
+    }
+    return token;
   }
 }

@@ -11,7 +11,7 @@ import { TokenStorageService } from '../auth/token-storage.service';
  */
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const tokens = inject(TokenStorageService);
-  const token = tokens.accessToken;
+  const token = tokens.getAccessToken();
   const outgoing =
     token && req.url.includes('/api')
       ? req.clone({ setHeaders: { Authorization: `Bearer ${token}` } })

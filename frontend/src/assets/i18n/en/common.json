@@ -12,12 +12,9 @@
     "confirm": "Confirm"
   },
   "nav": {
-    "dashboard": "Dashboard",
-    "projects": "Projects",
     "recruitment": "Recruitment",
     "jobs": "Job offers",
-    "scraping": "Scraping",
-    "monitoring": "Monitoring"
+    "scraping": "Scraping"
   },
   "enum": {
     "remote": {

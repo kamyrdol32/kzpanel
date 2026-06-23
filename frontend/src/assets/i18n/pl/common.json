@@ -12,12 +12,9 @@
     "confirm": "Potwierdź"
   },
   "nav": {
-    "dashboard": "Pulpit",
-    "projects": "Projekty",
     "recruitment": "Rekrutacja",
     "jobs": "Oferty pracy",
-    "scraping": "Scrapowanie",
-    "monitoring": "Monitoring"
+    "scraping": "Scrapowanie"
   },
   "enum": {
     "remote": {

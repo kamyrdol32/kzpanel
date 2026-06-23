@@ -34,14 +34,23 @@ function sortJobs(jobs: JobOfferDto[], field: JobSortField, dir: SortDir): JobOf
   const sorted = [...jobs].sort((a, b) => {
     let cmp = 0;
 
-    if (field === 'publishedDate') {
-      cmp = (a.publishedDate ?? '').localeCompare(b.publishedDate ?? '');
-    } else if (field === 'salaryMin') {
-      cmp = (a.salaryMin ?? -1) - (b.salaryMin ?? -1);
-    } else if (field === 'title') {
-      cmp = a.title.localeCompare(b.title, undefined, { sensitivity: 'base' });
-    } else if (field === 'company') {
-      cmp = a.company.localeCompare(b.company, undefined, { sensitivity: 'base' });
+    switch (field) {
+      case 'publishedDate': {
+        cmp = (a.publishedDate ?? '').localeCompare(b.publishedDate ?? '');
+        break;
+      }
+      case 'salaryMin': {
+        cmp = (a.salaryMin ?? -1) - (b.salaryMin ?? -1);
+        break;
+      }
+      case 'title': {
+        cmp = a.title.localeCompare(b.title, undefined, { sensitivity: 'base' });
+        break;
+      }
+      case 'company': {
+        cmp = a.company.localeCompare(b.company, undefined, { sensitivity: 'base' });
+        break;
+      }
     }
 
     return dir === 'asc' ? cmp : -cmp;

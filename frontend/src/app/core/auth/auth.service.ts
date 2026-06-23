@@ -22,7 +22,7 @@ export class AuthService {
 
   private readonly _user = signal<AuthUser | null>(null);
   readonly user = this._user.asReadonly();
-  readonly isAuthenticated = computed(() => !!this.tokens.accessToken);
+  readonly isAuthenticated = computed(() => !!this.tokens.getAccessToken());
 
   constructor() {
     // Rehydrate the user from the stored access token after a reload, so the
@@ -32,7 +32,7 @@ export class AuthService {
 
   /** Build a user from the JWT payload (sub/username/role) carried in the access token. */
   private userFromToken(): AuthUser | null {
-    const token = this.tokens.accessToken;
+    const token = this.tokens.getAccessToken();
     if (!token) {
       return null;
     }
@@ -64,13 +64,13 @@ export class AuthService {
     );
   }
 
-  register(body: RegisterRequest): Observable<{ activationToken: string }> {
-    return this.http.post<{ activationToken: string }>(`${this.base}/register`, body);
+  register(body: RegisterRequest): Observable<{ activationToken?: string }> {
+    return this.http.post<{ activationToken?: string }>(`${this.base}/register`, body);
   }
 
   refresh(): Observable<AuthTokens> {
     return this.http
-      .post<AuthTokens>(`${this.base}/refresh`, { refreshToken: this.tokens.refreshToken })
+      .post<AuthTokens>(`${this.base}/refresh`, { refreshToken: this.tokens.getRefreshToken() })
       .pipe(tap((res) => this.tokens.set(res.accessToken, res.refreshToken)));
   }
 

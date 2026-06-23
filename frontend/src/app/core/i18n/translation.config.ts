@@ -3,7 +3,7 @@ import { TranslateLoader, TranslateModuleConfig } from '@ngx-translate/core';
 import { forkJoin, map, Observable } from 'rxjs';
 
 /** Namespaces matching assets/i18n/{lang}/*.json */
-const NAMESPACES = ['common', 'auth', 'dashboard', 'jobs', 'recruitment', 'scraping'] as const;
+const NAMESPACES = ['common', 'auth', 'jobs', 'recruitment', 'scraping'] as const;
 
 /**
  * Merges one or more namespace bundles for a language. The root config loads all
