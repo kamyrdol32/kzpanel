@@ -48,7 +48,8 @@
       "status": "Status",
       "statusNew": "Nowa",
       "statusApplied": "CV wysłane",
-      "statusDismissed": "Nieinteresujące"
+      "statusDismissed": "Nieinteresujące",
+      "statusStale": "Oferta zniknęła z portalu"
     },
     "dismissTitle": "Oznacz jako nieinteresujące",
     "restoreTitle": "Przywróć ofertę"

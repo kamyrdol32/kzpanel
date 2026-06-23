@@ -9,7 +9,13 @@
     "save": "Zapisz",
     "cancel": "Anuluj",
     "delete": "Usuń",
-    "confirm": "Potwierdź"
+    "confirm": "Potwierdź",
+    "search": {
+      "placeholder": "Szukaj po stanowisku lub firmie…",
+      "noResults": "Brak wyników",
+      "jobs": "Oferty pracy",
+      "recruitments": "Aplikacje"
+    }
   },
   "nav": {
     "recruitment": "Rekrutacja",
@@ -38,6 +44,15 @@
     "language": {
       "PL": "Polski",
       "EN": "Angielski"
+    },
+    "status": {
+      "NEW": "Nowa",
+      "CV_SENT": "CV wysłane",
+      "INTERVIEW": "Rozmowa",
+      "TECHNICAL": "Techniczne",
+      "OFFER": "Oferta",
+      "REJECTED": "Odrzucona",
+      "HIRED": "Zatrudniony"
     }
   },
   "settings": {

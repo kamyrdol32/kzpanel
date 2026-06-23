@@ -48,7 +48,8 @@
       "status": "Status",
       "statusNew": "New",
       "statusApplied": "CV sent",
-      "statusDismissed": "Not interested"
+      "statusDismissed": "Not interested",
+      "statusStale": "No longer on the portal"
     },
     "dismissTitle": "Mark as not interested",
     "restoreTitle": "Restore offer"

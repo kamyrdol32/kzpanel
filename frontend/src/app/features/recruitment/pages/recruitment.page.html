@@ -1,8 +1,56 @@
 <div class="ev-page">
-  <h1 class="ev-page-title">{{ 'recruitment.title' | translate }}</h1>
+  <div class="ev-row page-header-row">
+    <h1 class="ev-page-title" style="margin: 0">{{ 'recruitment.title' | translate }}</h1>
+    <ev-global-search />
+  </div>
+
+  <div class="filter-bar">
+    <div class="filter-row">
+      <div class="search-wrap">
+        <span class="material-symbols-rounded search-icon">search</span>
+        <input
+          class="search-input"
+          type="text"
+          [ngModel]="filterSearch()"
+          (ngModelChange)="filterSearch.set($event)"
+          [placeholder]="'recruitment.filter.search' | translate"
+        />
+      </div>
+
+      <select class="filter-select" [ngModel]="filterLevel()" (ngModelChange)="filterLevel.set($event)">
+        <option value="">{{ 'recruitment.filter.allLevels' | translate }}</option>
+        @for (l of levels; track l) {
+          <option [value]="l">{{ 'enum.level.' + l | translate }}</option>
+        }
+      </select>
+
+      <select class="filter-select" [ngModel]="filterStatus()" (ngModelChange)="filterStatus.set($event)">
+        <option value="">{{ 'recruitment.filter.allStatuses' | translate }}</option>
+        @for (s of statuses; track s) {
+          <option [value]="s">{{ 'enum.status.' + s | translate }}</option>
+        }
+      </select>
+
+      <select class="filter-select" [ngModel]="filterWorkMode()" (ngModelChange)="filterWorkMode.set($event)">
+        <option value="">{{ 'recruitment.filter.allModes' | translate }}</option>
+        @for (m of workModes; track m) {
+          <option [value]="m">{{ 'enum.remote.' + m | translate }}</option>
+        }
+      </select>
+
+      @if (activeFilters()) {
+        <button class="clear-btn" type="button" (click)="clearFilters()">
+          <span class="material-symbols-rounded">close</span>
+          {{ 'recruitment.filter.clear' | translate }}
+        </button>
+      }
+    </div>
+  </div>
 
   @if (facade.items().length === 0) {
     <ev-empty-state icon="work_history" [title]="'common.noData' | translate" />
+  } @else if (filteredItems().length === 0) {
+    <ev-empty-state icon="filter_list_off" [title]="'recruitment.filter.noResults' | translate" />
   } @else {
     <div class="table-wrap">
       <table class="rec-table">
@@ -19,7 +67,7 @@
           </tr>
         </thead>
         <tbody>
-          @for (r of facade.items(); track r.id) {
+          @for (r of filteredItems(); track r.id) {
             <tr class="clickable" (click)="toggleRow(r.id)">
               <td class="chevron">
                 <span class="material-symbols-rounded">{{ isExpanded(r.id) ? 'expand_more' : 'chevron_right' }}</span>

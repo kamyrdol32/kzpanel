@@ -13,6 +13,14 @@
     "updated": "Zaktualizowano",
     "jobOffer": "Powiązana oferta",
     "confirmDeleteTitle": "Usunąć rekrutację?",
-    "confirmDeleteMsg": "Ta operacja usunie wpis rekrutacji. Czy na pewno chcesz kontynuować?"
+    "confirmDeleteMsg": "Ta operacja usunie wpis rekrutacji. Czy na pewno chcesz kontynuować?",
+    "filter": {
+      "search": "Szukaj po firmie lub stanowisku…",
+      "allLevels": "Wszystkie poziomy",
+      "allStatuses": "Wszystkie statusy",
+      "allModes": "Wszystkie tryby pracy",
+      "clear": "Wyczyść",
+      "noResults": "Brak pasujących wpisów"
+    }
   }
 }

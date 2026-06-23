@@ -82,4 +82,8 @@ export class JobOffer extends BaseEntity {
   @Index()
   @Column({ type: 'boolean', default: false })
   dismissed!: boolean;
+
+  /** Set when the scraper no longer returns this offer; null means still active on the portal. */
+  @Column({ type: 'timestamptz', nullable: true, default: null })
+  staleAt!: Date | null;
 }

@@ -89,14 +89,15 @@ export class ScrapeOrchestratorService {
     return count;
   }
 
-  /** Hard-delete this target's offers whose URL was not in the latest run. */
+  /** Mark offers that the scraper no longer returns as stale instead of deleting them. */
   private async pruneStale(scrapeTargetId: string, keepUrls: string[]): Promise<number> {
     const res = await this.offers
       .createQueryBuilder()
-      .delete()
-      .from(JobOffer)
+      .update(JobOffer)
+      .set({ staleAt: new Date() })
       .where('scrapeTargetId = :scrapeTargetId', { scrapeTargetId })
       .andWhere('sourceUrl NOT IN (:...keepUrls)', { keepUrls })
+      .andWhere('staleAt IS NULL')
       .execute();
     return res.affected ?? 0;
   }
@@ -162,9 +163,9 @@ export class ScrapeOrchestratorService {
       .getOne();
 
     if (existing) {
-      await this.offers.update(existing.id, payload);
+      await this.offers.update(existing.id, { ...payload, staleAt: null });
     } else {
-      await this.offers.insert(this.offers.create(payload));
+      await this.offers.insert(this.offers.create({ ...payload, staleAt: null }));
     }
   }
 }

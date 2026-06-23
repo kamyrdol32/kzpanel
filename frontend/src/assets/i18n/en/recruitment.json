@@ -13,6 +13,14 @@
     "updated": "Updated",
     "jobOffer": "Linked offer",
     "confirmDeleteTitle": "Delete recruitment?",
-    "confirmDeleteMsg": "This will remove the recruitment entry. Are you sure you want to continue?"
+    "confirmDeleteMsg": "This will remove the recruitment entry. Are you sure you want to continue?",
+    "filter": {
+      "search": "Search by company or position…",
+      "allLevels": "All levels",
+      "allStatuses": "All statuses",
+      "allModes": "All work modes",
+      "clear": "Clear",
+      "noResults": "No matching entries"
+    }
   }
 }

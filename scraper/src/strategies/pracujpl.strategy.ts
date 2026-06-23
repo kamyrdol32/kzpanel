@@ -6,8 +6,13 @@ import { PlaywrightFetcher } from '../playwright/playwright.fetcher';
 
 import { JobRaw, JobScraperStrategy, JobStub } from './job-scraper.strategy';
 
-const SEARCH_URL = (query: string): string =>
-  `https://www.pracuj.pl/praca/${encodeURIComponent(query)};kw`;
+const SEARCH_URL = (query: string, location?: string): string => {
+  const base = `https://www.pracuj.pl/praca/${encodeURIComponent(query)};kw`;
+  if (location?.trim()) {
+    return `${base}/${encodeURIComponent(location.trim())};wp`;
+  }
+  return base;
+};
 
 /**
  * Pracuj.pl strategy — manual page scrape.
@@ -29,11 +34,15 @@ export class PracujPlStrategy implements JobScraperStrategy {
 
   async fetchList(params: ScrapeParams): Promise<JobStub[]> {
     const query = (params.query ?? '').trim();
+    const location = params.location?.trim() || null;
     const byId = new Map<string, PracujCard>();
+
+    const label = location ? `"${query}" in "${location}"` : `"${query}"`;
+    this.logger.log(`Scraping: query=${query}, location=${location ?? 'any'}, remote=${params.remoteType ?? 'any'}`);
 
     try {
       await this.fetcher.withPage(async (page) => {
-        await page.goto(SEARCH_URL(query), { waitUntil: 'domcontentloaded', timeout: 40_000 });
+        await page.goto(SEARCH_URL(query, params.location), { waitUntil: 'domcontentloaded', timeout: 40_000 });
         await this.acceptCookies(page);
         await page.waitForSelector('[data-test="default-offer"]', { timeout: 15_000 }).catch(() => undefined);
 
@@ -41,12 +50,12 @@ export class PracujPlStrategy implements JobScraperStrategy {
           const el = document.querySelector('[data-test="top-pagination-max-page-number"]');
           return Number(el?.textContent?.trim() ?? '1') || 1;
         });
-        this.logger.log(`"${query}" — ${maxPage} page(s)`);
+        this.logger.log(`${label} — ${maxPage} page(s)`);
 
         const pages = Math.min(maxPage, PracujPlStrategy.MAX_PAGES);
         for (let pn = 1; pn <= pages; pn++) {
           if (pn > 1) {
-            await page.goto(`${SEARCH_URL(query)}?pn=${pn}`, { waitUntil: 'domcontentloaded', timeout: 40_000 });
+            await page.goto(`${SEARCH_URL(query, params.location)}?pn=${pn}`, { waitUntil: 'domcontentloaded', timeout: 40_000 });
             await page.waitForSelector('[data-test="default-offer"]', { timeout: 15_000 }).catch(() => undefined);
             await page.waitForTimeout(800);
           }
@@ -71,7 +80,7 @@ export class PracujPlStrategy implements JobScraperStrategy {
       cards = cards.filter((c) => this.isRemote(c.region));
     }
 
-    this.logger.log(`"${query}" → ${cards.length} offers (remote=${params.remoteType === RemoteType.REMOTE})`);
+    this.logger.log(`${label} → ${cards.length} offers`);
 
     return cards
       .filter((c) => c.url)

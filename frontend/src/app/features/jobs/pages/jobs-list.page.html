@@ -1,4 +1,8 @@
 <div class="ev-page">
+  <div class="ev-row page-header-row">
+    <ev-global-search />
+  </div>
+
   @if (!selectedScraper()) {
     <!-- Step 1: pick a scraper -->
     <div class="ev-row" style="margin-bottom: 16px">
@@ -121,6 +125,10 @@
         } @else if (job.dismissed) {
           <span class="status-dot status-dot-dismissed" [title]="'jobs.detail.statusDismissed' | translate">
             <span class="material-symbols-rounded">visibility_off</span>
+          </span>
+        } @else if (job.staleAt) {
+          <span class="status-dot status-dot-stale" [title]="'jobs.detail.statusStale' | translate">
+            <span class="material-symbols-rounded">history</span>
           </span>
         }
       </ng-template>

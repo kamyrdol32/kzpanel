@@ -1,0 +1,51 @@
+<div class="search-wrap">
+  <div class="search-input-row">
+    <span class="material-symbols-rounded search-icon">search</span>
+    <input
+      #inputRef
+      class="search-input"
+      type="text"
+      [(ngModel)]="query"
+      (input)="onInput()"
+      [placeholder]="'common.search.placeholder' | translate"
+      autocomplete="off"
+    />
+    @if (loading) {
+      <span class="search-spinner material-symbols-rounded">progress_activity</span>
+    }
+  </div>
+
+  @if (open) {
+    <div class="search-dropdown">
+      @if (!hasResults) {
+        <p class="search-empty">{{ 'common.search.noResults' | translate }}</p>
+      }
+
+      @if ((results?.recruitments?.length ?? 0) > 0) {
+        <div class="search-section">
+          <p class="search-section-label">{{ 'common.search.recruitments' | translate }}</p>
+          @for (r of results!.recruitments; track r.id) {
+            <button class="search-item" type="button" (click)="openRecruitment()">
+              <span class="search-item-primary">{{ r.company }}</span>
+              <span class="search-item-secondary">{{ r.position }}</span>
+              <span class="search-item-badge search-item-badge--recruitment">{{ 'enum.status.' + r.status | translate }}</span>
+            </button>
+          }
+        </div>
+      }
+
+      @if ((results?.jobs?.length ?? 0) > 0) {
+        <div class="search-section">
+          <p class="search-section-label">{{ 'common.search.jobs' | translate }}</p>
+          @for (job of results!.jobs; track job.id) {
+            <button class="search-item" type="button" (click)="openJob(job)">
+              <span class="search-item-primary">{{ job.company }}</span>
+              <span class="search-item-secondary">{{ job.title }}</span>
+              <span class="search-item-badge">{{ job.source }}</span>
+            </button>
+          }
+        </div>
+      }
+    </div>
+  }
+</div>

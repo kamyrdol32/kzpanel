@@ -11,6 +11,7 @@ import { RecruitmentFacade } from '../../recruitment/facade/recruitment.facade';
 import { ScrapingApi } from '../../scraping/data-access/scraping.api';
 import { DataTableComponent, SortState, TableColumn } from '../../../shared/ui/data-table/data-table.component';
 import { EmptyStateComponent } from '../../../shared/ui/empty-state/empty-state.component';
+import { GlobalSearchComponent } from '../../../shared/ui/global-search/global-search.component';
 import { SkeletonLoaderComponent } from '../../../shared/ui/skeleton-loader/skeleton-loader.component';
 import { StatusBadgeComponent } from '../../../shared/ui/status-badge/status-badge.component';
 import { JobsFacade } from '../facade/jobs.facade';
@@ -25,6 +26,7 @@ import { JobSortField } from '../store/jobs.actions';
     ReactiveFormsModule,
     DataTableComponent,
     EmptyStateComponent,
+    GlobalSearchComponent,
     SkeletonLoaderComponent,
     StatusBadgeComponent,
     TranslateModule,
@@ -121,6 +123,7 @@ export class JobsListPage implements OnInit, OnDestroy {
   protected readonly rowClass = (job: JobOfferDto): string => {
     const classes: string[] = [];
     if (job.dismissed) classes.push('job-row-dismissed');
+    if (job.staleAt) classes.push('job-row-stale');
     if (this.appliedJobIds().has(job.id)) classes.push('job-row-applied');
     return classes.join(' ');
   };

@@ -28,6 +28,8 @@ export interface JobOfferDto extends BaseEntityDto {
   scrapeTargetId: string | null;
   /** reviewed and marked as not interesting — hidden/greyed on the list */
   dismissed: boolean;
+  /** set when the scraper no longer returns this offer; null means still active on the portal */
+  staleAt: string | null;
 }
 
 /** Partial update for an offer (e.g. mark as dismissed). */

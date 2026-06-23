@@ -12,6 +12,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { JobsModule } from './modules/jobs/jobs.module';
 import { RecruitmentModule } from './modules/recruitment/recruitment.module';
 import { ScrapeTargetsModule } from './modules/scrape-targets/scrape-targets.module';
+import { SearchModule } from './modules/search/search.module';
 import { UsersModule } from './modules/users/users.module';
 
 @Module({
@@ -34,6 +35,7 @@ import { UsersModule } from './modules/users/users.module';
     RecruitmentModule,
     JobsModule,
     ScrapeTargetsModule,
+    SearchModule,
   ],
 })
 export class AppModule {}

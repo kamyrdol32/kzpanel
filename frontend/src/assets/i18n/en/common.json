@@ -9,7 +9,13 @@
     "save": "Save",
     "cancel": "Cancel",
     "delete": "Delete",
-    "confirm": "Confirm"
+    "confirm": "Confirm",
+    "search": {
+      "placeholder": "Search by position or company…",
+      "noResults": "No results found",
+      "jobs": "Job offers",
+      "recruitments": "Applications"
+    }
   },
   "nav": {
     "recruitment": "Recruitment",
@@ -38,6 +44,15 @@
     "language": {
       "PL": "Polish",
       "EN": "English"
+    },
+    "status": {
+      "NEW": "New",
+      "CV_SENT": "CV sent",
+      "INTERVIEW": "Interview",
+      "TECHNICAL": "Technical",
+      "OFFER": "Offer",
+      "REJECTED": "Rejected",
+      "HIRED": "Hired"
     }
   },
   "settings": {

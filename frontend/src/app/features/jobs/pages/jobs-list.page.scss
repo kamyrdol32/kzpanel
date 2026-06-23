@@ -1,3 +1,8 @@
+.page-header-row {
+  margin-bottom: 20px;
+  justify-content: flex-end;
+}
+
 // ── expanded offer detail panel ───────────────────────────────────────
 .offer-detail {
   padding: 20px 24px 24px;
@@ -408,6 +413,10 @@
   &-dismissed {
     color: var(--ev-text-muted);
   }
+
+  &-stale {
+    color: var(--ev-warning, #f59e0b);
+  }
 }
 
 // ── row state styling (driven by rowClass) ────────────────────────────
@@ -417,6 +426,10 @@
   .cell {
     text-decoration: line-through;
   }
+}
+
+:host ::ng-deep .job-row-stale td {
+  opacity: 0.6;
 }
 
 :host ::ng-deep .job-row-applied {
