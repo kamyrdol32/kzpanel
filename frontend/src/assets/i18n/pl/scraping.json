@@ -16,6 +16,12 @@
     "scrapeNow": "Scrapuj teraz",
     "empty": "Brak skonfigurowanych celów scrapowania",
     "lastRun": "Ostatni przebieg",
-    "offerCount": "Liczba pobranych ofert"
+    "offerCount": "Liczba pobranych ofert",
+    "clearOffers": "Wyczyść oferty",
+    "confirmDeleteTitle": "Usunąć scraper?",
+    "confirmDeleteMsg": "Ta operacja trwale usunie scraper wraz ze wszystkimi jego ofertami.",
+    "confirmClearTitle": "Wyczyścić oferty?",
+    "confirmClearMsg": "Ta operacja trwale usunie wszystkie oferty pobrane przez ten scraper. Sam scraper pozostanie.",
+    "confirmClearAction": "Wyczyść"
   }
 }

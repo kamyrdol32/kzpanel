@@ -10,6 +10,7 @@
     "cancel": "Cancel",
     "delete": "Delete",
     "confirm": "Confirm",
+    "edit": "Edit",
     "search": {
       "placeholder": "Search by position or company…",
       "noResults": "No results found",

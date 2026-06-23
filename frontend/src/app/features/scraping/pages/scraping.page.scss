@@ -206,6 +206,61 @@ select {
     background: color-mix(in srgb, var(--ev-accent) 5%, transparent);
     border-left: 3px solid var(--ev-accent);
   }
+
+  &-editing {
+    background: var(--ev-surface-2);
+    align-items: center;
+  }
+}
+
+.edit-fields {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  flex-wrap: wrap;
+}
+
+.edit-input {
+  height: 32px;
+  padding: 0 10px;
+  background: var(--ev-bg);
+  border: 1px solid var(--ev-border);
+  border-radius: 8px;
+  color: var(--ev-text);
+  font-size: $fs-sm;
+  outline: none;
+  min-width: 140px;
+  transition: border-color 0.15s;
+
+  &:focus {
+    border-color: var(--ev-accent);
+  }
+}
+
+.edit-select {
+  height: 32px;
+  padding: 0 8px;
+  background: var(--ev-bg);
+  border: 1px solid var(--ev-border);
+  border-radius: 8px;
+  color: var(--ev-text);
+  font-size: $fs-sm;
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.15s;
+
+  &:focus {
+    border-color: var(--ev-accent);
+  }
+}
+
+.icon-btn.save {
+  color: var(--ev-success, #22c55e);
+
+  &:hover {
+    background: color-mix(in srgb, var(--ev-success, #22c55e) 12%, transparent);
+    color: var(--ev-success, #22c55e);
+  }
 }
 
 .running-indicator {

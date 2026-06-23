@@ -1,5 +1,5 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
-import { CreateScrapeTargetRequest, Role, ScrapeTargetDto } from '@evpanel/shared';
+import { CreateScrapeTargetRequest, Role, ScrapeTargetDto, UpdateScrapeTargetRequest } from '@evpanel/shared';
 import { finalize } from 'rxjs';
 
 import { AuthService } from '../../../core/auth/auth.service';
@@ -35,6 +35,14 @@ export class ScrapingFacade {
 
   add(body: CreateScrapeTargetRequest): void {
     this.api.create(body).subscribe({ next: () => this.load() });
+  }
+
+  edit(id: string, body: UpdateScrapeTargetRequest): void {
+    this.api.update(id, body).subscribe({ next: () => this.load() });
+  }
+
+  clearOffers(id: string): void {
+    this.api.clearOffers(id).subscribe({ next: () => this.load() });
   }
 
   remove(id: string): void {

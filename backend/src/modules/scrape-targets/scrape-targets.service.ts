@@ -85,6 +85,17 @@ export class ScrapeTargetsService {
     return this.findOne(id);
   }
 
+  async clearOffers(id: string): Promise<{ deleted: number }> {
+    await this.findOne(id);
+    const result = await this.offers
+      .createQueryBuilder()
+      .delete()
+      .from(JobOffer)
+      .where('scrapeTargetId = :id', { id })
+      .execute();
+    return { deleted: result.affected ?? 0 };
+  }
+
   /** Removes the target AND hard-deletes every offer it fetched. */
   async remove(id: string): Promise<void> {
     await this.findOne(id);

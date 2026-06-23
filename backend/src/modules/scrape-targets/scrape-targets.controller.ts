@@ -58,6 +58,12 @@ export class ScrapeTargetsController {
     return this.targets.update(id, dto);
   }
 
+  @Delete(':id/offers')
+  async clearOffers(@Param('id') id: string, @CurrentUser() user: JwtPayload) {
+    await this.targets.findOneForUser(id, user.sub, user.role);
+    return this.targets.clearOffers(id);
+  }
+
   @Delete(':id')
   async remove(@Param('id') id: string, @CurrentUser() user: JwtPayload) {
     await this.targets.findOneForUser(id, user.sub, user.role);

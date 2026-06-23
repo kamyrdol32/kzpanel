@@ -16,6 +16,12 @@
     "scrapeNow": "Scrape now",
     "empty": "No scraping targets configured",
     "lastRun": "Last run",
-    "offerCount": "Number of fetched offers"
+    "offerCount": "Number of fetched offers",
+    "clearOffers": "Clear all offers",
+    "confirmDeleteTitle": "Delete scraper?",
+    "confirmDeleteMsg": "This will permanently remove the scraper and all its offers.",
+    "confirmClearTitle": "Clear offers?",
+    "confirmClearMsg": "This will permanently delete all offers fetched by this scraper. The scraper itself will remain.",
+    "confirmClearAction": "Clear"
   }
 }

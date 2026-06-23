@@ -3,6 +3,7 @@ import {
   CreateScrapeTargetRequest,
   ScrapeRunResult,
   ScrapeTargetDto,
+  UpdateScrapeTargetRequest,
 } from '@evpanel/shared';
 import { Observable } from 'rxjs';
 
@@ -23,6 +24,14 @@ export class ScrapingApi {
 
   create(body: CreateScrapeTargetRequest): Observable<ScrapeTargetDto> {
     return this.api.post<ScrapeTargetDto>('/scrape-targets', body);
+  }
+
+  update(id: string, body: UpdateScrapeTargetRequest): Observable<ScrapeTargetDto> {
+    return this.api.patch<ScrapeTargetDto>(`/scrape-targets/${id}`, body);
+  }
+
+  clearOffers(id: string): Observable<{ deleted: number }> {
+    return this.api.delete<{ deleted: number }>(`/scrape-targets/${id}/offers`);
   }
 
   remove(id: string): Observable<void> {
