@@ -86,7 +86,7 @@
                     formControlName="query"
                     [placeholder]="'scraping.fieldKeyword' | translate"
                   />
-                  @if (hasEditField('location')) {
+                  @if (editHasLocation()) {
                     <input
                       class="edit-input"
                       type="text"
@@ -94,9 +94,9 @@
                       [placeholder]="'scraping.location' | translate"
                     />
                   }
-                  @if (hasEditField('remoteType')) {
+                  @if (editHasRemote()) {
                     <select class="edit-select" formControlName="remoteType">
-                      @for (opt of getEditField('remoteType')!.options; track opt.value) {
+                      @for (opt of editRemoteOptions(); track opt.value) {
                         <option [value]="opt.value">{{ opt.label }}</option>
                       }
                     </select>

@@ -26,17 +26,23 @@ export class AuditSubscriber implements EntitySubscriberInterface {
   }
 
   async afterInsert(event: InsertEvent<unknown>): Promise<void> {
-    if (!this.isAuditable(event.metadata.name)) return;
+    if (!this.isAuditable(event.metadata.name)) {
+      return;
+    }
     await this.write(event, AuditAction.CREATE, event.entity);
   }
 
   async afterUpdate(event: UpdateEvent<unknown>): Promise<void> {
-    if (!this.isAuditable(event.metadata.name)) return;
+    if (!this.isAuditable(event.metadata.name)) {
+      return;
+    }
     await this.write(event, AuditAction.UPDATE, event.entity);
   }
 
   async afterRemove(event: RemoveEvent<unknown>): Promise<void> {
-    if (!this.isAuditable(event.metadata.name)) return;
+    if (!this.isAuditable(event.metadata.name)) {
+      return;
+    }
     await this.write(event, AuditAction.DELETE, event.databaseEntity);
   }
 
@@ -45,7 +51,9 @@ export class AuditSubscriber implements EntitySubscriberInterface {
     action: AuditAction,
     entity: unknown,
   ): Promise<void> {
-    if (!entity) return;
+    if (!entity) {
+      return;
+    }
     const record = entity as { id?: string; constructor: { name: string } };
 
     const log = new AuditLog();

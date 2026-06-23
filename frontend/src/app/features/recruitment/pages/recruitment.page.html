@@ -67,22 +67,22 @@
           </tr>
         </thead>
         <tbody>
-          @for (r of filteredItems(); track r.id) {
-            <tr class="clickable" (click)="toggleRow(r.id)">
+          @for (row of rows(); track row.id) {
+            <tr class="clickable" (click)="toggleRow(row.id)">
               <td class="chevron">
-                <span class="material-symbols-rounded">{{ isExpanded(r.id) ? 'expand_more' : 'chevron_right' }}</span>
+                <span class="material-symbols-rounded">{{ row.expanded ? 'expand_more' : 'chevron_right' }}</span>
               </td>
-              <td class="trunc" [title]="r.company">{{ r.company }}</td>
-              <td class="trunc" [title]="r.position">{{ r.position }}</td>
-              <td>{{ 'enum.level.' + r.level | translate }}</td>
-              <td>{{ r.salaryMin ? (r.salaryMin + '–' + (r.salaryMax ?? '') + ' ' + (r.currency ?? '')) : '—' }}</td>
-              <td>{{ r.appliedAt ? (r.appliedAt | date: 'shortDate') : '—' }}</td>
+              <td class="trunc" [title]="row.company">{{ row.company }}</td>
+              <td class="trunc" [title]="row.position">{{ row.position }}</td>
+              <td>{{ 'enum.level.' + row.level | translate }}</td>
+              <td>{{ row.salaryMin ? (row.salaryMin + '–' + (row.salaryMax ?? '') + ' ' + (row.currency ?? '')) : '—' }}</td>
+              <td>{{ row.appliedAt ? (row.appliedAt | date: 'shortDate') : '—' }}</td>
               <td>
                 <select
                   class="status-select"
-                  [class]="'tone-' + tone(r.status)"
-                  [ngModel]="r.status"
-                  (ngModelChange)="onStatusChange(r.id, $event)"
+                  [class]="'tone-' + row.toneClass"
+                  [ngModel]="row.status"
+                  (ngModelChange)="onStatusChange(row.id, $event)"
                   (click)="$event.stopPropagation()"
                 >
                   @for (s of statuses; track s) { <option [value]="s">{{ s }}</option> }
@@ -92,61 +92,61 @@
                 <button
                   class="icon-danger"
                   [title]="'common.delete' | translate"
-                  (click)="$event.stopPropagation(); askDelete(r)"
+                  (click)="$event.stopPropagation(); askDelete(row)"
                 >
                   <span class="material-symbols-rounded">delete</span>
                 </button>
               </td>
             </tr>
-            @if (isExpanded(r.id)) {
+            @if (row.expanded) {
               <tr class="details-row">
                 <td colspan="8">
                   <div class="details" @slideDown>
                     <div class="details-grid">
                       <div class="field">
                         <span class="field-label">{{ 'recruitment.company' | translate }}</span>
-                        <span class="field-value">{{ r.company }}</span>
+                        <span class="field-value">{{ row.company }}</span>
                       </div>
                       <div class="field">
                         <span class="field-label">{{ 'recruitment.position' | translate }}</span>
-                        <span class="field-value">{{ r.position }}</span>
+                        <span class="field-value">{{ row.position }}</span>
                       </div>
                       <div class="field">
                         <span class="field-label">{{ 'recruitment.level' | translate }}</span>
-                        <span class="field-value">{{ 'enum.level.' + r.level | translate }}</span>
+                        <span class="field-value">{{ 'enum.level.' + row.level | translate }}</span>
                       </div>
                       <div class="field">
                         <span class="field-label">{{ 'recruitment.workMode' | translate }}</span>
-                        <span class="field-value">{{ 'enum.remote.' + r.workMode | translate }}</span>
+                        <span class="field-value">{{ 'enum.remote.' + row.workMode | translate }}</span>
                       </div>
                       <div class="field">
                         <span class="field-label">{{ 'recruitment.salary' | translate }}</span>
-                        <span class="field-value">{{ r.salaryMin ? (r.salaryMin + '–' + (r.salaryMax ?? '') + ' ' + (r.currency ?? '')) : '—' }}</span>
+                        <span class="field-value">{{ row.salaryMin ? (row.salaryMin + '–' + (row.salaryMax ?? '') + ' ' + (row.currency ?? '')) : '—' }}</span>
                       </div>
                       <div class="field">
                         <span class="field-label">{{ 'recruitment.status' | translate }}</span>
-                        <span class="field-value">{{ r.status }}</span>
+                        <span class="field-value">{{ row.status }}</span>
                       </div>
                       <div class="field">
                         <span class="field-label">{{ 'recruitment.applied' | translate }}</span>
-                        <span class="field-value">{{ r.appliedAt ? (r.appliedAt | date: 'dd.MM.yyyy HH:mm') : '—' }}</span>
+                        <span class="field-value">{{ row.appliedAt ? (row.appliedAt | date: 'dd.MM.yyyy HH:mm') : '—' }}</span>
                       </div>
                       <div class="field">
                         <span class="field-label">{{ 'recruitment.created' | translate }}</span>
-                        <span class="field-value">{{ r.createdAt | date: 'dd.MM.yyyy HH:mm' }}</span>
+                        <span class="field-value">{{ row.createdAt | date: 'dd.MM.yyyy HH:mm' }}</span>
                       </div>
                       <div class="field">
                         <span class="field-label">{{ 'recruitment.updated' | translate }}</span>
-                        <span class="field-value">{{ r.updatedAt | date: 'dd.MM.yyyy HH:mm' }}</span>
+                        <span class="field-value">{{ row.updatedAt | date: 'dd.MM.yyyy HH:mm' }}</span>
                       </div>
                       <div class="field">
                         <span class="field-label">{{ 'recruitment.jobOffer' | translate }}</span>
-                        <span class="field-value field-value-mono">{{ r.jobOfferId ?? '—' }}</span>
+                        <span class="field-value field-value-mono">{{ row.jobOfferId ?? '—' }}</span>
                       </div>
                     </div>
                     <div class="field field-full">
                       <span class="field-label">{{ 'recruitment.notes' | translate }}</span>
-                      <span class="field-value">{{ r.notes || '—' }}</span>
+                      <span class="field-value">{{ row.notes || '—' }}</span>
                     </div>
                   </div>
                 </td>

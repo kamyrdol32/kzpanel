@@ -1,5 +1,5 @@
 import { NgTemplateOutlet } from '@angular/common';
-import { Component, contentChild, input, output, TemplateRef } from '@angular/core';
+import { Component, computed, contentChild, input, output, TemplateRef } from '@angular/core';
 
 export interface TableColumn<T> {
   key: keyof T | string;
@@ -51,32 +51,32 @@ export interface SortState {
           </tr>
         </thead>
         <tbody>
-          @for (row of rows(); track trackBy()(row)) {
+          @for (dr of displayRows(); track dr.id) {
             <tr
-              [class]="rowClass()(row)"
+              [class]="dr.cls"
               [class.table-row-clickable]="!!clickable()"
-              [class.table-row-selected]="selectedId() === trackBy()(row)"
-              (click)="clickable() && rowClick.emit(row)"
+              [class.table-row-selected]="dr.id === selectedId()"
+              (click)="clickable() && rowClick.emit(dr.raw)"
             >
               @if (rowPrefix(); as prefTpl) {
                 <td class="table-prefix" (click)="$event.stopPropagation()">
-                  <ng-container [ngTemplateOutlet]="prefTpl" [ngTemplateOutletContext]="{ $implicit: row }" />
+                  <ng-container [ngTemplateOutlet]="prefTpl" [ngTemplateOutletContext]="{ $implicit: dr.raw }" />
                 </td>
               }
-              @for (col of columns(); track col.key) {
-                <td><span class="cell" [title]="cell(row, col)">{{ cell(row, col) }}</span></td>
+              @for (c of dr.cells; track c.key) {
+                <td><span class="cell" [title]="c.value">{{ c.value }}</span></td>
               }
               @if (actions(); as tpl) {
                 <td class="table-actions" (click)="$event.stopPropagation()">
-                  <ng-container [ngTemplateOutlet]="tpl" [ngTemplateOutletContext]="{ $implicit: row }" />
+                  <ng-container [ngTemplateOutlet]="tpl" [ngTemplateOutletContext]="{ $implicit: dr.raw }" />
                 </td>
               }
             </tr>
             @if (expanded(); as expTpl) {
-              @if (selectedId() === trackBy()(row)) {
+              @if (dr.id === selectedId()) {
                 <tr class="table-row-expanded">
                   <td [attr.colspan]="columns().length + (actions() ? 1 : 0) + (rowPrefix() ? 1 : 0)">
-                    <ng-container [ngTemplateOutlet]="expTpl" [ngTemplateOutletContext]="{ $implicit: row }" />
+                    <ng-container [ngTemplateOutlet]="expTpl" [ngTemplateOutletContext]="{ $implicit: dr.raw }" />
                   </td>
                 </tr>
               }
@@ -104,6 +104,19 @@ export class DataTableComponent<T> {
   readonly actions = contentChild<TemplateRef<{ $implicit: T }>>('actions');
   readonly expanded = contentChild<TemplateRef<{ $implicit: T }>>('expanded');
 
+  /** Pre-rendered rows so the template reads data instead of calling methods. */
+  protected readonly displayRows = computed(() => {
+    const cols = this.columns();
+    const trackBy = this.trackBy();
+    const rowClass = this.rowClass();
+    return this.rows().map((row) => ({
+      raw: row,
+      id: trackBy(row),
+      cls: rowClass(row),
+      cells: cols.map((col) => ({ key: col.key, value: this.cell(row, col) })),
+    }));
+  });
+
   protected onHeaderClick(key: string): void {
     const current = this.activeSort();
     const dir: 'asc' | 'desc' =
@@ -113,7 +126,7 @@ export class DataTableComponent<T> {
     this.sortChange.emit({ key, dir });
   }
 
-  protected cell(row: T, col: TableColumn<T>): string | number {
+  private cell(row: T, col: TableColumn<T>): string | number {
     const raw = col.value ? col.value(row) : (row as Record<string, unknown>)[col.key as string];
     return raw == null ? '—' : (raw as string | number);
   }

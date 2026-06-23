@@ -23,6 +23,7 @@ export class GlobalSearchComponent {
 
   protected query = '';
   protected results: SearchResultsDto | null = null;
+  protected hasResults = false;
   protected loading = false;
   protected open = false;
 
@@ -35,7 +36,7 @@ export class GlobalSearchComponent {
         distinctUntilChanged(),
         switchMap((q) => {
           if (q.length < 2) {
-            this.results = null;
+            this.setResults(null);
             this.loading = false;
             return [];
           }
@@ -45,7 +46,7 @@ export class GlobalSearchComponent {
       )
       .subscribe({
         next: (res) => {
-          this.results = res as SearchResultsDto;
+          this.setResults(res as SearchResultsDto);
           this.loading = false;
           this.open = true;
         },
@@ -58,13 +59,14 @@ export class GlobalSearchComponent {
   protected onInput(): void {
     this.query$.next(this.query);
     if (this.query.length < 2) {
-      this.results = null;
+      this.setResults(null);
       this.open = false;
     }
   }
 
-  protected get hasResults(): boolean {
-    return (this.results?.jobs.length ?? 0) > 0 || (this.results?.recruitments.length ?? 0) > 0;
+  private setResults(res: SearchResultsDto | null): void {
+    this.results = res;
+    this.hasResults = (res?.jobs.length ?? 0) > 0 || (res?.recruitments.length ?? 0) > 0;
   }
 
   protected openJob(job: JobOfferDto): void {

@@ -80,12 +80,18 @@ export class RecruitmentPage implements OnInit {
       !!this.filterWorkMode(),
   );
 
+  /** View-model rows with precomputed state, so the template calls no methods. */
+  protected readonly rows = computed(() => {
+    const expandedId = this.expandedId();
+    return this.filteredItems().map((item) => ({
+      ...item,
+      expanded: item.id === expandedId,
+      toneClass: this.tone(item.status),
+    }));
+  });
+
   public ngOnInit(): void {
     this.facade.load();
-  }
-
-  protected isExpanded(id: string): boolean {
-    return this.expandedId() === id;
   }
 
   protected toggleRow(id: string): void {
@@ -115,7 +121,7 @@ export class RecruitmentPage implements OnInit {
     this.filterWorkMode.set('');
   }
 
-  protected tone(status: RecruitmentStatus): string {
+  private tone(status: RecruitmentStatus): string {
     switch (status) {
       case RecruitmentStatus.HIRED:
       case RecruitmentStatus.OFFER:

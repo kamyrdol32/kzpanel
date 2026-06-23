@@ -136,7 +136,9 @@ export class ScrapeOrchestratorService {
     max: number | null;
     currency: string | null;
   } {
-    if (!raw) return { min: null, max: null, currency: null };
+    if (!raw) {
+      return { min: null, max: null, currency: null };
+    }
     const numbers = (raw.match(/\d[\d\s.]*\d|\d/g) ?? [])
       .map((n) => parseInt(n.replace(/[\s.]/g, ''), 10))
       .filter((n) => !Number.isNaN(n));

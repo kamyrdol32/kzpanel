@@ -36,7 +36,9 @@ export class PlaywrightFetcher implements OnModuleDestroy {
   private browser: Browser | null = null;
 
   private async getBrowser(): Promise<Browser> {
-    if (this.browser) return this.browser;
+    if (this.browser) {
+      return this.browser;
+    }
 
     const proxyUrl = process.env.PROXY_URL;
     this.browser = await chromium.launch({
@@ -124,7 +126,9 @@ export class PlaywrightFetcher implements OnModuleDestroy {
           cfg.list.link === 'self'
             ? await card.getAttribute('href')
             : await card.locator(cfg.list.link).first().getAttribute('href');
-        if (!href) continue;
+        if (!href) {
+          continue;
+        }
         const sourceUrl = href.startsWith('http') ? href : `${cfg.origin}${href}`;
         stubs.push({ externalId: sourceUrl, title, company, sourceUrl });
       }

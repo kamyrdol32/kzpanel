@@ -190,11 +190,21 @@ export class PracujPlStrategy implements JobScraperStrategy {
       return [];
     }
     const levels = new Set<JobLevel>();
-    if (/praktykant|trainee|intern|staż|stazyst/.test(text)) levels.add(JobLevel.INTERN);
-    if (/junior|młodszy|mlodszy/.test(text)) levels.add(JobLevel.JUNIOR);
-    if (/\bmid\b|regular|^specjalista|, specjalista|\(specjalista/.test(text)) levels.add(JobLevel.MID);
-    if (/senior|starszy/.test(text)) levels.add(JobLevel.SENIOR);
-    if (/lead|ekspert|expert|kierownik|manager|menedżer/.test(text)) levels.add(JobLevel.LEAD);
+    if (/praktykant|trainee|intern|staż|stazyst/.test(text)) {
+      levels.add(JobLevel.INTERN);
+    }
+    if (/junior|młodszy|mlodszy/.test(text)) {
+      levels.add(JobLevel.JUNIOR);
+    }
+    if (/\bmid\b|regular|^specjalista|, specjalista|\(specjalista/.test(text)) {
+      levels.add(JobLevel.MID);
+    }
+    if (/senior|starszy/.test(text)) {
+      levels.add(JobLevel.SENIOR);
+    }
+    if (/lead|ekspert|expert|kierownik|manager|menedżer/.test(text)) {
+      levels.add(JobLevel.LEAD);
+    }
     return [...levels];
   }
 
@@ -202,10 +212,18 @@ export class PracujPlStrategy implements JobScraperStrategy {
   private mapEmployment(info?: string): string[] {
     const text = (info ?? '').toLowerCase();
     const out = new Set<string>();
-    if (/b2b/.test(text)) out.add('B2B');
-    if (/umowa o pracę|umowę o pracę|\buop\b/.test(text)) out.add('PERMANENT');
-    if (/zlecenie/.test(text)) out.add('MANDATE');
-    if (/o dzieło|dzieło/.test(text)) out.add('OTHER');
+    if (/b2b/.test(text)) {
+      out.add('B2B');
+    }
+    if (/umowa o pracę|umowę o pracę|\buop\b/.test(text)) {
+      out.add('PERMANENT');
+    }
+    if (/zlecenie/.test(text)) {
+      out.add('MANDATE');
+    }
+    if (/o dzieło|dzieło/.test(text)) {
+      out.add('OTHER');
+    }
     return [...out];
   }
 

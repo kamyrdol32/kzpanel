@@ -1,5 +1,6 @@
 import { DatePipe } from '@angular/common';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { JobSource, RemoteType, ScrapeTargetDto } from '@evpanel/shared';
 import { TranslateModule } from '@ngx-translate/core';
@@ -42,6 +43,21 @@ export class ScrapingPage implements OnInit {
     remoteType: ['' as RemoteType | ''],
   });
 
+  /** Form value mirrored as a signal so `canAdd` can be a computed. */
+  private readonly formValue = toSignal(this.form.valueChanges, {
+    initialValue: this.form.getRawValue(),
+  });
+
+  protected readonly canAdd = computed(() => {
+    if (!this.selectedSource()) {
+      return false;
+    }
+    const value = this.formValue();
+    return this.fields()
+      .filter((f) => f.required)
+      .every((f) => !!value[f.key]?.toString().trim());
+  });
+
   // ── confirmation modals ───────────────────────────────────────────────
   protected readonly pendingDelete = signal<ScrapeTargetDto | null>(null);
   protected readonly pendingClear = signal<ScrapeTargetDto | null>(null);
@@ -72,6 +88,16 @@ export class ScrapingPage implements OnInit {
     remoteType: ['' as RemoteType | ''],
   });
 
+  protected readonly editHasLocation = computed(() =>
+    this.editFields().some((f) => f.key === 'location'),
+  );
+  protected readonly editHasRemote = computed(() =>
+    this.editFields().some((f) => f.key === 'remoteType'),
+  );
+  protected readonly editRemoteOptions = computed(
+    () => this.editFields().find((f) => f.key === 'remoteType')?.options ?? [],
+  );
+
   public ngOnInit(): void {
     this.facade.load();
   }
@@ -81,17 +107,8 @@ export class ScrapingPage implements OnInit {
     this.form.patchValue({ query: '', location: '', remoteType: '' });
   }
 
-  protected hasField(key: SourceField['key']): boolean {
+  private hasField(key: SourceField['key']): boolean {
     return this.fields().some((f) => f.key === key);
-  }
-
-  protected canAdd(): boolean {
-    if (!this.selectedSource()) {
-      return false;
-    }
-    return this.fields()
-      .filter((f) => f.required)
-      .every((f) => !!this.form.getRawValue()[f.key]?.toString().trim());
   }
 
   protected add(): void {
@@ -134,13 +151,5 @@ export class ScrapingPage implements OnInit {
       remoteType: hasRemote && v.remoteType ? (v.remoteType as RemoteType) : undefined,
     });
     this.editingId.set(null);
-  }
-
-  protected hasEditField(key: SourceField['key']): boolean {
-    return this.editFields().some((f) => f.key === key);
-  }
-
-  protected getEditField(key: SourceField['key']): SourceField | undefined {
-    return this.editFields().find((f) => f.key === key);
   }
 }

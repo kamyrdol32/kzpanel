@@ -29,7 +29,9 @@ export class ScraperClient {
       return (await res.json()) as ScrapedOfferDto[];
     } catch (err) {
       this.logger.error(`Scrape request failed: ${(err as Error).message}`);
-      if (err instanceof HttpException) throw err;
+      if (err instanceof HttpException) {
+        throw err;
+      }
       throw new HttpException('Scraper worker unreachable', 502);
     }
   }

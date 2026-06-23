@@ -43,7 +43,9 @@ export class UsersService {
 
   async getByIdOrThrow(id: string): Promise<User> {
     const user = await this.findById(id);
-    if (!user) throw new NotFoundException('User not found');
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
     return user;
   }
 

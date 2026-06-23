@@ -13,7 +13,9 @@ export class InternalTokenGuard implements CanActivate {
 
   canActivate(context: ExecutionContext): boolean {
     const expected = this.config.internalToken;
-    if (!expected) return true;
+    if (!expected) {
+      return true;
+    }
     const req = context.switchToHttp().getRequest();
     if (req.headers['x-internal-token'] !== expected) {
       throw new UnauthorizedException('Invalid internal token');

@@ -39,7 +39,9 @@ export class ScrapeQueueService {
   }
 
   private async drain(): Promise<void> {
-    if (this.running) return;
+    if (this.running) {
+      return;
+    }
     this.running = true;
 
     while (this.queue.length > 0) {

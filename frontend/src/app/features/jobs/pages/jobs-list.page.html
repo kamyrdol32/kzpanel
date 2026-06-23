@@ -118,7 +118,7 @@
       (sortChange)="onSortChange($event)"
     >
       <ng-template #rowPrefix let-job>
-        @if (isApplied(job)) {
+        @if (job.applied) {
           <span class="status-dot status-dot-applied" [title]="'jobs.detail.statusApplied' | translate">
             <span class="material-symbols-rounded">mark_email_read</span>
           </span>
@@ -135,7 +135,7 @@
 
       <ng-template #actions let-job>
         <div class="row-actions">
-          @if (isApplied(job)) {
+          @if (job.applied) {
             <span class="chip chip-success">{{ 'jobs.applied' | translate }}</span>
           } @else {
             <button class="icon-btn icon-btn-primary" [title]="'jobs.apply' | translate" (click)="apply(job)">
@@ -164,7 +164,7 @@
           <!-- header: actions (left) + meta (right) on one row -->
           <div class="offer-detail-header">
           <div class="offer-detail-actions">
-            @if (isApplied(job)) {
+            @if (job.applied) {
               <span class="chip chip-success">
                 <span class="material-symbols-rounded" style="font-size:16px">mark_email_read</span>
                 {{ 'jobs.applied' | translate }}
@@ -239,10 +239,10 @@
             </div>
 
             <aside class="offer-detail-side">
-              @if (extraTech(job).length) {
+              @if (job.extraTech.length) {
                 <section class="offer-detail-section">
                   <h4 class="offer-detail-section-title">{{ 'jobs.techStack' | translate }}</h4>
-                  <div class="chips">@for (t of extraTech(job); track t) { <span class="chip">{{ t }}</span> }</div>
+                  <div class="chips">@for (t of job.extraTech; track t) { <span class="chip">{{ t }}</span> }</div>
                 </section>
               }
               @if (job.mustHave?.length) {

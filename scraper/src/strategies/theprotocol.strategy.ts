@@ -150,19 +150,33 @@ export class TheProtocolStrategy implements JobScraperStrategy {
   private mapWorkModes(workModes?: string): RemoteType[] {
     const text = (workModes ?? '').toLowerCase();
     const out = new Set<RemoteType>();
-    if (/zdaln/.test(text)) out.add(RemoteType.REMOTE);
-    if (/hybryd/.test(text)) out.add(RemoteType.HYBRID);
-    if (/stacjonar/.test(text)) out.add(RemoteType.ONSITE);
+    if (/zdaln/.test(text)) {
+      out.add(RemoteType.REMOTE);
+    }
+    if (/hybryd/.test(text)) {
+      out.add(RemoteType.HYBRID);
+    }
+    if (/stacjonar/.test(text)) {
+      out.add(RemoteType.ONSITE);
+    }
     return out.size ? [...out] : [RemoteType.ONSITE];
   }
 
   private mapEmployment(salary?: string): string[] {
     const text = (salary ?? '').toLowerCase();
     const out = new Set<string>();
-    if (/b2b/.test(text)) out.add('B2B');
-    if (/uop|umowa o pracę|umowę o pracę/.test(text)) out.add('PERMANENT');
-    if (/zlecenie|\buz\b/.test(text)) out.add('MANDATE');
-    if (/dzieło|\buod\b/.test(text)) out.add('OTHER');
+    if (/b2b/.test(text)) {
+      out.add('B2B');
+    }
+    if (/uop|umowa o pracę|umowę o pracę/.test(text)) {
+      out.add('PERMANENT');
+    }
+    if (/zlecenie|\buz\b/.test(text)) {
+      out.add('MANDATE');
+    }
+    if (/dzieło|\buod\b/.test(text)) {
+      out.add('OTHER');
+    }
     return [...out];
   }
 

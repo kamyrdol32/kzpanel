@@ -21,7 +21,9 @@ export class JobsService {
     // Offers are browsed per scraper; make sure the caller owns the one asked for.
     if (filter.scrapeTargetId) {
       const target = await this.targets.findOne({ where: { id: filter.scrapeTargetId } });
-      if (!target) throw new NotFoundException('Scrape target not found');
+      if (!target) {
+        throw new NotFoundException('Scrape target not found');
+      }
       if (target.userId !== user.sub && user.role !== Role.ADMIN) {
         throw new ForbiddenException('Not your scrape target');
       }
@@ -57,7 +59,9 @@ export class JobsService {
 
   async findOne(id: string): Promise<JobOffer> {
     const offer = await this.offers.findOne({ where: { id } });
-    if (!offer) throw new NotFoundException('Job offer not found');
+    if (!offer) {
+      throw new NotFoundException('Job offer not found');
+    }
     return offer;
   }
 

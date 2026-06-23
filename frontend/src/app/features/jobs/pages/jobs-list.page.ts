@@ -17,6 +17,9 @@ import { StatusBadgeComponent } from '../../../shared/ui/status-badge/status-bad
 import { JobsFacade } from '../facade/jobs.facade';
 import { JobSortField } from '../store/jobs.actions';
 
+/** Offer row augmented with view-only state so the template calls no methods. */
+type JobRow = JobOfferDto & { applied: boolean; extraTech: string[] };
+
 
 @Component({
   selector: 'ev-jobs-list',
@@ -68,17 +71,29 @@ export class JobsListPage implements OnInit, OnDestroy {
       return Array.from({ length: total }, (_, i) => i + 1);
     }
     const pages: (number | -1)[] = [1];
-    if (current > 3) pages.push(-1);
+    if (current > 3) {
+      pages.push(-1);
+    }
     for (let p = Math.max(2, current - 1); p <= Math.min(total - 1, current + 1); p++) {
       pages.push(p);
     }
-    if (current < total - 2) pages.push(-1);
+    if (current < total - 2) {
+      pages.push(-1);
+    }
     pages.push(total);
     return pages;
   });
-  protected readonly paginatedJobs = computed(() => {
+  protected readonly paginatedJobs = computed<JobRow[]>(() => {
     const page = this.currentPage();
-    return this.facade.jobs().slice((page - 1) * this.PAGE_SIZE, page * this.PAGE_SIZE);
+    const applied = this.appliedJobIds();
+    return this.facade
+      .jobs()
+      .slice((page - 1) * this.PAGE_SIZE, page * this.PAGE_SIZE)
+      .map((job) => ({
+        ...job,
+        applied: applied.has(job.id),
+        extraTech: this.extraTech(job),
+      }));
   });
 
   protected readonly levels = Object.values(JobLevel);
@@ -97,15 +112,17 @@ export class JobsListPage implements OnInit, OnDestroy {
   protected readonly appliedJobIds = computed<Set<string>>(() => {
     const set = new Set<string>();
     for (const r of this.recruitmentFacade.items()) {
-      if (r.jobOfferId) set.add(r.jobOfferId);
+      if (r.jobOfferId) {
+        set.add(r.jobOfferId);
+      }
     }
     return set;
   });
 
-  protected columns: TableColumn<JobOfferDto>[] = [];
+  protected columns: TableColumn<JobRow>[] = [];
 
   /** Tech-stack tags not already listed among the requirements (avoids duplication). */
-  protected extraTech(job: JobOfferDto): string[] {
+  private extraTech(job: JobOfferDto): string[] {
     const must = new Set((job.mustHave ?? []).map((m) => m.toLowerCase()));
     return (job.techStack ?? []).filter((t) => !must.has(t.toLowerCase()));
   }
@@ -118,13 +135,19 @@ export class JobsListPage implements OnInit, OnDestroy {
     return values.map((v) => this.t.instant(`enum.${group}.${v}`)).join(', ');
   }
 
-  protected readonly trackById = (job: JobOfferDto): string => job.id;
+  protected readonly trackById = (job: JobRow): string => job.id;
 
-  protected readonly rowClass = (job: JobOfferDto): string => {
+  protected readonly rowClass = (job: JobRow): string => {
     const classes: string[] = [];
-    if (job.dismissed) classes.push('job-row-dismissed');
-    if (job.staleAt) classes.push('job-row-stale');
-    if (this.appliedJobIds().has(job.id)) classes.push('job-row-applied');
+    if (job.dismissed) {
+      classes.push('job-row-dismissed');
+    }
+    if (job.staleAt) {
+      classes.push('job-row-stale');
+    }
+    if (this.appliedJobIds().has(job.id)) {
+      classes.push('job-row-applied');
+    }
     return classes.join(' ');
   };
 
@@ -187,10 +210,18 @@ export class JobsListPage implements OnInit, OnDestroy {
           return;
         }
         const filter: JobFilter = { scrapeTargetId: scraper.id };
-        if (v.search?.trim()) filter.search = v.search.trim();
-        if (v.level) filter.level = v.level as JobLevel;
-        if (v.remoteType) filter.remoteType = v.remoteType as RemoteType;
-        if (v.language) filter.language = v.language as Language;
+        if (v.search?.trim()) {
+          filter.search = v.search.trim();
+        }
+        if (v.level) {
+          filter.level = v.level as JobLevel;
+        }
+        if (v.remoteType) {
+          filter.remoteType = v.remoteType as RemoteType;
+        }
+        if (v.language) {
+          filter.language = v.language as Language;
+        }
         this.activeFilters.set(!!(v.search || v.level || v.remoteType || v.language));
         this.currentPage.set(1);
         this.facade.setFilter(filter);
@@ -254,7 +285,7 @@ export class JobsListPage implements OnInit, OnDestroy {
     this.expandedId.update((id) => (id === job.id ? null : job.id));
   }
 
-  protected isApplied(job: JobOfferDto): boolean {
+  private isApplied(job: JobOfferDto): boolean {
     return this.appliedJobIds().has(job.id);
   }
 
@@ -289,7 +320,9 @@ export class JobsListPage implements OnInit, OnDestroy {
   }
 
   protected remove(id: string): void {
-    if (this.expandedId() === id) this.expandedId.set(null);
+    if (this.expandedId() === id) {
+      this.expandedId.set(null);
+    }
     this.facade.remove(id);
   }
 }

@@ -30,7 +30,9 @@ export class ApiService {
 
   private toParams(params?: Record<string, ParamValue | undefined>): HttpParams {
     let httpParams = new HttpParams();
-    if (!params) return httpParams;
+    if (!params) {
+      return httpParams;
+    }
     for (const [key, value] of Object.entries(params)) {
       if (value !== undefined && value !== null) {
         httpParams = httpParams.set(key, String(value));

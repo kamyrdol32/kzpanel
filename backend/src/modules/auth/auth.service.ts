@@ -35,7 +35,9 @@ export class AuthService {
   // ── Registration / activation ───────────────────────────────
   async register(username: string, password: string, email?: string): Promise<{ activationToken?: string }> {
     const existing = await this.users.findByUsernameWithSecrets(username);
-    if (existing) throw new BadRequestException('Username already taken');
+    if (existing) {
+      throw new BadRequestException('Username already taken');
+    }
 
     const activationToken = randomUUID();
     await this.users.create({
@@ -53,7 +55,9 @@ export class AuthService {
 
   async activate(token: string): Promise<void> {
     const user = await this.users.findBySecret('activationToken', token);
-    if (!user) throw new BadRequestException('Invalid activation token');
+    if (!user) {
+      throw new BadRequestException('Invalid activation token');
+    }
     await this.users.update(user.id, { isActive: true, activationToken: null });
   }
 
@@ -63,7 +67,9 @@ export class AuthService {
     if (!user || !(await bcrypt.compare(password, user.passwordHash))) {
       throw new UnauthorizedException('Invalid credentials');
     }
-    if (!user.isActive) throw new UnauthorizedException('Account not activated');
+    if (!user.isActive) {
+      throw new UnauthorizedException('Account not activated');
+    }
 
     const tokens = await this.issueTokens(user);
     return {
@@ -96,7 +102,9 @@ export class AuthService {
     const user = await this.users.findByEmailWithSecrets(email);
     // Always answer the same way so the endpoint can't be used to probe which
     // emails are registered.
-    if (!user) return {};
+    if (!user) {
+      return {};
+    }
     const resetToken = randomUUID();
     const expires = new Date(Date.now() + 1000 * 60 * 30);
     await this.users.update(user.id, { resetToken, resetTokenExpiresAt: expires });

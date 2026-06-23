@@ -177,9 +177,15 @@ export class BulldogJobStrategy implements JobScraperStrategy {
 
   private mapEmployment(j?: BdjJob): string[] {
     const out: string[] = [];
-    if (j?.contractB2b) out.push('B2B');
-    if (j?.contractEmployment) out.push('PERMANENT');
-    if (j?.contractOther) out.push('OTHER');
+    if (j?.contractB2b) {
+      out.push('B2B');
+    }
+    if (j?.contractEmployment) {
+      out.push('PERMANENT');
+    }
+    if (j?.contractOther) {
+      out.push('OTHER');
+    }
     return out;
   }
 

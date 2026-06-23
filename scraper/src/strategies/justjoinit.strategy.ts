@@ -140,10 +140,18 @@ export class JustJoinITStrategy implements JobScraperStrategy {
     const out = new Set<string>();
     for (const t of types ?? []) {
       const type = (t.type ?? '').toLowerCase();
-      if (type.includes('b2b')) out.add('B2B');
-      if (type.includes('permanent') || type.includes('employment')) out.add('PERMANENT');
-      if (type.includes('mandate') || type.includes('zlecenie')) out.add('MANDATE');
-      if (type && !type.includes('b2b') && !type.includes('permanent') && !type.includes('employment') && !type.includes('mandate') && !type.includes('zlecenie')) out.add('OTHER');
+      if (type.includes('b2b')) {
+        out.add('B2B');
+      }
+      if (type.includes('permanent') || type.includes('employment')) {
+        out.add('PERMANENT');
+      }
+      if (type.includes('mandate') || type.includes('zlecenie')) {
+        out.add('MANDATE');
+      }
+      if (type && !type.includes('b2b') && !type.includes('permanent') && !type.includes('employment') && !type.includes('mandate') && !type.includes('zlecenie')) {
+        out.add('OTHER');
+      }
     }
     return [...out];
   }

@@ -53,7 +53,9 @@ export class ScrapeTargetsService {
 
   async findOne(id: string): Promise<ScrapeTarget> {
     const target = await this.repo.findOne({ where: { id } });
-    if (!target) throw new NotFoundException('Scrape target not found');
+    if (!target) {
+      throw new NotFoundException('Scrape target not found');
+    }
     return target;
   }
 

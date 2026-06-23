@@ -37,7 +37,9 @@ export class StrategyRegistry {
 
   /** Returns strategies for the given sources, or all when the list is empty. */
   forSources(sources: JobSource[]): JobScraperStrategy[] {
-    if (sources.length === 0) return this.all();
+    if (sources.length === 0) {
+      return this.all();
+    }
     return sources
       .map((s) => this.strategies.get(s))
       .filter((s): s is JobScraperStrategy => !!s);

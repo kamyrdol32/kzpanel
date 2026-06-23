@@ -18,7 +18,9 @@ export class RecruitmentService {
 
   async findOne(id: string): Promise<Recruitment> {
     const found = await this.repo.findOne({ where: { id } });
-    if (!found) throw new NotFoundException('Recruitment not found');
+    if (!found) {
+      throw new NotFoundException('Recruitment not found');
+    }
     return found;
   }
 
