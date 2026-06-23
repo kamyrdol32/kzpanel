@@ -137,7 +137,7 @@
                 @if (facade.runningId() === t.id || (facade.running() && !facade.runningId())) {
                   <span class="running-indicator">
                     <span class="spinner"></span>
-                    Pobieranie…
+                    {{ 'scraping.fetching' | translate }}
                   </span>
                 }
                 <button class="icon-btn" [title]="'scraping.scrapeNow' | translate" [disabled]="facade.running()" (click)="facade.runOne(t.id)">

@@ -40,39 +40,39 @@ export class AppLayoutComponent implements OnInit {
   ];
 
   @HostListener('window:scroll', [])
-  onScroll(): void {
+  protected onScroll(): void {
     this.scrolled.set(window.scrollY > 60);
   }
 
   @HostListener('document:click', ['$event'])
-  onDocumentClick(event: Event): void {
+  protected onDocumentClick(event: Event): void {
     if (!this.el.nativeElement.contains(event.target)) {
       this.dropdownOpen.set(false);
       this.profileOpen.set(false);
     }
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.language.init();
   }
 
-  toggleDropdown(): void {
+  protected toggleDropdown(): void {
     this.dropdownOpen.update((v) => !v);
   }
 
-  closeDropdown(): void {
+  protected closeDropdown(): void {
     this.dropdownOpen.set(false);
   }
 
-  toggleProfile(): void {
+  protected toggleProfile(): void {
     this.profileOpen.update((v) => !v);
   }
 
-  closeProfile(): void {
+  protected closeProfile(): void {
     this.profileOpen.set(false);
   }
 
-  logout(): void {
+  protected logout(): void {
     this.auth.logout();
     void this.router.navigate(['/auth/login']);
   }

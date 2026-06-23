@@ -16,16 +16,16 @@ export class ThemeService {
   readonly mode = this._mode.asReadonly();
   readonly isDark = computed(() => this._mode() === 'dark');
 
-  init(): void {
+  public init(): void {
     const saved = (localStorage.getItem(STORAGE_KEY) as ThemeMode | null) ?? 'dark';
     this.set(saved);
   }
 
-  toggle(): void {
+  public toggle(): void {
     this.set(this._mode() === 'dark' ? 'light' : 'dark');
   }
 
-  set(mode: ThemeMode): void {
+  public set(mode: ThemeMode): void {
     this._mode.set(mode);
     localStorage.setItem(STORAGE_KEY, mode);
     const root = this.document.documentElement;

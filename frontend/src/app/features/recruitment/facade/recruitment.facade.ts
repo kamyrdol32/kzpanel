@@ -18,7 +18,7 @@ export class RecruitmentFacade {
   readonly items = signal<RecruitmentDto[]>([]);
   readonly loading = signal(false);
 
-  load(): void {
+  public load(): void {
     this.loading.set(true);
     this.api.get<RecruitmentDto[]>('/recruitment').subscribe({
       next: (rows) => {
@@ -33,7 +33,7 @@ export class RecruitmentFacade {
    * Records that a CV was sent for a given job offer — creates a recruitment
    * entry with status CV_SENT, prefilled from the offer.
    */
-  applyToOffer(job: JobOfferDto): Observable<RecruitmentDto> {
+  public applyToOffer(job: JobOfferDto): Observable<RecruitmentDto> {
     const payload: CreateRecruitmentRequest = {
       company: job.company,
       position: job.title,
@@ -51,14 +51,14 @@ export class RecruitmentFacade {
       .pipe(tap((created) => this.items.update((list) => [created, ...list])));
   }
 
-  updateStatus(id: string, status: RecruitmentStatus): void {
+  public updateStatus(id: string, status: RecruitmentStatus): void {
     this.api.patch<RecruitmentDto>(`/recruitment/${id}`, { status }).subscribe({
       next: (updated) =>
         this.items.update((list) => list.map((r) => (r.id === id ? updated : r))),
     });
   }
 
-  remove(id: string): void {
+  public remove(id: string): void {
     this.api.delete<void>(`/recruitment/${id}`).subscribe({
       next: () => this.items.update((list) => list.filter((r) => r.id !== id)),
     });

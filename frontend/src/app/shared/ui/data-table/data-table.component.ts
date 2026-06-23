@@ -104,7 +104,7 @@ export class DataTableComponent<T> {
   readonly actions = contentChild<TemplateRef<{ $implicit: T }>>('actions');
   readonly expanded = contentChild<TemplateRef<{ $implicit: T }>>('expanded');
 
-  onHeaderClick(key: string): void {
+  protected onHeaderClick(key: string): void {
     const current = this.activeSort();
     const dir: 'asc' | 'desc' =
       current?.key === key
@@ -113,7 +113,7 @@ export class DataTableComponent<T> {
     this.sortChange.emit({ key, dir });
   }
 
-  cell(row: T, col: TableColumn<T>): string | number {
+  protected cell(row: T, col: TableColumn<T>): string | number {
     const raw = col.value ? col.value(row) : (row as Record<string, unknown>)[col.key as string];
     return raw == null ? '—' : (raw as string | number);
   }

@@ -46,7 +46,7 @@ export class ScrapingPage implements OnInit {
   protected readonly pendingDelete = signal<ScrapeTargetDto | null>(null);
   protected readonly pendingClear = signal<ScrapeTargetDto | null>(null);
 
-  confirmDelete(): void {
+  protected confirmDelete(): void {
     const t = this.pendingDelete();
     if (t) {
       this.facade.remove(t.id);
@@ -54,7 +54,7 @@ export class ScrapingPage implements OnInit {
     this.pendingDelete.set(null);
   }
 
-  confirmClear(): void {
+  protected confirmClear(): void {
     const t = this.pendingClear();
     if (t) {
       this.facade.clearOffers(t.id);
@@ -72,20 +72,20 @@ export class ScrapingPage implements OnInit {
     remoteType: ['' as RemoteType | ''],
   });
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.facade.load();
   }
 
-  onSourceChange(value: string): void {
+  protected onSourceChange(value: string): void {
     this.selectedSource.set(value as JobSource | '');
     this.form.patchValue({ query: '', location: '', remoteType: '' });
   }
 
-  hasField(key: SourceField['key']): boolean {
+  protected hasField(key: SourceField['key']): boolean {
     return this.fields().some((f) => f.key === key);
   }
 
-  canAdd(): boolean {
+  protected canAdd(): boolean {
     if (!this.selectedSource()) {
       return false;
     }
@@ -94,7 +94,7 @@ export class ScrapingPage implements OnInit {
       .every((f) => !!this.form.getRawValue()[f.key]?.toString().trim());
   }
 
-  add(): void {
+  protected add(): void {
     if (!this.canAdd()) {
       return;
     }
@@ -108,7 +108,7 @@ export class ScrapingPage implements OnInit {
     this.form.patchValue({ query: '', location: '', remoteType: '' });
   }
 
-  startEdit(target: ScrapeTargetDto): void {
+  protected startEdit(target: ScrapeTargetDto): void {
     this.editingId.set(target.id);
     const fields = SOURCE_FIELDS[target.source] ?? [];
     this.editFields.set(fields);
@@ -119,11 +119,11 @@ export class ScrapingPage implements OnInit {
     });
   }
 
-  cancelEdit(): void {
+  protected cancelEdit(): void {
     this.editingId.set(null);
   }
 
-  saveEdit(id: string): void {
+  protected saveEdit(id: string): void {
     const v = this.editForm.getRawValue();
     const hasLocation = this.editFields().some((f) => f.key === 'location');
     const hasRemote = this.editFields().some((f) => f.key === 'remoteType');
@@ -136,11 +136,11 @@ export class ScrapingPage implements OnInit {
     this.editingId.set(null);
   }
 
-  hasEditField(key: SourceField['key']): boolean {
+  protected hasEditField(key: SourceField['key']): boolean {
     return this.editFields().some((f) => f.key === key);
   }
 
-  getEditField(key: SourceField['key']): SourceField | undefined {
+  protected getEditField(key: SourceField['key']): SourceField | undefined {
     return this.editFields().find((f) => f.key === key);
   }
 }

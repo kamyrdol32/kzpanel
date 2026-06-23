@@ -80,27 +80,27 @@ export class RecruitmentPage implements OnInit {
       !!this.filterWorkMode(),
   );
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.facade.load();
   }
 
-  isExpanded(id: string): boolean {
+  protected isExpanded(id: string): boolean {
     return this.expandedId() === id;
   }
 
-  toggleRow(id: string): void {
+  protected toggleRow(id: string): void {
     this.expandedId.update((cur) => (cur === id ? null : id));
   }
 
-  onStatusChange(id: string, value: string): void {
+  protected onStatusChange(id: string, value: string): void {
     this.facade.updateStatus(id, value as RecruitmentStatus);
   }
 
-  askDelete(item: RecruitmentDto): void {
+  protected askDelete(item: RecruitmentDto): void {
     this.pendingDelete.set(item);
   }
 
-  confirmDelete(): void {
+  protected confirmDelete(): void {
     const item = this.pendingDelete();
     if (item) {
       this.facade.remove(item.id);
@@ -108,14 +108,14 @@ export class RecruitmentPage implements OnInit {
     this.pendingDelete.set(null);
   }
 
-  clearFilters(): void {
+  protected clearFilters(): void {
     this.filterSearch.set('');
     this.filterLevel.set('');
     this.filterStatus.set('');
     this.filterWorkMode.set('');
   }
 
-  tone(status: RecruitmentStatus): string {
+  protected tone(status: RecruitmentStatus): string {
     switch (status) {
       case RecruitmentStatus.HIRED:
       case RecruitmentStatus.OFFER:

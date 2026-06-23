@@ -6,25 +6,25 @@ const REFRESH = 'ev-refresh-token';
 /** Thin wrapper around token persistence (swap to httpOnly cookies later). */
 @Injectable({ providedIn: 'root' })
 export class TokenStorageService {
-  getAccessToken(): string | null {
+  public getAccessToken(): string | null {
     return localStorage.getItem(ACCESS);
   }
 
-  getRefreshToken(): string | null {
+  public getRefreshToken(): string | null {
     return localStorage.getItem(REFRESH);
   }
 
-  set(access: string, refresh: string): void {
+  public set(access: string, refresh: string): void {
     localStorage.setItem(ACCESS, access);
     localStorage.setItem(REFRESH, refresh);
   }
 
   /** Replace just the access token (sliding-session renewal). */
-  setAccess(access: string): void {
+  public setAccess(access: string): void {
     localStorage.setItem(ACCESS, access);
   }
 
-  clear(): void {
+  public clear(): void {
     localStorage.removeItem(ACCESS);
     localStorage.removeItem(REFRESH);
   }

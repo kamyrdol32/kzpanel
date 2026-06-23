@@ -10,19 +10,19 @@ export class LanguageService {
   private readonly _lang = signal<AppLang>('pl');
   readonly lang = this._lang.asReadonly();
 
-  init(): void {
+  public init(): void {
     const saved = (localStorage.getItem(STORAGE_KEY) as AppLang | null) ?? 'pl';
     this.use(saved);
   }
 
-  use(lang: AppLang): void {
+  public use(lang: AppLang): void {
     this._lang.set(lang);
     localStorage.setItem(STORAGE_KEY, lang);
     this.translate.use(lang);
     document.documentElement.lang = lang;
   }
 
-  toggle(): void {
+  public toggle(): void {
     this.use(this._lang() === 'pl' ? 'en' : 'pl');
   }
 }

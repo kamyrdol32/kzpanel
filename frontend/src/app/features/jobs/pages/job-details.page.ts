@@ -13,10 +13,10 @@ import { JobsFacade } from '../facade/jobs.facade';
 })
 export class JobDetailsPage implements OnInit {
   /** bound from the route param via withComponentInputBinding() */
-  readonly id = input.required<string>();
+  public readonly id = input.required<string>();
   protected readonly facade = inject(JobsFacade);
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.facade.open(this.id());
   }
 }

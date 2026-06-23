@@ -36,7 +36,7 @@ export class SkeletonLoaderComponent {
   readonly width = input<string>('100%');
   readonly height = input<string>('20px');
 
-  rows(): number[] {
+  protected rows(): number[] {
     return Array.from({ length: this.count() });
   }
 }

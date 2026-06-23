@@ -12,19 +12,19 @@ export class ApiService {
   private readonly http = inject(HttpClient);
   private readonly base = environment.apiUrl;
 
-  get<T>(path: string, params?: Record<string, ParamValue | undefined>): Observable<T> {
+  public get<T>(path: string, params?: Record<string, ParamValue | undefined>): Observable<T> {
     return this.http.get<T>(`${this.base}${path}`, { params: this.toParams(params) });
   }
 
-  post<T>(path: string, body: unknown): Observable<T> {
+  public post<T>(path: string, body: unknown): Observable<T> {
     return this.http.post<T>(`${this.base}${path}`, body);
   }
 
-  patch<T>(path: string, body: unknown): Observable<T> {
+  public patch<T>(path: string, body: unknown): Observable<T> {
     return this.http.patch<T>(`${this.base}${path}`, body);
   }
 
-  delete<T>(path: string): Observable<T> {
+  public delete<T>(path: string): Observable<T> {
     return this.http.delete<T>(`${this.base}${path}`);
   }
 

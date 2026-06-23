@@ -128,7 +128,7 @@ export class JobsListPage implements OnInit, OnDestroy {
     return classes.join(' ');
   };
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.columns = [
       { key: 'title', label: this.t.instant('jobs.col.title'), sortKey: 'title' },
       { key: 'company', label: this.t.instant('jobs.col.company'), sortKey: 'company' },
@@ -237,58 +237,58 @@ export class JobsListPage implements OnInit, OnDestroy {
   }
 
   /** User clicked a scraper — record it in the URL; the query-param subscription applies it. */
-  selectScraper(scraper: ScrapeTargetDto): void {
+  protected selectScraper(scraper: ScrapeTargetDto): void {
     this.router.navigate([], { relativeTo: this.route, queryParams: { scraper: scraper.id } });
   }
 
-  backToScrapers(): void {
+  protected backToScrapers(): void {
     this.router.navigate([], { relativeTo: this.route, queryParams: {} });
   }
 
-  ngOnDestroy(): void {
+  public ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
   }
 
-  toggleRow(job: JobOfferDto): void {
+  protected toggleRow(job: JobOfferDto): void {
     this.expandedId.update((id) => (id === job.id ? null : job.id));
   }
 
-  isApplied(job: JobOfferDto): boolean {
+  protected isApplied(job: JobOfferDto): boolean {
     return this.appliedJobIds().has(job.id);
   }
 
-  onSortChange(state: SortState): void {
+  protected onSortChange(state: SortState): void {
     this.currentPage.set(1);
     this.facade.setSort(state.key as JobSortField, state.dir);
   }
 
-  goToPage(page: number): void {
+  protected goToPage(page: number): void {
     this.currentPage.set(page);
     this.expandedId.set(null);
   }
 
-  clearFilters(): void {
+  protected clearFilters(): void {
     this.filterForm.reset({ search: '', level: '', remoteType: '', language: '' });
     this.activeFilters.set(false);
   }
 
-  apply(job: JobOfferDto): void {
+  protected apply(job: JobOfferDto): void {
     window.open(job.sourceUrl, '_blank', 'noopener,noreferrer');
     if (!this.isApplied(job)) {
       this.recruitmentFacade.applyToOffer(job).subscribe();
     }
   }
 
-  openSource(job: JobOfferDto): void {
+  protected openSource(job: JobOfferDto): void {
     window.open(job.sourceUrl, '_blank', 'noopener,noreferrer');
   }
 
-  toggleDismissed(job: JobOfferDto): void {
+  protected toggleDismissed(job: JobOfferDto): void {
     this.facade.setDismissed(job.id, !job.dismissed);
   }
 
-  remove(id: string): void {
+  protected remove(id: string): void {
     if (this.expandedId() === id) this.expandedId.set(null);
     this.facade.remove(id);
   }

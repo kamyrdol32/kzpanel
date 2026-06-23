@@ -55,7 +55,7 @@ export class AuthService {
     }
   }
 
-  login(username: string, password: string): Observable<LoginResponse> {
+  public login(username: string, password: string): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${this.base}/login`, { username, password }).pipe(
       tap((res) => {
         this.tokens.set(res.accessToken, res.refreshToken);
@@ -64,17 +64,17 @@ export class AuthService {
     );
   }
 
-  register(body: RegisterRequest): Observable<{ activationToken?: string }> {
+  public register(body: RegisterRequest): Observable<{ activationToken?: string }> {
     return this.http.post<{ activationToken?: string }>(`${this.base}/register`, body);
   }
 
-  refresh(): Observable<AuthTokens> {
+  public refresh(): Observable<AuthTokens> {
     return this.http
       .post<AuthTokens>(`${this.base}/refresh`, { refreshToken: this.tokens.getRefreshToken() })
       .pipe(tap((res) => this.tokens.set(res.accessToken, res.refreshToken)));
   }
 
-  logout(): void {
+  public logout(): void {
     this.http.post(`${this.base}/logout`, {}).subscribe({ error: () => void 0 });
     this.tokens.clear();
     this._user.set(null);

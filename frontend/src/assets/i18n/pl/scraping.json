@@ -14,6 +14,7 @@
     "remote": "Forma pracy",
     "add": "Dodaj do scrapowania",
     "scrapeNow": "Scrapuj teraz",
+    "fetching": "Pobieranie…",
     "empty": "Brak skonfigurowanych celów scrapowania",
     "lastRun": "Ostatni przebieg",
     "offerCount": "Liczba pobranych ofert",

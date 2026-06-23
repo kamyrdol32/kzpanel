@@ -23,32 +23,32 @@ export class JobsFacade {
   readonly sort = this.store.selectSignal(selectJobsSort);
   readonly selected = this.store.selectSignal(selectSelectedJob);
 
-  load(filter: JobFilter = {}): void {
+  public load(filter: JobFilter = {}): void {
     this.store.dispatch(JobsActions.load({ filter }));
   }
 
-  open(id: string): void {
+  public open(id: string): void {
     this.store.dispatch(JobsActions.select({ id }));
   }
 
-  clearSelection(): void {
+  public clearSelection(): void {
     this.store.dispatch(JobsActions.clearSelection());
   }
 
-  setFilter(filter: JobFilter): void {
+  public setFilter(filter: JobFilter): void {
     this.store.dispatch(JobsActions.setFilter({ filter }));
     this.store.dispatch(JobsActions.load({ filter }));
   }
 
-  setSort(sortField: JobSortField, sortDir: SortDir): void {
+  public setSort(sortField: JobSortField, sortDir: SortDir): void {
     this.store.dispatch(JobsActions.setSort({ sortField, sortDir }));
   }
 
-  remove(id: string): void {
+  public remove(id: string): void {
     this.store.dispatch(JobsActions.delete({ id }));
   }
 
-  setDismissed(id: string, dismissed: boolean): void {
+  public setDismissed(id: string, dismissed: boolean): void {
     this.store.dispatch(JobsActions.setDismissed({ id, dismissed }));
   }
 }

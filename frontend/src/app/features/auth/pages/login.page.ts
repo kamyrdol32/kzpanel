@@ -28,14 +28,14 @@ export class LoginPage implements OnInit {
     rememberMe: [false],
   });
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
       this.form.patchValue({ username: saved, rememberMe: true });
     }
   }
 
-  submit(): void {
+  protected submit(): void {
     if (this.form.invalid) { return; }
     this.loading.set(true);
     this.error.set(null);

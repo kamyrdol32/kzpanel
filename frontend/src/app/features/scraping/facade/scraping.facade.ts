@@ -17,11 +17,11 @@ export class ScrapingFacade {
   readonly isAdmin = computed(() => this.auth.user()?.role === Role.ADMIN);
   readonly loading = signal(false);
   readonly running = signal(false);
-  /** id targetu który aktualnie się scrape'uje, null = runAll lub brak */
+  /** id of the target currently being scraped; null = runAll or idle */
   readonly runningId = signal<string | null>(null);
   readonly lastResult = signal<string | null>(null);
 
-  load(): void {
+  public load(): void {
     this.loading.set(true);
     this.api
       .list()
@@ -33,23 +33,23 @@ export class ScrapingFacade {
     }
   }
 
-  add(body: CreateScrapeTargetRequest): void {
+  public add(body: CreateScrapeTargetRequest): void {
     this.api.create(body).subscribe({ next: () => this.load() });
   }
 
-  edit(id: string, body: UpdateScrapeTargetRequest): void {
+  public edit(id: string, body: UpdateScrapeTargetRequest): void {
     this.api.update(id, body).subscribe({ next: () => this.load() });
   }
 
-  clearOffers(id: string): void {
+  public clearOffers(id: string): void {
     this.api.clearOffers(id).subscribe({ next: () => this.load() });
   }
 
-  remove(id: string): void {
+  public remove(id: string): void {
     this.api.remove(id).subscribe({ next: () => this.load() });
   }
 
-  runAll(): void {
+  public runAll(): void {
     this.running.set(true);
     this.runningId.set(null);
     this.lastResult.set(null);
@@ -58,16 +58,16 @@ export class ScrapingFacade {
       .pipe(finalize(() => { this.running.set(false); this.runningId.set(null); }))
       .subscribe({
         next: (r) => {
-          this.lastResult.set(`Cele: ${r.targetsProcessed}, oferty: ${r.offersUpserted}`);
+          this.lastResult.set(`Targets: ${r.targetsProcessed}, offers: ${r.offersUpserted}`);
           this.load();
         },
         error: (err) => {
-          this.lastResult.set(`Błąd: ${(err as { message?: string }).message ?? 'nieznany'}`);
+          this.lastResult.set(`Error: ${(err as { message?: string }).message ?? 'unknown'}`);
         },
       });
   }
 
-  runOne(id: string): void {
+  public runOne(id: string): void {
     this.running.set(true);
     this.runningId.set(id);
     this.lastResult.set(null);
@@ -76,11 +76,11 @@ export class ScrapingFacade {
       .pipe(finalize(() => { this.running.set(false); this.runningId.set(null); }))
       .subscribe({
         next: (r) => {
-          this.lastResult.set(`oferty: ${r.offersUpserted}`);
+          this.lastResult.set(`Offers: ${r.offersUpserted}`);
           this.load();
         },
         error: (err) => {
-          this.lastResult.set(`Błąd: ${(err as { message?: string }).message ?? 'nieznany'}`);
+          this.lastResult.set(`Error: ${(err as { message?: string }).message ?? 'unknown'}`);
         },
       });
   }

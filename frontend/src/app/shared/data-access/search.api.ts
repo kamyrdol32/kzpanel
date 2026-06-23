@@ -13,7 +13,7 @@ export interface SearchResultsDto {
 export class SearchApi {
   private readonly api = inject(ApiService);
 
-  search(q: string): Observable<SearchResultsDto> {
+  public search(q: string): Observable<SearchResultsDto> {
     return this.api.get<SearchResultsDto>('/search', { q });
   }
 }

@@ -46,7 +46,7 @@ export class AppTitleStrategy extends TitleStrategy {
     return this.translate;
   }
 
-  override updateTitle(snapshot: RouterStateSnapshot): void {
+  public override updateTitle(snapshot: RouterStateSnapshot): void {
     this.lastSnapshot = snapshot;
     const data = this.deepestData(snapshot.root);
 

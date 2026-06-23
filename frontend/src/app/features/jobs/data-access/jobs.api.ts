@@ -8,19 +8,19 @@ import { ApiService } from '../../../core/http/api.service';
 export class JobsApi {
   private readonly api = inject(ApiService);
 
-  list(filter: JobFilter): Observable<JobOfferDto[]> {
+  public list(filter: JobFilter): Observable<JobOfferDto[]> {
     return this.api.get<JobOfferDto[]>('/jobs', { ...filter });
   }
 
-  getOne(id: string): Observable<JobOfferDto> {
+  public getOne(id: string): Observable<JobOfferDto> {
     return this.api.get<JobOfferDto>(`/jobs/${id}`);
   }
 
-  update(id: string, patch: UpdateJobRequest): Observable<JobOfferDto> {
+  public update(id: string, patch: UpdateJobRequest): Observable<JobOfferDto> {
     return this.api.patch<JobOfferDto>(`/jobs/${id}`, patch);
   }
 
-  remove(id: string): Observable<void> {
+  public remove(id: string): Observable<void> {
     return this.api.delete<void>(`/jobs/${id}`);
   }
 }
