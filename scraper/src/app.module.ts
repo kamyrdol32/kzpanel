@@ -12,6 +12,7 @@ import { LinkedInStrategy } from './strategies/linkedin.strategy';
 import { NoFluffJobsStrategy } from './strategies/nofluffjobs.strategy';
 import { PracujPlStrategy } from './strategies/pracujpl.strategy';
 import { StrategyRegistry } from './strategies/strategy.registry';
+import { OlxStrategy } from './strategies/olx.strategy';
 import { TheProtocolStrategy } from './strategies/theprotocol.strategy';
 
 /**
@@ -33,6 +34,7 @@ import { TheProtocolStrategy } from './strategies/theprotocol.strategy';
     BulldogJobStrategy,
     PracujPlStrategy,
     TheProtocolStrategy,
+    OlxStrategy,
     ScrapeService,
   ],
 })

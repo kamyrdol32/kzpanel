@@ -45,6 +45,7 @@ export enum JobSource {
   BULLDOGJOB = 'BULLDOGJOB',
   PRACUJPL = 'PRACUJPL',
   THEPROTOCOL = 'THEPROTOCOL',
+  OLX = 'OLX',
   MANUAL = 'MANUAL',
 }
 

@@ -48,6 +48,11 @@ export const SOURCE_FIELDS: Record<string, SourceField[]> = {
     { key: 'location', labelKey: 'scraping.location', type: 'text', placeholder: 'Warszawa' },
     { key: 'remoteType', labelKey: 'scraping.remote', type: 'select', options: remoteOptions },
   ],
+  [JobSource.OLX]: [
+    { key: 'query', labelKey: 'scraping.fieldKeyword', type: 'text', required: true, placeholder: 'Angular' },
+    { key: 'location', labelKey: 'scraping.location', type: 'text', placeholder: 'Warszawa' },
+    { key: 'remoteType', labelKey: 'scraping.remote', type: 'select', options: remoteOptions },
+  ],
 };
 
 /** Sources that can be scraped (excludes MANUAL). */

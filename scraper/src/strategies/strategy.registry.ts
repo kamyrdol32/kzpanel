@@ -6,6 +6,7 @@ import { JobScraperStrategy } from './job-scraper.strategy';
 import { JustJoinITStrategy } from './justjoinit.strategy';
 import { LinkedInStrategy } from './linkedin.strategy';
 import { NoFluffJobsStrategy } from './nofluffjobs.strategy';
+import { OlxStrategy } from './olx.strategy';
 import { PracujPlStrategy } from './pracujpl.strategy';
 import { TheProtocolStrategy } from './theprotocol.strategy';
 
@@ -21,9 +22,10 @@ export class StrategyRegistry {
     bulldog: BulldogJobStrategy,
     pracuj: PracujPlStrategy,
     theProtocol: TheProtocolStrategy,
+    olx: OlxStrategy,
   ) {
     this.strategies = new Map(
-      [noFluff, justJoin, linkedIn, bulldog, pracuj, theProtocol].map((s) => [s.source, s]),
+      [noFluff, justJoin, linkedIn, bulldog, pracuj, theProtocol, olx].map((s) => [s.source, s]),
     );
   }
 
