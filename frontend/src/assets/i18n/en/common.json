@@ -21,7 +21,8 @@
   "nav": {
     "recruitment": "Recruitment",
     "jobs": "Job offers",
-    "scraping": "Scraping"
+    "scraping": "Scraping",
+    "users": "Users"
   },
   "enum": {
     "remote": {
@@ -62,6 +63,7 @@
     "username": "Username",
     "email": "Email",
     "role": "Role",
-    "preferences": "Preferences"
+    "preferences": "Preferences",
+    "changePassword": "Change password"
   }
 }

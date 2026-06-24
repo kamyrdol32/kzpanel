@@ -1,7 +1,7 @@
 import { DatePipe } from '@angular/common';
 import { Component, computed, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
-import { JobFilter, JobLevel, JobOfferDto, Language, RemoteType, Role, ScrapeTargetDto } from '@evpanel/shared';
+import { JobFilter, JobLevel, JobOfferDto, Language, RemoteType, Role, ScrapeTargetDto } from '@kzpanel/shared';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { debounceTime, distinctUntilChanged, Subject, takeUntil } from 'rxjs';

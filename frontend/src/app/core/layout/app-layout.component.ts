@@ -1,5 +1,6 @@
 import { Component, computed, ElementRef, HostListener, inject, OnInit, signal } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { Role } from '@kzpanel/shared';
 import { TranslateModule } from '@ngx-translate/core';
 
 import { AuthService } from '../auth/auth.service';
@@ -38,6 +39,8 @@ export class AppLayoutComponent implements OnInit {
     { path: '/jobs',        labelKey: 'nav.jobs' },
     { path: '/scraping',    labelKey: 'nav.scraping' },
   ];
+
+  protected readonly isAdmin = computed(() => this.user()?.role === Role.ADMIN);
 
   @HostListener('window:scroll', [])
   protected onScroll(): void {

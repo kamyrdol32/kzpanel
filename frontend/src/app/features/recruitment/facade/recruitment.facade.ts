@@ -6,7 +6,7 @@ import {
   RecruitmentDto,
   RecruitmentStatus,
   RemoteType,
-} from '@evpanel/shared';
+} from '@kzpanel/shared';
 import { Observable, tap } from 'rxjs';
 
 import { ApiService } from '../../../core/http/api.service';

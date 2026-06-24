@@ -24,9 +24,9 @@ export default (): AppConfig => ({
   database: {
     host: process.env.POSTGRES_HOST ?? 'localhost',
     port: parseInt(process.env.POSTGRES_PORT ?? '5432', 10),
-    user: process.env.POSTGRES_USER ?? 'evpanel',
-    password: process.env.POSTGRES_PASSWORD ?? 'evpanel',
-    name: process.env.POSTGRES_DB ?? 'evpanel',
+    user: process.env.POSTGRES_USER ?? 'kzpanel',
+    password: process.env.POSTGRES_PASSWORD ?? 'kzpanel',
+    name: process.env.POSTGRES_DB ?? 'kzpanel',
   },
   jwt: {
     accessSecret: process.env.JWT_ACCESS_SECRET ?? 'dev-access-secret',

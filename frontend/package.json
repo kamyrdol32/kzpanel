@@ -1,7 +1,7 @@
 {
-  "name": "@evpanel/frontend",
+  "name": "@kzpanel/frontend",
   "version": "0.1.0",
-  "description": "EvPanel Angular 20 SPA",
+  "description": "KŻ-Panel Angular 20 SPA",
   "license": "UNLICENSED",
   "private": true,
   "scripts": {

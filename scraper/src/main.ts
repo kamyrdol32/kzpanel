@@ -14,7 +14,7 @@ async function bootstrap(): Promise<void> {
 
   const port = parseInt(process.env.SCRAPER_PORT ?? '3100', 10);
   await app.listen(port);
-  Logger.log(`EvPanel scraper worker started (HTTP :${port})`, 'Bootstrap');
+  Logger.log(`KŻ-Panel scraper worker started (HTTP :${port})`, 'Bootstrap');
 }
 
 void bootstrap();

@@ -13,9 +13,9 @@ export const dataSourceOptions = {
   type: 'postgres' as const,
   host: process.env.POSTGRES_HOST ?? 'localhost',
   port: parseInt(process.env.POSTGRES_PORT ?? '5432', 10),
-  username: process.env.POSTGRES_USER ?? 'evpanel',
-  password: process.env.POSTGRES_PASSWORD ?? 'evpanel',
-  database: process.env.POSTGRES_DB ?? 'evpanel',
+  username: process.env.POSTGRES_USER ?? 'kzpanel',
+  password: process.env.POSTGRES_PASSWORD ?? 'kzpanel',
+  database: process.env.POSTGRES_DB ?? 'kzpanel',
   entities: [__dirname + '/../**/*.entity.{ts,js}'],
   migrations: [__dirname + '/migrations/*.{ts,js}'],
   // NEVER true in production — use migrations. Opt-in via DB_SYNC for first-run/dev.

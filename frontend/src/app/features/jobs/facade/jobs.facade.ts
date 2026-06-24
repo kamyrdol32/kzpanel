@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { JobFilter } from '@evpanel/shared';
+import { JobFilter } from '@kzpanel/shared';
 import { Store } from '@ngrx/store';
 
 import { JobSortField, JobsActions, SortDir } from '../store/jobs.actions';

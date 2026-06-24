@@ -26,5 +26,10 @@
     <button type="submit" class="login-submit" [disabled]="loading() || form.invalid">
       {{ (loading() ? 'common.loading' : 'auth.signIn') | translate }}
     </button>
+
+    <div class="login-links">
+      <a routerLink="/auth/register">{{ 'auth.createAccount' | translate }}</a>
+      <a routerLink="/auth/forgot-password">{{ 'auth.forgotPassword' | translate }}</a>
+    </div>
   </form>
 </div>

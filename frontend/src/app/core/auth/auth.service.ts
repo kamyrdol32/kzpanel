@@ -3,11 +3,14 @@ import { computed, inject, Injectable, signal } from '@angular/core';
 import {
   AuthTokens,
   AuthUser,
+  ChangePasswordRequest,
+  ForgotPasswordRequest,
   JwtPayload,
   LoginResponse,
   RegisterRequest,
+  ResetPasswordRequest,
   Role,
-} from '@evpanel/shared';
+} from '@kzpanel/shared';
 import { Observable, tap } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
@@ -66,6 +69,18 @@ export class AuthService {
 
   public register(body: RegisterRequest): Observable<{ activationToken?: string }> {
     return this.http.post<{ activationToken?: string }>(`${this.base}/register`, body);
+  }
+
+  public forgotPassword(body: ForgotPasswordRequest): Observable<{ resetToken?: string }> {
+    return this.http.post<{ resetToken?: string }>(`${this.base}/forgot-password`, body);
+  }
+
+  public resetPassword(body: ResetPasswordRequest): Observable<void> {
+    return this.http.post<void>(`${this.base}/reset-password`, body);
+  }
+
+  public changePassword(body: ChangePasswordRequest): Observable<void> {
+    return this.http.post<void>(`${this.base}/change-password`, body);
   }
 
   public refresh(): Observable<AuthTokens> {

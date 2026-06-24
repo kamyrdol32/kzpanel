@@ -1,4 +1,4 @@
-import { JobOfferDto } from '@evpanel/shared';
+import { JobOfferDto } from '@kzpanel/shared';
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 
 import { JobSortField, SortDir } from './jobs.actions';

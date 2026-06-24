@@ -7,7 +7,7 @@ import { PlaywrightFetcher } from '../playwright/playwright.fetcher';
 import { JobRaw, JobScraperStrategy, JobStub } from './job-scraper.strategy';
 
 const API = 'https://nofluffjobs.com/api';
-const UA = 'Mozilla/5.0 (compatible; EvPanel-Scraper/1.0)';
+const UA = 'Mozilla/5.0 (compatible; KZPanel-Scraper/1.0)';
 const SEARCH_URL = (query: string): string => `https://nofluffjobs.com/pl/${encodeURIComponent(query)}`;
 const JOB_URL = (path: string): string => `https://nofluffjobs.com${path}`;
 

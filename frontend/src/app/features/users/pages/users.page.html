@@ -1,0 +1,38 @@
+<div class="ev-page">
+  <h1 class="ev-page-title">{{ 'users.title' | translate }}</h1>
+
+  @if (rows().length === 0) {
+    <ev-empty-state icon="group" [title]="'common.noData' | translate" />
+  } @else {
+    <div class="table-wrap">
+      <table class="users-table">
+        <thead>
+          <tr>
+            <th>{{ 'users.username' | translate }}</th>
+            <th>{{ 'users.email' | translate }}</th>
+            <th>{{ 'users.role' | translate }}</th>
+            <th>{{ 'users.status' | translate }}</th>
+            <th>{{ 'users.created' | translate }}</th>
+            <th class="actions-col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of rows(); track row.id) {
+            <tr>
+              <td>{{ row.username }}</td>
+              <td>{{ row.email ?? '—' }}</td>
+              <td>{{ row.role }}</td>
+              <td><span class="status-dot" [class]="row.statusClass"></span>{{ row.statusLabel | translate }}</td>
+              <td>{{ row.createdAt | date: 'dd.MM.yyyy HH:mm' }}</td>
+              <td class="actions">
+                <button class="action-btn" [disabled]="row.pending" (click)="toggleActive(row.id, row.isActive)">
+                  {{ (row.pending ? 'common.loading' : row.actionLabel) | translate }}
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

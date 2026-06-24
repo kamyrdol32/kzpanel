@@ -24,6 +24,14 @@
           }
         </ul>
       </li>
+
+      @if (isAdmin()) {
+        <li>
+          <a class="nav-link" routerLink="/users" routerLinkActive="active">
+            {{ 'nav.users' | translate }}
+          </a>
+        </li>
+      }
     </ul>
 
     <div class="nav-right">

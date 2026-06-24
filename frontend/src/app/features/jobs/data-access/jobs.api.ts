@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { JobFilter, JobOfferDto, UpdateJobRequest } from '@evpanel/shared';
+import { JobFilter, JobOfferDto, UpdateJobRequest } from '@kzpanel/shared';
 import { Observable } from 'rxjs';
 
 import { ApiService } from '../../../core/http/api.service';

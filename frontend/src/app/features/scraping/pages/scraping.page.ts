@@ -2,7 +2,7 @@ import { DatePipe } from '@angular/common';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { JobSource, RemoteType, ScrapeTargetDto } from '@evpanel/shared';
+import { JobSource, RemoteType, ScrapeTargetDto } from '@kzpanel/shared';
 import { TranslateModule } from '@ngx-translate/core';
 
 import { ConfirmDialogComponent } from '../../../shared/ui/confirm-dialog/confirm-dialog.component';

@@ -1,5 +1,5 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
-import { CreateScrapeTargetRequest, Role, ScrapeTargetDto, UpdateScrapeTargetRequest } from '@evpanel/shared';
+import { CreateScrapeTargetRequest, Role, ScrapeTargetDto, UpdateScrapeTargetRequest } from '@kzpanel/shared';
 import { finalize } from 'rxjs';
 
 import { AuthService } from '../../../core/auth/auth.service';

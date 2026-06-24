@@ -4,7 +4,7 @@ import {
   ScrapeRunResult,
   ScrapeTargetDto,
   UpdateScrapeTargetRequest,
-} from '@evpanel/shared';
+} from '@kzpanel/shared';
 import { Observable } from 'rxjs';
 
 import { ApiService } from '../../../core/http/api.service';

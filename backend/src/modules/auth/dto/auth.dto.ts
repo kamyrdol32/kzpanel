@@ -26,7 +26,7 @@ export class RegisterDto implements RegisterRequest {
   @IsString()
   username!: string;
 
-  @ApiPropertyOptional({ example: 'admin@evpanel.dev' })
+  @ApiPropertyOptional({ example: 'admin@kzpanel.dev' })
   @IsEmail()
   @IsOptional()
   email?: string;

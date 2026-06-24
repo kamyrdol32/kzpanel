@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 
+import { adminGuard } from './core/auth/admin.guard';
 import { authGuard } from './core/auth/auth.guard';
 import { AppLayoutComponent } from './core/layout/app-layout.component';
 
@@ -35,6 +36,12 @@ export const APP_ROUTES: Routes = [
         path: 'settings',
         data: { titleKey: 'settings.title' },
         loadComponent: () => import('./features/settings/settings.page').then((m) => m.SettingsPage),
+      },
+      {
+        path: 'users',
+        canActivate: [adminGuard],
+        data: { titleKey: 'users.title' },
+        loadChildren: () => import('./features/users/users.routes').then((m) => m.USERS_ROUTES),
       },
     ],
   },

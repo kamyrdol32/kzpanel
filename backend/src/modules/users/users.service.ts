@@ -49,6 +49,15 @@ export class UsersService {
     return user;
   }
 
+  /** All accounts, newest first — admin user management. */
+  listAll(): Promise<User[]> {
+    return this.repo.createQueryBuilder('u').orderBy('u.createdAt', 'DESC').getMany();
+  }
+
+  setActive(id: string, isActive: boolean): Promise<User> {
+    return this.update(id, { isActive });
+  }
+
   create(data: Partial<User>): Promise<User> {
     return this.repo.save(this.repo.create(data));
   }

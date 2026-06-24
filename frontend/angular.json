@@ -3,16 +3,16 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "evpanel": {
+    "kzpanel": {
       "projectType": "application",
       "root": "",
       "sourceRoot": "src",
-      "prefix": "ev",
+      "prefix": "kz",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/evpanel",
+            "outputPath": "dist/kzpanel",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": ["zone.js"],
@@ -45,8 +45,8 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
-            "production": { "buildTarget": "evpanel:build:production" },
-            "development": { "buildTarget": "evpanel:build:development" }
+            "production": { "buildTarget": "kzpanel:build:production" },
+            "development": { "buildTarget": "kzpanel:build:development" }
           },
           "defaultConfiguration": "development"
         },

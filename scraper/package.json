@@ -1,7 +1,7 @@
 {
-  "name": "@evpanel/scraper",
+  "name": "@kzpanel/scraper",
   "version": "0.1.0",
-  "description": "EvPanel scraper worker — stateless Playwright endpoint (Strategy Pattern)",
+  "description": "KŻ-Panel scraper worker — stateless Playwright endpoint (Strategy Pattern)",
   "license": "UNLICENSED",
   "private": true,
   "scripts": {

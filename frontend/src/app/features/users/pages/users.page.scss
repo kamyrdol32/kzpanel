@@ -1,0 +1,80 @@
+@use '../../../../styles/tokens' as *;
+
+.table-wrap {
+  background: var(--ev-surface);
+  border: 1px solid var(--ev-border);
+  border-radius: $radius-lg;
+  overflow-x: auto;
+}
+
+.users-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: $fs-md;
+
+  th,
+  td {
+    text-align: left;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--ev-border);
+  }
+
+  th {
+    color: var(--ev-text-muted);
+    font-weight: $fw-semibold;
+    font-size: $fs-xs;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    white-space: nowrap;
+  }
+
+  tbody tr:hover {
+    background: var(--ev-surface-2);
+  }
+
+  .actions-col {
+    width: 1%;
+  }
+
+  .actions {
+    text-align: right;
+    white-space: nowrap;
+  }
+}
+
+.status-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 8px;
+  vertical-align: middle;
+
+  &.status-active {
+    background: var(--ev-success);
+  }
+
+  &.status-inactive {
+    background: var(--ev-text-muted);
+  }
+}
+
+.action-btn {
+  padding: 6px 14px;
+  border: 1px solid var(--ev-border);
+  border-radius: 8px;
+  background: var(--ev-bg);
+  color: var(--ev-text);
+  font-size: $fs-sm;
+  cursor: pointer;
+  transition: border-color 0.15s;
+
+  &:hover:not(:disabled) {
+    border-color: var(--ev-accent);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}

@@ -1,4 +1,4 @@
-# ── EvPanel backend (NestJS) ──────────────────────────────────
+# ── KŻ-Panel backend (NestJS) ──────────────────────────────────
 # Build context = ./backend (self-contained — shared types are inlined under src/shared).
 FROM node:20-alpine AS build
 WORKDIR /app

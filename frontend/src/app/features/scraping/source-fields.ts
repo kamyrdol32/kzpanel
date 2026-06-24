@@ -1,4 +1,4 @@
-import { JobSource, RemoteType } from '@evpanel/shared';
+import { JobSource, RemoteType } from '@kzpanel/shared';
 
 export type FieldKey = 'query' | 'location' | 'remoteType';
 

@@ -1,4 +1,4 @@
-# ── EvPanel frontend + edge Nginx (single container) ──────────
+# ── KŻ-Panel frontend + edge Nginx (single container) ─────────
 # Build context = ./frontend (self-contained — shared types inlined under src/shared).
 FROM node:20-alpine AS build
 WORKDIR /app
@@ -16,7 +16,7 @@ RUN apk add --no-cache bash curl
 COPY nginx.conf /etc/nginx/nginx.conf
 
 # Built Angular app
-COPY --from=build /app/dist/evpanel/browser /usr/share/nginx/html
+COPY --from=build /app/dist/kzpanel/browser /usr/share/nginx/html
 
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]

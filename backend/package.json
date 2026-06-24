@@ -1,7 +1,7 @@
 {
-  "name": "@evpanel/backend",
+  "name": "@kzpanel/backend",
   "version": "0.1.0",
-  "description": "EvPanel NestJS API",
+  "description": "KŻ-Panel NestJS API",
   "license": "UNLICENSED",
   "private": true,
   "scripts": {

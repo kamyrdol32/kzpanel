@@ -1,4 +1,4 @@
-import { JobFilter, JobOfferDto } from '@evpanel/shared';
+import { JobFilter, JobOfferDto } from '@kzpanel/shared';
 import { createEntityAdapter, EntityAdapter, EntityState } from '@ngrx/entity';
 import { createReducer, on } from '@ngrx/store';
 

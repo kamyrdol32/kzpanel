@@ -125,7 +125,7 @@ export class BulldogJobStrategy implements JobScraperStrategy {
     const empty = { remoteTypes: [] as RemoteType[], description: null, publishedAt: null };
     try {
       const res = await fetch(url, {
-        headers: { 'User-Agent': 'Mozilla/5.0 (compatible; EvPanel-Scraper/1.0)' },
+        headers: { 'User-Agent': 'Mozilla/5.0 (compatible; KZPanel-Scraper/1.0)' },
         signal: AbortSignal.timeout(15_000),
       });
       if (!res.ok) {

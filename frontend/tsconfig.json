@@ -19,7 +19,7 @@
     "lib": ["ES2022", "dom"],
     "baseUrl": "./",
     "paths": {
-      "@evpanel/shared": ["src/shared/index.ts"]
+      "@kzpanel/shared": ["src/shared/index.ts"]
     }
   },
   "angularCompilerOptions": {

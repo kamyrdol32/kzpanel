@@ -8,7 +8,7 @@ import { JobRaw, JobScraperStrategy, JobStub } from './job-scraper.strategy';
 
 const API = 'https://api.justjoin.it/v2/user-panel/offers';
 const JOB_URL = (slug: string): string => `https://justjoin.it/job-offer/${slug}`;
-const UA = 'Mozilla/5.0 (compatible; EvPanel-Scraper/1.0)';
+const UA = 'Mozilla/5.0 (compatible; KZPanel-Scraper/1.0)';
 
 /**
  * JustJoinIT strategy — uses the public v2 API (verified shape):

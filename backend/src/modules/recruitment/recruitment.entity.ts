@@ -1,10 +1,18 @@
 import { JobLevel, RecruitmentStatus, RemoteType } from '../../shared';
-import { Column, Entity, Index } from 'typeorm';
+import { Column, Entity, Index, ManyToOne, JoinColumn } from 'typeorm';
+import { User } from '../users/user.entity';
 
 import { BaseEntity } from '../../common/entities/base.entity';
 
 @Entity('recruitments')
 export class Recruitment extends BaseEntity {
+  @Index()
+  @Column({ type: 'uuid', nullable: true })
+  userId!: string | null;
+
+  @ManyToOne(() => User, { onDelete: 'SET NULL', nullable: true })
+  @JoinColumn({ name: 'userId' })
+  user!: User | null;
   @Column()
   company!: string;
 

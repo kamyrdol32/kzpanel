@@ -1,4 +1,4 @@
-# EvPanel
+# KŻ-Panel
 
 Aggregates IT job offers from six Polish and global boards into one place, deduplicates them per saved search, and lets you track which ones you applied to.
 

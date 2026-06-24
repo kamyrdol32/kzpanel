@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, ElementRef, HostListener, inject, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { JobOfferDto, RecruitmentDto } from '@evpanel/shared';
+import { JobOfferDto, RecruitmentDto } from '@kzpanel/shared';
 import { TranslateModule } from '@ngx-translate/core';
 import { debounceTime, distinctUntilChanged, Subject, switchMap } from 'rxjs';
 

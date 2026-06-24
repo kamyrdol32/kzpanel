@@ -2,7 +2,7 @@ import { DatePipe } from '@angular/common';
 import { animate, style, transition, trigger } from '@angular/animations';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { JobLevel, RecruitmentDto, RecruitmentStatus, RemoteType } from '@evpanel/shared';
+import { JobLevel, RecruitmentDto, RecruitmentStatus, RemoteType } from '@kzpanel/shared';
 import { TranslateModule } from '@ngx-translate/core';
 
 import { ConfirmDialogComponent } from '../../../shared/ui/confirm-dialog/confirm-dialog.component';

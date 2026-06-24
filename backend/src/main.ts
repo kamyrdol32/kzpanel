@@ -22,7 +22,7 @@ async function bootstrap(): Promise<void> {
   app.useGlobalFilters(new AllExceptionsFilter());
 
   const swaggerConfig = new DocumentBuilder()
-    .setTitle('EvPanel API')
+    .setTitle('KŻ-Panel API')
     .setDescription('Operational panel API — projects, recruitment, jobs, monitoring.')
     .setVersion('1.0')
     .addBearerAuth()

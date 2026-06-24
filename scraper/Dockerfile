@@ -1,4 +1,4 @@
-# ── EvPanel scraper (stateless NestJS worker) ─────────────────
+# ── KŻ-Panel scraper (stateless NestJS worker) ─────────────────
 # Build context = ./scraper (self-contained — shared types inlined under src/shared).
 FROM node:20-alpine AS build
 WORKDIR /app

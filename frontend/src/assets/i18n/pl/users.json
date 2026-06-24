@@ -1,0 +1,14 @@
+{
+  "users": {
+    "title": "Użytkownicy",
+    "username": "Nazwa użytkownika",
+    "email": "E-mail",
+    "role": "Rola",
+    "status": "Status",
+    "created": "Utworzono",
+    "statusActive": "Aktywny",
+    "statusInactive": "Nieaktywny",
+    "activate": "Aktywuj",
+    "deactivate": "Dezaktywuj"
+  }
+}

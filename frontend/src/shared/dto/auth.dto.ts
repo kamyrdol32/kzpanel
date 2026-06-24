@@ -50,6 +50,19 @@ export interface ActivateAccountRequest {
   token: string;
 }
 
+export interface AdminUserDto {
+  id: string;
+  username: string;
+  email: string | null;
+  role: Role;
+  isActive: boolean;
+  createdAt: string;
+}
+
+export interface SetUserActiveRequest {
+  isActive: boolean;
+}
+
 /** JWT payload carried in access/refresh tokens. */
 export interface JwtPayload {
   sub: string;

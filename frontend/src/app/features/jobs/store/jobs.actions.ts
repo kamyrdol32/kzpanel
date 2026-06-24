@@ -1,4 +1,4 @@
-import { JobFilter, JobOfferDto } from '@evpanel/shared';
+import { JobFilter, JobOfferDto } from '@kzpanel/shared';
 import { createActionGroup, emptyProps, props } from '@ngrx/store';
 
 export type JobSortField = 'publishedDate' | 'salaryMin' | 'title' | 'company';

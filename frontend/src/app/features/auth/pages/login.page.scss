@@ -119,6 +119,91 @@
     margin: 0;
   }
 
+  &-success {
+    color: var(--ev-success);
+    font-size: $fs-sm;
+    margin: 0;
+  }
+
+  &-note {
+    color: var(--ev-text-muted);
+    font-size: $fs-sm;
+    margin: 0;
+  }
+
+  &-token {
+    font-family: ui-monospace, 'Cascadia Code', monospace;
+    font-size: $fs-xs;
+    word-break: break-all;
+    background: var(--ev-bg);
+    border: 1px solid var(--ev-border);
+    border-radius: $radius-md;
+    padding: 8px 10px;
+    color: var(--ev-text);
+  }
+
+  &-links {
+    display: flex;
+    justify-content: space-between;
+    gap: $space-3;
+    flex-wrap: wrap;
+    font-size: $fs-sm;
+
+    a {
+      color: var(--ev-accent);
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+  }
+
+  &-done {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: $space-3;
+    padding: $space-2 0;
+    animation: fadeUp 0.4s ease both;
+  }
+
+  &-done-icon {
+    display: grid;
+    place-items: center;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    margin-bottom: $space-1;
+    background: color-mix(in srgb, var(--ev-success) 15%, transparent);
+    color: var(--ev-success);
+
+    .material-symbols-rounded {
+      font-size: 38px;
+    }
+  }
+
+  &-done-title {
+    margin: 0;
+    font-family: $font-display;
+    font-size: $fs-lg;
+    font-weight: $fw-semibold;
+    color: var(--ev-text);
+  }
+
+  &-done .login-note {
+    text-align: center;
+  }
+
+  &-done .login-submit {
+    width: 100%;
+    text-align: center;
+    text-decoration: none;
+    margin-top: $space-2;
+  }
+
   &-submit {
     margin-top: $space-2;
     padding: 0.75rem;
