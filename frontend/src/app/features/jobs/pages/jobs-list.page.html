@@ -1,13 +1,23 @@
 <div class="ev-page">
   <div class="ev-row page-header-row">
+    @if (selectedScraper()) {
+      <div class="ev-row" style="gap: 10px">
+        <button class="back-btn" type="button" [title]="'jobs.backToScrapers' | translate" (click)="backToScrapers()">
+          <span class="material-symbols-rounded">arrow_back</span>
+        </button>
+        <h1 class="ev-page-title" style="margin: 0">{{ selectedScraper()!.source }} · {{ selectedScraper()!.query }}</h1>
+        @if (!facade.loading() && facade.jobs().length > 0) {
+          <span class="jobs-count">{{ facade.jobs().length }}</span>
+        }
+      </div>
+    } @else {
+      <h1 class="ev-page-title" style="margin: 0">{{ 'jobs.title' | translate }}</h1>
+    }
     <ev-global-search />
   </div>
 
   @if (!selectedScraper()) {
     <!-- Step 1: pick a scraper -->
-    <div class="ev-row" style="margin-bottom: 16px">
-      <h1 class="ev-page-title" style="margin: 0">{{ 'jobs.title' | translate }}</h1>
-    </div>
 
     @if (scrapersLoading()) {
       <ev-skeleton [count]="4" height="64px" />
@@ -53,17 +63,6 @@
     }
   } @else {
     <!-- Step 2: offers of the selected scraper -->
-    <div class="ev-row" style="justify-content: space-between; align-items: center; margin-bottom: 16px">
-      <div class="ev-row" style="align-items: center; gap: 10px">
-        <button class="back-btn" type="button" [title]="'jobs.backToScrapers' | translate" (click)="backToScrapers()">
-          <span class="material-symbols-rounded">arrow_back</span>
-        </button>
-        <h1 class="ev-page-title" style="margin: 0">{{ selectedScraper()!.source }} · {{ selectedScraper()!.query }}</h1>
-      </div>
-      @if (!facade.loading() && facade.jobs().length > 0) {
-        <span class="jobs-count">{{ facade.jobs().length }}</span>
-      }
-    </div>
 
     <!-- Filter bar (portal implied by the scraper) -->
     <div class="filter-bar" [formGroup]="filterForm">
