@@ -7,7 +7,7 @@ export interface ScrapeCompletedPayload extends ScrapeRunResult {
   userId: string | null;
 }
 
-@WebSocketGateway({ cors: { origin: '*' }, namespace: '/ws' })
+@WebSocketGateway({ cors: { origin: '*' }, path: '/ws' })
 export class NotificationsGateway {
   @WebSocketServer()
   private readonly server!: Server;

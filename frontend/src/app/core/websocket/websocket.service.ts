@@ -22,7 +22,10 @@ export class WebSocketService implements OnDestroy {
       return;
     }
 
-    this.socket = io(`${environment.wsUrl}/ws`, { transports: ['websocket'] });
+    this.socket = io(environment.wsUrl || window.location.origin, {
+      path: '/ws',
+      transports: ['websocket'],
+    });
 
     this.socket.on('scrape:completed', (payload: ScrapeCompletedPayload) => {
       const msg = this.translate.instant('notifications.scrapeCompleted', {
