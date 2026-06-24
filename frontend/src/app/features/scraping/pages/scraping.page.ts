@@ -33,7 +33,7 @@ export class ScrapingPage implements OnInit {
 
   protected readonly addOpen = signal(false);
   protected readonly targetsOpen = signal(true);
-  protected readonly othersOpen = signal(true);
+  protected readonly othersOpen = signal(false);
 
   protected toggleAdd(): void {
     this.addOpen.update((v) => !v);
