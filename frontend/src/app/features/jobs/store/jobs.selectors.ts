@@ -51,6 +51,10 @@ function sortJobs(jobs: JobOfferDto[], field: JobSortField, dir: SortDir): JobOf
         cmp = a.company.localeCompare(b.company, undefined, { sensitivity: 'base' });
         break;
       }
+      case 'location': {
+        cmp = (a.location ?? '').localeCompare(b.location ?? '', undefined, { sensitivity: 'base' });
+        break;
+      }
     }
 
     return dir === 'asc' ? cmp : -cmp;

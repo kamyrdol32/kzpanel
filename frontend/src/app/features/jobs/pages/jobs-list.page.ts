@@ -164,7 +164,7 @@ export class JobsListPage implements OnInit, OnDestroy {
         sortKey: 'salaryMin',
         value: (j) => (j.salaryMin ? `${j.salaryMin}–${j.salaryMax ?? ''} ${j.currency ?? ''}` : null),
       },
-      { key: 'location', label: this.t.instant('jobs.col.location') },
+      { key: 'location', label: this.t.instant('jobs.col.location'), sortKey: 'location' },
       {
         key: 'employmentTypes',
         label: this.t.instant('jobs.col.employmentType'),

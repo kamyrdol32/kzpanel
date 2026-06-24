@@ -1,7 +1,7 @@
 import { JobFilter, JobOfferDto } from '@kzpanel/shared';
 import { createActionGroup, emptyProps, props } from '@ngrx/store';
 
-export type JobSortField = 'publishedDate' | 'salaryMin' | 'title' | 'company';
+export type JobSortField = 'publishedDate' | 'salaryMin' | 'title' | 'company' | 'location';
 export type SortDir = 'asc' | 'desc';
 
 export const JobsActions = createActionGroup({
