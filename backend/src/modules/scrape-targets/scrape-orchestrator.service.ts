@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { JobOffer } from '../jobs/job-offer.entity';
+import { NotificationsGateway } from '../notifications/notifications.gateway';
 
 import { LanguageDetector } from './language.detector';
 import { ScrapeTarget } from './scrape-target.entity';
@@ -21,6 +22,7 @@ export class ScrapeOrchestratorService {
   constructor(
     private readonly scraper: ScraperClient,
     private readonly language: LanguageDetector,
+    private readonly gateway: NotificationsGateway,
     @InjectRepository(JobOffer)
     private readonly offers: Repository<JobOffer>,
     @InjectRepository(ScrapeTarget)
@@ -50,7 +52,10 @@ export class ScrapeOrchestratorService {
         return 0;
       });
     }
-    return { targetsProcessed: targets.length, offersUpserted };
+
+    const result: ScrapeRunResult = { targetsProcessed: targets.length, offersUpserted };
+    this.gateway.emitScrapeCompleted({ ...result, userId: opts.userId ?? null });
+    return result;
   }
 
   private async runForTarget(target: ScrapeTarget): Promise<number> {

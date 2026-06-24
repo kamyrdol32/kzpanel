@@ -3,6 +3,7 @@
     "loading": "Loading…",
     "details": "Details",
     "noData": "No data",
+    "errorGeneric": "Something went wrong. Please try again.",
     "logout": "Log out",
     "theme": "Theme",
     "language": "Language",
@@ -61,6 +62,9 @@
       "REJECTED": "Rejected",
       "HIRED": "Hired"
     }
+  },
+  "notifications": {
+    "scrapeCompleted": "Scraping done — {{ targets }} target(s), {{ offers }} new offer(s)."
   },
   "settings": {
     "title": "Settings",

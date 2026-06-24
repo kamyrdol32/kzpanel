@@ -12,6 +12,13 @@
     "deactivate": "Dezaktywuj",
     "lastLogin": "Ostatnie logowanie",
     "you": "ty",
-    "deleteConfirm": "Na pewno chcesz usunąć tego użytkownika? Operacja jest nieodwracalna."
+    "deleteConfirm": "Na pewno chcesz usunąć tego użytkownika? Operacja jest nieodwracalna.",
+    "roleChangeTitle": "Zmiana roli",
+    "roleChangeConfirm": "Na pewno chcesz zmienić rolę użytkownika {{ username }} na {{ role }}?",
+    "roleChangeConfirmBtn": "Zmień rolę",
+    "toastActivated": "Użytkownik {{ username }} został aktywowany.",
+    "toastDeactivated": "Użytkownik {{ username }} został dezaktywowany.",
+    "toastRoleChanged": "Rola użytkownika {{ username }} zmieniona na {{ role }}.",
+    "toastDeleted": "Użytkownik {{ username }} został usunięty."
   }
 }

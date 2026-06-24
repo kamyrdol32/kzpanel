@@ -1,6 +1,7 @@
 import { JwtPayload } from '../../shared';
 import { Body, Controller, HttpCode, Post, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { Throttle } from '@nestjs/throttler';
 
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
@@ -22,6 +23,7 @@ export class AuthController {
   constructor(private readonly auth: AuthService) {}
 
   @Post('register')
+  @Throttle({ default: { ttl: 60_000, limit: 5 } })
   register(@Body() dto: RegisterDto) {
     return this.auth.register(dto.username, dto.password, dto.email);
   }
@@ -34,12 +36,14 @@ export class AuthController {
 
   @Post('login')
   @HttpCode(200)
+  @Throttle({ default: { ttl: 60_000, limit: 10 } })
   login(@Body() dto: LoginDto) {
     return this.auth.login(dto.username, dto.password);
   }
 
   @Post('refresh')
   @HttpCode(200)
+  @Throttle({ default: { ttl: 60_000, limit: 30 } })
   refresh(@Body() dto: RefreshDto) {
     return this.auth.refresh(dto.refreshToken);
   }

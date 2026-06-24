@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { APP_GUARD } from '@nestjs/core';
 import { ScheduleModule } from '@nestjs/schedule';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { AuditModule } from './common/audit/audit.module';
@@ -28,6 +30,7 @@ import { UsersModule } from './modules/users/users.module';
       useFactory: () => ({ ...dataSourceOptions, autoLoadEntities: true }),
     }),
     ScheduleModule.forRoot(),
+    ThrottlerModule.forRoot([{ ttl: 60_000, limit: 20 }]),
     AuditModule,
     HealthModule,
     UsersModule,
@@ -37,5 +40,6 @@ import { UsersModule } from './modules/users/users.module';
     ScrapeTargetsModule,
     SearchModule,
   ],
+  providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
 })
 export class AppModule {}

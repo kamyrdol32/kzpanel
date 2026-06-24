@@ -14,6 +14,9 @@
     "jobOffer": "Linked offer",
     "confirmDeleteTitle": "Delete recruitment?",
     "confirmDeleteMsg": "This will remove the recruitment entry. Are you sure you want to continue?",
+    "toastApplied": "Application to {{ company }} added.",
+    "toastStatusChanged": "Status changed to: {{ status }}.",
+    "toastRemoved": "Recruitment entry removed.",
     "filter": {
       "search": "Search by company or position…",
       "allLevels": "All levels",

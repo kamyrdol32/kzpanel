@@ -6,6 +6,8 @@ import { TranslateModule } from '@ngx-translate/core';
 import { AuthService } from '../auth/auth.service';
 import { LanguageService } from '../i18n/language.service';
 import { ThemeService } from '../theme/theme.service';
+import { ToastComponent } from '../toast/toast.component';
+import { WebSocketService } from '../websocket/websocket.service';
 
 interface NavItem {
   path: string;
@@ -15,7 +17,7 @@ interface NavItem {
 @Component({
   selector: 'ev-app-layout',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, TranslateModule],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, TranslateModule, ToastComponent],
   templateUrl: './app-layout.component.html',
   styleUrl: './app-layout.component.scss',
 })
@@ -23,6 +25,7 @@ export class AppLayoutComponent implements OnInit {
   protected readonly theme = inject(ThemeService);
   protected readonly language = inject(LanguageService);
   private readonly auth = inject(AuthService);
+  private readonly ws = inject(WebSocketService);
   private readonly router = inject(Router);
   private readonly el = inject(ElementRef);
 
@@ -63,6 +66,7 @@ export class AppLayoutComponent implements OnInit {
 
   public ngOnInit(): void {
     this.language.init();
+    this.ws.connect();
   }
 
   protected toggleDropdown(): void {
@@ -90,6 +94,7 @@ export class AppLayoutComponent implements OnInit {
   }
 
   protected logout(): void {
+    this.ws.disconnect();
     this.auth.logout();
     void this.router.navigate(['/auth/login']);
   }

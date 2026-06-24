@@ -1,23 +1,24 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { CreateScrapeTargetRequest, Role, ScrapeTargetDto, UpdateScrapeTargetRequest } from '@kzpanel/shared';
+import { TranslateService } from '@ngx-translate/core';
 import { finalize } from 'rxjs';
 
 import { AuthService } from '../../../core/auth/auth.service';
+import { ToastService } from '../../../core/toast/toast.service';
 import { ScrapingApi } from '../data-access/scraping.api';
 
-/** Single interaction surface for the scraping panel (signal-based facade). */
 @Injectable({ providedIn: 'root' })
 export class ScrapingFacade {
   private readonly api = inject(ScrapingApi);
   private readonly auth = inject(AuthService);
+  private readonly toast = inject(ToastService);
+  private readonly translate = inject(TranslateService);
 
   readonly targets = signal<ScrapeTargetDto[]>([]);
-  /** Other accounts' scrapers — admin-only, shown in a separate section. */
   readonly otherTargets = signal<ScrapeTargetDto[]>([]);
   readonly isAdmin = computed(() => this.auth.user()?.role === Role.ADMIN);
   readonly loading = signal(false);
   readonly running = signal(false);
-  /** id of the target currently being scraped; null = runAll or idle */
   readonly runningId = signal<string | null>(null);
   readonly lastResult = signal<string | null>(null);
 
@@ -34,19 +35,43 @@ export class ScrapingFacade {
   }
 
   public add(body: CreateScrapeTargetRequest): void {
-    this.api.create(body).subscribe({ next: () => this.load() });
+    this.api.create(body).subscribe({
+      next: () => {
+        this.load();
+        this.toast.success(this.translate.instant('scraping.toastAdded'));
+      },
+      error: () => this.toast.error(this.translate.instant('common.errorGeneric')),
+    });
   }
 
   public edit(id: string, body: UpdateScrapeTargetRequest): void {
-    this.api.update(id, body).subscribe({ next: () => this.load() });
+    this.api.update(id, body).subscribe({
+      next: () => {
+        this.load();
+        this.toast.success(this.translate.instant('scraping.toastUpdated'));
+      },
+      error: () => this.toast.error(this.translate.instant('common.errorGeneric')),
+    });
   }
 
   public clearOffers(id: string): void {
-    this.api.clearOffers(id).subscribe({ next: () => this.load() });
+    this.api.clearOffers(id).subscribe({
+      next: () => {
+        this.load();
+        this.toast.info(this.translate.instant('scraping.toastCleared'));
+      },
+      error: () => this.toast.error(this.translate.instant('common.errorGeneric')),
+    });
   }
 
   public remove(id: string): void {
-    this.api.remove(id).subscribe({ next: () => this.load() });
+    this.api.remove(id).subscribe({
+      next: () => {
+        this.load();
+        this.toast.info(this.translate.instant('scraping.toastRemoved'));
+      },
+      error: () => this.toast.error(this.translate.instant('common.errorGeneric')),
+    });
   }
 
   public runAll(): void {
@@ -58,11 +83,13 @@ export class ScrapingFacade {
       .pipe(finalize(() => { this.running.set(false); this.runningId.set(null); }))
       .subscribe({
         next: (r) => {
-          this.lastResult.set(`Targets: ${r.targetsProcessed}, offers: ${r.offersUpserted}`);
+          this.lastResult.set(this.translate.instant('scraping.resultSummary', { targets: r.targetsProcessed, offers: r.offersUpserted }));
           this.load();
         },
         error: (err) => {
-          this.lastResult.set(`Error: ${(err as { message?: string }).message ?? 'unknown'}`);
+          const msg = (err as { message?: string }).message ?? 'unknown';
+          this.lastResult.set(msg);
+          this.toast.error(this.translate.instant('scraping.toastRunError'));
         },
       });
   }
@@ -76,11 +103,13 @@ export class ScrapingFacade {
       .pipe(finalize(() => { this.running.set(false); this.runningId.set(null); }))
       .subscribe({
         next: (r) => {
-          this.lastResult.set(`Offers: ${r.offersUpserted}`);
+          this.lastResult.set(this.translate.instant('scraping.resultOffers', { offers: r.offersUpserted }));
           this.load();
         },
         error: (err) => {
-          this.lastResult.set(`Error: ${(err as { message?: string }).message ?? 'unknown'}`);
+          const msg = (err as { message?: string }).message ?? 'unknown';
+          this.lastResult.set(msg);
+          this.toast.error(this.translate.instant('scraping.toastRunError'));
         },
       });
   }

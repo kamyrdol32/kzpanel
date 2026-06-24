@@ -14,6 +14,9 @@
     "jobOffer": "Powiązana oferta",
     "confirmDeleteTitle": "Usunąć rekrutację?",
     "confirmDeleteMsg": "Ta operacja usunie wpis rekrutacji. Czy na pewno chcesz kontynuować?",
+    "toastApplied": "Dodano aplikację do {{ company }}.",
+    "toastStatusChanged": "Status zmieniony na: {{ status }}.",
+    "toastRemoved": "Wpis rekrutacji został usunięty.",
     "filter": {
       "search": "Szukaj po firmie lub stanowisku…",
       "allLevels": "Wszystkie poziomy",

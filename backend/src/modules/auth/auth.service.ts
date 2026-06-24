@@ -86,10 +86,18 @@ export class AuthService {
       where: { userId: payload.sub, revokedAt: undefined },
       order: { createdAt: 'DESC' },
     });
-    if (!stored || !(await bcrypt.compare(refreshToken, stored.tokenHash))) {
+
+    if (!stored) {
       throw new UnauthorizedException('Invalid refresh token');
     }
-    // rotation: revoke old, issue new
+
+    const tokenMatches = await bcrypt.compare(refreshToken, stored.tokenHash);
+
+    if (!tokenMatches) {
+      await this.refreshRepo.update({ userId: payload.sub }, { revokedAt: new Date() });
+      throw new UnauthorizedException('Refresh token reuse detected — all sessions revoked');
+    }
+
     await this.refreshRepo.update(stored.id, { revokedAt: new Date() });
     const user = await this.users.getByIdOrThrow(payload.sub);
     return this.issueTokens(user);

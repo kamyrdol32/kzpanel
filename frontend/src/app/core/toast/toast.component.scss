@@ -1,0 +1,87 @@
+@use '../../../styles/tokens' as *;
+
+.toast-container {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: none;
+  max-width: 420px;
+  width: calc(100vw - 48px);
+}
+
+.toast {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: $radius-lg;
+  border: 1px solid var(--ev-border);
+  background: var(--ev-surface);
+  box-shadow: var(--ev-shadow-md);
+  pointer-events: all;
+  animation: slideInRight $dur-base $ease-standard both;
+
+  &-icon {
+    font-size: 20px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  &-message {
+    flex: 1;
+    font-size: $fs-sm;
+    line-height: 1.5;
+    color: var(--ev-text);
+  }
+
+  &-close {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    color: var(--ev-text-muted);
+    transition: color $dur-fast $ease-standard;
+
+    &:hover { color: var(--ev-text); }
+
+    .material-symbols-rounded { font-size: 18px; }
+  }
+
+  &-info {
+    border-color: var(--ev-info);
+    .toast-icon { color: var(--ev-info); }
+  }
+
+  &-success {
+    border-color: var(--ev-success);
+    .toast-icon { color: var(--ev-success); }
+  }
+
+  &-warning {
+    border-color: var(--ev-warning);
+    .toast-icon { color: var(--ev-warning); }
+  }
+
+  &-error {
+    border-color: var(--ev-danger);
+    .toast-icon { color: var(--ev-danger); }
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(32px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}

@@ -23,6 +23,13 @@
     "confirmDeleteMsg": "This will permanently remove the scraper and all its offers.",
     "confirmClearTitle": "Clear offers?",
     "confirmClearMsg": "This will permanently delete all offers fetched by this scraper. The scraper itself will remain.",
-    "confirmClearAction": "Clear"
+    "confirmClearAction": "Clear",
+    "toastAdded": "Scraper added.",
+    "toastUpdated": "Scraper updated.",
+    "toastRemoved": "Scraper removed.",
+    "toastCleared": "Offers cleared.",
+    "toastRunError": "An error occurred while scraping.",
+    "resultSummary": "Scraping done — {{ targets }} target(s), {{ offers }} offer(s).",
+    "resultOffers": "Fetched {{ offers }} offer(s)."
   }
 }

@@ -12,6 +12,13 @@
     "deactivate": "Deactivate",
     "lastLogin": "Last login",
     "you": "you",
-    "deleteConfirm": "Are you sure you want to delete this user? This action is irreversible."
+    "deleteConfirm": "Are you sure you want to delete this user? This action is irreversible.",
+    "roleChangeTitle": "Change role",
+    "roleChangeConfirm": "Are you sure you want to change {{ username }}'s role to {{ role }}?",
+    "roleChangeConfirmBtn": "Change role",
+    "toastActivated": "User {{ username }} has been activated.",
+    "toastDeactivated": "User {{ username }} has been deactivated.",
+    "toastRoleChanged": "Role of {{ username }} changed to {{ role }}.",
+    "toastDeleted": "User {{ username }} has been deleted."
   }
 }

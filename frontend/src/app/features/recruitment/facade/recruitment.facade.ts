@@ -7,13 +7,17 @@ import {
   RecruitmentStatus,
   RemoteType,
 } from '@kzpanel/shared';
+import { TranslateService } from '@ngx-translate/core';
 import { Observable, tap } from 'rxjs';
 
 import { ApiService } from '../../../core/http/api.service';
+import { ToastService } from '../../../core/toast/toast.service';
 
 @Injectable({ providedIn: 'root' })
 export class RecruitmentFacade {
   private readonly api = inject(ApiService);
+  private readonly toast = inject(ToastService);
+  private readonly translate = inject(TranslateService);
 
   readonly items = signal<RecruitmentDto[]>([]);
   readonly loading = signal(false);
@@ -25,14 +29,13 @@ export class RecruitmentFacade {
         this.items.set(rows);
         this.loading.set(false);
       },
-      error: () => this.loading.set(false),
+      error: () => {
+        this.loading.set(false);
+        this.toast.error(this.translate.instant('common.errorGeneric'));
+      },
     });
   }
 
-  /**
-   * Records that a CV was sent for a given job offer — creates a recruitment
-   * entry with status CV_SENT, prefilled from the offer.
-   */
   public applyToOffer(job: JobOfferDto): Observable<RecruitmentDto> {
     const payload: CreateRecruitmentRequest = {
       company: job.company,
@@ -48,19 +51,30 @@ export class RecruitmentFacade {
     };
     return this.api
       .post<RecruitmentDto>('/recruitment', payload)
-      .pipe(tap((created) => this.items.update((list) => [created, ...list])));
+      .pipe(tap((created) => {
+        this.items.update((list) => [created, ...list]);
+        this.toast.success(this.translate.instant('recruitment.toastApplied', { company: job.company }));
+      }));
   }
 
   public updateStatus(id: string, status: RecruitmentStatus): void {
     this.api.patch<RecruitmentDto>(`/recruitment/${id}`, { status }).subscribe({
-      next: (updated) =>
-        this.items.update((list) => list.map((r) => (r.id === id ? updated : r))),
+      next: (updated) => {
+        this.items.update((list) => list.map((r) => (r.id === id ? updated : r)));
+        const statusLabel = this.translate.instant(`enum.status.${updated.status}`);
+        this.toast.info(this.translate.instant('recruitment.toastStatusChanged', { status: statusLabel }));
+      },
+      error: () => this.toast.error(this.translate.instant('common.errorGeneric')),
     });
   }
 
   public remove(id: string): void {
     this.api.delete<void>(`/recruitment/${id}`).subscribe({
-      next: () => this.items.update((list) => list.filter((r) => r.id !== id)),
+      next: () => {
+        this.items.update((list) => list.filter((r) => r.id !== id));
+        this.toast.info(this.translate.instant('recruitment.toastRemoved'));
+      },
+      error: () => this.toast.error(this.translate.instant('common.errorGeneric')),
     });
   }
 }

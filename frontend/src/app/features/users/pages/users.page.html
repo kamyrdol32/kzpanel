@@ -31,7 +31,7 @@
                 <select
                   class="role-select"
                   [disabled]="row.pending || row.isSelf"
-                  (change)="changeRole(row.id, $any($event.target).value)"
+                  (change)="askRoleChange(row, $any($event.target).value)"
                 >
                   @for (r of roles; track r) {
                     <option [value]="r" [selected]="r === row.role">{{ 'enum.role.' + r | translate }}</option>
@@ -68,7 +68,16 @@
   <ev-confirm-dialog
     [open]="!!pendingDelete()"
     [message]="'users.deleteConfirm' | translate"
-    (confirmed)="confirmDelete()"
-    (cancelled)="pendingDelete.set(null)"
+    (confirm)="confirmDelete()"
+    (cancel)="pendingDelete.set(null)"
+  />
+
+  <ev-confirm-dialog
+    [open]="!!pendingRoleChange()"
+    [message]="roleChangeMessage()"
+    title="users.roleChangeTitle"
+    confirmLabel="users.roleChangeConfirmBtn"
+    (confirm)="confirmRoleChange()"
+    (cancel)="cancelRoleChange()"
   />
 </div>

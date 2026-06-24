@@ -3,6 +3,7 @@
     "loading": "Ładowanie…",
     "details": "Szczegóły",
     "noData": "Brak danych",
+    "errorGeneric": "Coś poszło nie tak. Spróbuj ponownie.",
     "logout": "Wyloguj",
     "theme": "Motyw",
     "language": "Język",
@@ -61,6 +62,9 @@
       "REJECTED": "Odrzucona",
       "HIRED": "Zatrudniony"
     }
+  },
+  "notifications": {
+    "scrapeCompleted": "Scrapowanie zakończone — {{ targets }} cel(e), {{ offers }} nowych ofert(y)."
   },
   "settings": {
     "title": "Ustawienia",

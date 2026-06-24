@@ -23,6 +23,13 @@
     "confirmDeleteMsg": "Ta operacja trwale usunie scraper wraz ze wszystkimi jego ofertami.",
     "confirmClearTitle": "Wyczyścić oferty?",
     "confirmClearMsg": "Ta operacja trwale usunie wszystkie oferty pobrane przez ten scraper. Sam scraper pozostanie.",
-    "confirmClearAction": "Wyczyść"
+    "confirmClearAction": "Wyczyść",
+    "toastAdded": "Scraper został dodany.",
+    "toastUpdated": "Scraper został zaktualizowany.",
+    "toastRemoved": "Scraper został usunięty.",
+    "toastCleared": "Oferty zostały wyczyszczone.",
+    "toastRunError": "Wystąpił błąd podczas scrapowania.",
+    "resultSummary": "Scrapowanie zakończone — {{ targets }} cel(e), {{ offers }} ofert(y).",
+    "resultOffers": "Pobrano {{ offers }} ofert(y)."
   }
 }
