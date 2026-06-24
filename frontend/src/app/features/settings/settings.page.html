@@ -1,0 +1,108 @@
+<div class="ev-page settings-page">
+  <div class="settings-header">
+    <h1 class="ev-page-title">{{ 'settings.title' | translate }}</h1>
+  </div>
+
+  <div class="settings-layout">
+
+    <section class="settings-card">
+      <div class="settings-card-header">
+        <span class="material-symbols-rounded settings-card-icon">manage_accounts</span>
+        <h2 class="settings-card-title">{{ 'settings.account' | translate }}</h2>
+      </div>
+      <div class="settings-rows">
+        <div class="settings-row">
+          <span class="settings-label">{{ 'settings.username' | translate }}</span>
+          <span class="settings-value">{{ auth.user()?.username }}</span>
+        </div>
+        @if (auth.user()?.email) {
+          <div class="settings-row">
+            <span class="settings-label">{{ 'settings.email' | translate }}</span>
+            <span class="settings-value">{{ auth.user()?.email }}</span>
+          </div>
+        }
+        <div class="settings-row">
+          <span class="settings-label">{{ 'settings.role' | translate }}</span>
+          <span class="settings-role-badge">{{ auth.user()?.role }}</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="settings-card">
+      <div class="settings-card-header">
+        <span class="material-symbols-rounded settings-card-icon">tune</span>
+        <h2 class="settings-card-title">{{ 'settings.preferences' | translate }}</h2>
+      </div>
+      <div class="settings-rows">
+        <div class="settings-row">
+          <div class="settings-row-left">
+            <span class="material-symbols-rounded settings-row-icon">contrast</span>
+            <span class="settings-label">{{ 'common.theme' | translate }}</span>
+          </div>
+          <button class="settings-toggle" (click)="theme.toggle()">
+            <span class="material-symbols-rounded">{{ theme.mode() === 'dark' ? 'dark_mode' : 'light_mode' }}</span>
+            {{ theme.mode() }}
+          </button>
+        </div>
+        <div class="settings-row">
+          <div class="settings-row-left">
+            <span class="material-symbols-rounded settings-row-icon">translate</span>
+            <span class="settings-label">{{ 'common.language' | translate }}</span>
+          </div>
+          <button class="settings-toggle" (click)="language.toggle()">
+            {{ language.lang() | uppercase }}
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section class="settings-card">
+      <div class="settings-card-header">
+        <span class="material-symbols-rounded settings-card-icon">lock</span>
+        <h2 class="settings-card-title">{{ 'settings.changePassword' | translate }}</h2>
+      </div>
+      <form class="settings-form" [formGroup]="passwordForm" (ngSubmit)="submitPassword()">
+        <label class="settings-field">
+          <span class="settings-field-label">{{ 'auth.currentPassword' | translate }}</span>
+          <input type="password" formControlName="currentPassword" autocomplete="current-password" />
+        </label>
+        <label class="settings-field">
+          <span class="settings-field-label">{{ 'auth.newPassword' | translate }}</span>
+          <input type="password" formControlName="newPassword" autocomplete="new-password" />
+        </label>
+        <label class="settings-field">
+          <span class="settings-field-label">{{ 'auth.confirmPassword' | translate }}</span>
+          <input type="password" formControlName="confirm" autocomplete="new-password" />
+        </label>
+
+        @if (passwordForm.errors?.['mismatch'] && passwordForm.get('confirm')?.touched) {
+          <p class="settings-error">
+            <span class="material-symbols-rounded">error</span>
+            {{ 'auth.passwordsMismatch' | translate }}
+          </p>
+        }
+        @if (passwordError()) {
+          <p class="settings-error">
+            <span class="material-symbols-rounded">error</span>
+            {{ passwordError()! | translate }}
+          </p>
+        }
+        @if (passwordDone()) {
+          <p class="settings-success">
+            <span class="material-symbols-rounded">check_circle</span>
+            {{ 'auth.changePasswordDone' | translate }}
+          </p>
+        }
+
+        <button type="submit" class="btn btn-primary settings-submit"
+                [disabled]="passwordLoading() || passwordForm.invalid">
+          @if (passwordLoading()) {
+            <span class="material-symbols-rounded settings-spin">progress_activity</span>
+          }
+          {{ (passwordLoading() ? 'common.loading' : 'settings.changePassword') | translate }}
+        </button>
+      </form>
+    </section>
+
+  </div>
+</div>

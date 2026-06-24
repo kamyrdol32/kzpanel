@@ -1,0 +1,194 @@
+.settings-page {
+  max-width: 680px;
+}
+
+.settings-header {
+  margin-bottom: 32px;
+}
+
+.settings-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.settings-card {
+  background: var(--ev-surface);
+  border: 1px solid var(--ev-border);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.settings-card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 18px 22px 14px;
+  border-bottom: 1px solid var(--ev-border);
+}
+
+.settings-card-icon {
+  font-size: 18px;
+  color: var(--ev-accent);
+}
+
+.settings-card-title {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--ev-text-muted);
+}
+
+.settings-rows {
+  padding: 0 22px;
+}
+
+.settings-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--ev-border);
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.settings-row-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.settings-row-icon {
+  font-size: 16px;
+  color: var(--ev-text-muted);
+}
+
+.settings-label {
+  font-size: 14px;
+  color: var(--ev-text);
+}
+
+.settings-value {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ev-text-muted);
+}
+
+.settings-role-badge {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  background: var(--ev-accent-dim);
+  color: var(--ev-accent);
+  border: 1px solid var(--ev-accent-border);
+}
+
+.settings-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border: 1px solid var(--ev-border);
+  border-radius: 8px;
+  background: var(--ev-bg);
+  color: var(--ev-text);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  text-transform: capitalize;
+  transition: border-color 0.15s, color 0.15s;
+
+  .material-symbols-rounded {
+    font-size: 15px;
+  }
+
+  &:hover {
+    border-color: var(--ev-accent);
+    color: var(--ev-accent);
+  }
+}
+
+.settings-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 20px 22px 22px;
+}
+
+.settings-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.settings-field-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ev-text-muted);
+}
+
+.settings-field input {
+  background: var(--ev-bg);
+  border: 1px solid var(--ev-border);
+  border-radius: 10px;
+  padding: 10px 14px;
+  color: var(--ev-text);
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.15s;
+
+  &:focus {
+    border-color: var(--ev-accent);
+  }
+}
+
+.settings-error {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--ev-danger);
+  font-size: 13px;
+  margin: 0;
+
+  .material-symbols-rounded {
+    font-size: 15px;
+  }
+}
+
+.settings-success {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--ev-success);
+  font-size: 13px;
+  margin: 0;
+
+  .material-symbols-rounded {
+    font-size: 15px;
+  }
+}
+
+.settings-submit {
+  align-self: flex-start;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.settings-spin {
+  animation: spin 0.8s linear infinite;
+  font-size: 15px;
+}
