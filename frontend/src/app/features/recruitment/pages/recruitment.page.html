@@ -85,7 +85,7 @@
                   (ngModelChange)="onStatusChange(row.id, $event)"
                   (click)="$event.stopPropagation()"
                 >
-                  @for (s of statuses; track s) { <option [value]="s">{{ s }}</option> }
+                  @for (s of statuses; track s) { <option [value]="s">{{ 'enum.status.' + s | translate }}</option> }
                 </select>
               </td>
               <td class="actions">
@@ -125,7 +125,7 @@
                       </div>
                       <div class="field">
                         <span class="field-label">{{ 'recruitment.status' | translate }}</span>
-                        <span class="field-value">{{ row.status }}</span>
+                        <span class="field-value">{{ 'enum.status.' + row.status | translate }}</span>
                       </div>
                       <div class="field">
                         <span class="field-label">{{ 'recruitment.applied' | translate }}</span>
