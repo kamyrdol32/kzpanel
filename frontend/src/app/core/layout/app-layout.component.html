@@ -26,10 +26,25 @@
       </li>
 
       @if (isAdmin()) {
-        <li>
-          <a class="nav-link" routerLink="/users" routerLinkActive="active">
-            {{ 'nav.users' | translate }}
-          </a>
+        <li class="nav-dropdown" [class.is-open]="adminOpen()">
+          <button class="nav-link nav-dropdown-trigger" (click)="toggleAdminDropdown()">
+            {{ 'nav.admin' | translate }}
+            <svg class="nav-dropdown-chevron" width="12" height="12" viewBox="0 0 12 12" fill="none">
+              <path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <ul class="nav-dropdown-menu">
+            @for (item of adminItems; track item.path) {
+              <li>
+                <a
+                  class="nav-dropdown-item"
+                  [routerLink]="item.path"
+                  routerLinkActive="active"
+                  (click)="closeAdminDropdown()"
+                >{{ item.labelKey | translate }}</a>
+              </li>
+            }
+          </ul>
         </li>
       }
     </ul>

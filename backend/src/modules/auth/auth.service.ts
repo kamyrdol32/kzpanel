@@ -72,6 +72,7 @@ export class AuthService {
       throw new UnauthorizedException('Account not activated');
     }
 
+    await this.users.update(user.id, { lastLoginAt: new Date() });
     const tokens = await this.issueTokens(user);
     return {
       ...tokens,

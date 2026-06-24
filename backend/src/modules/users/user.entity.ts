@@ -30,4 +30,7 @@ export class User extends BaseEntity {
 
   @Column({ type: 'timestamptz', nullable: true })
   resetTokenExpiresAt!: Date | null;
+
+  @Column({ type: 'timestamptz', nullable: true })
+  lastLoginAt!: Date | null;
 }

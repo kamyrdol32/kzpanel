@@ -79,6 +79,27 @@
   font-size: $fs-md;
   font-weight: $fw-semibold;
   color: var(--ev-text);
+
+  &-toggle {
+    width: 100%;
+    background: none;
+    border: none;
+    border-bottom: 1px solid var(--ev-border);
+    cursor: pointer;
+    text-align: left;
+    transition: background $dur-fast $ease-standard;
+
+    &:hover { background: var(--ev-surface-2); }
+  }
+}
+
+.section-chevron {
+  margin-left: auto;
+  font-size: 20px;
+  color: var(--ev-text-muted);
+  transition: transform $dur-fast $ease-standard;
+
+  &.is-open { transform: rotate(180deg); }
 }
 
 .section-icon {

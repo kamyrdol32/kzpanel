@@ -57,10 +57,15 @@ export interface AdminUserDto {
   role: Role;
   isActive: boolean;
   createdAt: string;
+  lastLoginAt: string | null;
 }
 
 export interface SetUserActiveRequest {
   isActive: boolean;
+}
+
+export interface SetUserRoleRequest {
+  role: Role;
 }
 
 /** JWT payload carried in access/refresh tokens. */

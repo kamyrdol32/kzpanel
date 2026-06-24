@@ -34,10 +34,6 @@
 
   .actions-col {
     width: 1%;
-  }
-
-  .actions {
-    text-align: right;
     white-space: nowrap;
   }
 }
@@ -57,6 +53,61 @@
   &.status-inactive {
     background: var(--ev-text-muted);
   }
+}
+
+.self-badge {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 1px 7px;
+  border-radius: 99px;
+  background: var(--ev-accent-dim);
+  border: 1px solid var(--ev-accent-border);
+  color: var(--ev-accent);
+  font-size: $fs-xs;
+  font-weight: $fw-semibold;
+  vertical-align: middle;
+}
+
+.role-select {
+  height: 30px;
+  padding: 0 8px;
+  background: var(--ev-bg);
+  border: 1px solid var(--ev-border);
+  border-radius: 6px;
+  color: var(--ev-text);
+  font-size: $fs-sm;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.15s;
+
+  &:focus { border-color: var(--ev-accent); }
+  &:disabled { opacity: 0.4; cursor: not-allowed; }
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.icon-danger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--ev-border);
+  border-radius: 8px;
+  background: var(--ev-bg);
+  color: var(--ev-danger);
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+
+  .material-symbols-rounded { font-size: 18px; }
+
+  &:hover:not(:disabled) { border-color: var(--ev-danger); background: var(--ev-danger-dim, color-mix(in srgb, var(--ev-danger) 10%, transparent)); }
+  &:disabled { opacity: 0.4; cursor: not-allowed; }
 }
 
 .action-btn {

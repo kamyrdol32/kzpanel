@@ -9,6 +9,9 @@
     "statusActive": "Aktywny",
     "statusInactive": "Nieaktywny",
     "activate": "Aktywuj",
-    "deactivate": "Dezaktywuj"
+    "deactivate": "Dezaktywuj",
+    "lastLogin": "Ostatnie logowanie",
+    "you": "ty",
+    "deleteConfirm": "Na pewno chcesz usunąć tego użytkownika? Operacja jest nieodwracalna."
   }
 }

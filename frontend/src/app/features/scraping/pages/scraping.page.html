@@ -14,10 +14,12 @@
 
   <!-- Add form -->
   <section class="add-section">
-    <div class="section-header">
+    <button type="button" class="section-header section-header-toggle" (click)="toggleAdd()">
       <span class="material-symbols-rounded section-icon">add_circle</span>
       <span>{{ 'scraping.addTitle' | translate }}</span>
-    </div>
+      <span class="material-symbols-rounded section-chevron" [class.is-open]="addOpen()">expand_more</span>
+    </button>
+    @if (addOpen()) {
     <div class="section-body">
       <form class="form" [formGroup]="form" (ngSubmit)="add()">
         <label class="field">
@@ -58,23 +60,26 @@
         <p class="hint">{{ 'scraping.pickFirst' | translate }}</p>
       }
     </div>
+    }
   </section>
 
   <!-- Target list -->
   <section class="targets-section">
-    <div class="section-header">
+    <button type="button" class="section-header section-header-toggle" (click)="toggleTargets()">
       <span class="material-symbols-rounded section-icon">travel_explore</span>
       <span>{{ 'scraping.targetList' | translate }}</span>
       @if (facade.targets().length > 0) {
         <span class="count-badge">{{ facade.targets().length }}</span>
       }
-    </div>
+      <span class="material-symbols-rounded section-chevron" [class.is-open]="targetsOpen()">expand_more</span>
+    </button>
 
-    @if (facade.targets().length === 0) {
-      <ev-empty-state icon="travel_explore" [title]="'scraping.empty' | translate" />
-    } @else {
-      <div class="targets">
-        @for (t of facade.targets(); track t.id) {
+    @if (targetsOpen()) {
+      @if (facade.targets().length === 0) {
+        <ev-empty-state icon="travel_explore" [title]="'scraping.empty' | translate" />
+      } @else {
+        <div class="targets">
+          @for (t of facade.targets(); track t.id) {
           @if (editingId() === t.id) {
             <div class="target target-editing" [formGroup]="editForm">
               <div class="target-left">
@@ -158,44 +163,48 @@
         }
       </div>
     }
+  }
   </section>
 
   <!-- Admin-only: other accounts' scrapers -->
   @if (facade.isAdmin() && facade.otherTargets().length > 0) {
     <section class="targets-section">
-      <div class="section-header">
+      <button type="button" class="section-header section-header-toggle" (click)="toggleOthers()">
         <span class="material-symbols-rounded section-icon">groups</span>
         <span>{{ 'scraping.othersList' | translate }}</span>
         <span class="count-badge">{{ facade.otherTargets().length }}</span>
-      </div>
+        <span class="material-symbols-rounded section-chevron" [class.is-open]="othersOpen()">expand_more</span>
+      </button>
 
-      <div class="targets">
-        @for (t of facade.otherTargets(); track t.id) {
-          <div class="target">
-            <div class="target-left">
-              <ev-status-badge [label]="t.source" tone="info" />
-              <div class="target-meta">
-                <span class="target-query">{{ t.query }}</span>
-                <span class="target-sub">
-                  {{ t.ownerUsername }}{{ t.location ? ' · ' + t.location : '' }}
+      @if (othersOpen()) {
+        <div class="targets">
+          @for (t of facade.otherTargets(); track t.id) {
+            <div class="target">
+              <div class="target-left">
+                <ev-status-badge [label]="t.source" tone="info" />
+                <div class="target-meta">
+                  <span class="target-query">{{ t.query }}</span>
+                  <span class="target-sub">
+                    {{ t.ownerUsername }}{{ t.location ? ' · ' + t.location : '' }}
+                  </span>
+                </div>
+              </div>
+              <div class="target-right">
+                <span class="offer-count" [title]="'scraping.offerCount' | translate">
+                  <span class="material-symbols-rounded">description</span>
+                  {{ t.offerCount }}
                 </span>
+                <button class="icon-btn" [disabled]="facade.running()" [title]="'scraping.scrapeNow' | translate" (click)="facade.runOne(t.id)">
+                  <span class="material-symbols-rounded">play_arrow</span>
+                </button>
+                <button class="icon-btn danger" [title]="'common.delete' | translate" (click)="pendingDelete.set(t)">
+                  <span class="material-symbols-rounded">delete</span>
+                </button>
               </div>
             </div>
-            <div class="target-right">
-              <span class="offer-count" [title]="'scraping.offerCount' | translate">
-                <span class="material-symbols-rounded">description</span>
-                {{ t.offerCount }}
-              </span>
-              <button class="icon-btn" [disabled]="facade.running()" [title]="'scraping.scrapeNow' | translate" (click)="facade.runOne(t.id)">
-                <span class="material-symbols-rounded">play_arrow</span>
-              </button>
-              <button class="icon-btn danger" [title]="'common.delete' | translate" (click)="pendingDelete.set(t)">
-                <span class="material-symbols-rounded">delete</span>
-              </button>
-            </div>
-          </div>
-        }
-      </div>
+          }
+        </div>
+      }
     </section>
   }
 

@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { AdminUserDto, SetUserActiveRequest } from '@kzpanel/shared';
+import { AdminUserDto, SetUserActiveRequest, SetUserRoleRequest } from '@kzpanel/shared';
 import { Observable } from 'rxjs';
 
 import { ApiService } from '../../../core/http/api.service';
@@ -14,5 +14,13 @@ export class UsersApi {
 
   public setActive(id: string, body: SetUserActiveRequest): Observable<AdminUserDto> {
     return this.api.patch<AdminUserDto>(`/users/${id}/active`, body);
+  }
+
+  public setRole(id: string, body: SetUserRoleRequest): Observable<AdminUserDto> {
+    return this.api.patch<AdminUserDto>(`/users/${id}/role`, body);
+  }
+
+  public remove(id: string): Observable<void> {
+    return this.api.delete<void>(`/users/${id}`);
   }
 }

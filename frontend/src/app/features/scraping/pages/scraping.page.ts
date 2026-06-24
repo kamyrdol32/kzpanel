@@ -31,6 +31,22 @@ export class ScrapingPage implements OnInit {
 
   protected readonly sources = SCRAPEABLE_SOURCES;
 
+  protected readonly addOpen = signal(false);
+  protected readonly targetsOpen = signal(true);
+  protected readonly othersOpen = signal(true);
+
+  protected toggleAdd(): void {
+    this.addOpen.update((v) => !v);
+  }
+
+  protected toggleTargets(): void {
+    this.targetsOpen.update((v) => !v);
+  }
+
+  protected toggleOthers(): void {
+    this.othersOpen.update((v) => !v);
+  }
+
   protected readonly selectedSource = signal<JobSource | ''>('');
   protected readonly fields = computed<SourceField[]>(() =>
     this.selectedSource() ? (SOURCE_FIELDS[this.selectedSource()] ?? []) : [],

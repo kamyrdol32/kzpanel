@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -56,6 +56,14 @@ export class UsersService {
 
   setActive(id: string, isActive: boolean): Promise<User> {
     return this.update(id, { isActive });
+  }
+
+  async remove(id: string, callerId: string): Promise<void> {
+    if (id === callerId) {
+      throw new BadRequestException('Cannot delete your own account');
+    }
+    await this.getByIdOrThrow(id);
+    await this.repo.delete(id);
   }
 
   create(data: Partial<User>): Promise<User> {

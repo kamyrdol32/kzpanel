@@ -22,7 +22,8 @@
     "recruitment": "Recruitment",
     "jobs": "Job offers",
     "scraping": "Scraping",
-    "users": "Users"
+    "users": "Users",
+    "admin": "Administration"
   },
   "enum": {
     "remote": {
@@ -46,6 +47,10 @@
     "language": {
       "PL": "Polish",
       "EN": "English"
+    },
+    "role": {
+      "USER": "User",
+      "ADMIN": "Admin"
     },
     "status": {
       "NEW": "New",

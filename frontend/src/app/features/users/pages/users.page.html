@@ -13,20 +13,49 @@
             <th>{{ 'users.role' | translate }}</th>
             <th>{{ 'users.status' | translate }}</th>
             <th>{{ 'users.created' | translate }}</th>
+            <th>{{ 'users.lastLogin' | translate }}</th>
             <th class="actions-col"></th>
           </tr>
         </thead>
         <tbody>
           @for (row of rows(); track row.id) {
             <tr>
-              <td>{{ row.username }}</td>
+              <td>
+                {{ row.username }}
+                @if (row.isSelf) {
+                  <span class="self-badge">{{ 'users.you' | translate }}</span>
+                }
+              </td>
               <td>{{ row.email ?? '—' }}</td>
-              <td>{{ row.role }}</td>
+              <td>
+                <select
+                  class="role-select"
+                  [disabled]="row.pending || row.isSelf"
+                  (change)="changeRole(row.id, $any($event.target).value)"
+                >
+                  @for (r of roles; track r) {
+                    <option [value]="r" [selected]="r === row.role">{{ 'enum.role.' + r | translate }}</option>
+                  }
+                </select>
+              </td>
               <td><span class="status-dot" [class]="row.statusClass"></span>{{ row.statusLabel | translate }}</td>
               <td>{{ row.createdAt | date: 'dd.MM.yyyy HH:mm' }}</td>
+              <td>{{ row.lastLoginAt ? (row.lastLoginAt | date: 'dd.MM.yyyy HH:mm') : '—' }}</td>
               <td class="actions">
-                <button class="action-btn" [disabled]="row.pending" (click)="toggleActive(row.id, row.isActive)">
+                <button
+                  class="action-btn"
+                  [disabled]="row.pending || row.isSelf"
+                  (click)="toggleActive(row.id, row.isActive)"
+                >
                   {{ (row.pending ? 'common.loading' : row.actionLabel) | translate }}
+                </button>
+                <button
+                  class="icon-danger"
+                  [disabled]="row.isSelf"
+                  [title]="'common.delete' | translate"
+                  (click)="askDelete(row)"
+                >
+                  <span class="material-symbols-rounded">delete</span>
                 </button>
               </td>
             </tr>
@@ -35,4 +64,11 @@
       </table>
     </div>
   }
+
+  <ev-confirm-dialog
+    [open]="!!pendingDelete()"
+    [message]="'users.deleteConfirm' | translate"
+    (confirmed)="confirmDelete()"
+    (cancelled)="pendingDelete.set(null)"
+  />
 </div>

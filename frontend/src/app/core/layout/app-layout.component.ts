@@ -28,6 +28,7 @@ export class AppLayoutComponent implements OnInit {
 
   protected readonly scrolled = signal(false);
   protected readonly dropdownOpen = signal(false);
+  protected readonly adminOpen = signal(false);
   protected readonly profileOpen = signal(false);
 
   protected readonly user = this.auth.user;
@@ -42,6 +43,10 @@ export class AppLayoutComponent implements OnInit {
 
   protected readonly isAdmin = computed(() => this.user()?.role === Role.ADMIN);
 
+  protected readonly adminItems: NavItem[] = [
+    { path: '/users', labelKey: 'nav.users' },
+  ];
+
   @HostListener('window:scroll', [])
   protected onScroll(): void {
     this.scrolled.set(window.scrollY > 60);
@@ -51,6 +56,7 @@ export class AppLayoutComponent implements OnInit {
   protected onDocumentClick(event: Event): void {
     if (!this.el.nativeElement.contains(event.target)) {
       this.dropdownOpen.set(false);
+      this.adminOpen.set(false);
       this.profileOpen.set(false);
     }
   }
@@ -65,6 +71,14 @@ export class AppLayoutComponent implements OnInit {
 
   protected closeDropdown(): void {
     this.dropdownOpen.set(false);
+  }
+
+  protected toggleAdminDropdown(): void {
+    this.adminOpen.update((v) => !v);
+  }
+
+  protected closeAdminDropdown(): void {
+    this.adminOpen.set(false);
   }
 
   protected toggleProfile(): void {
