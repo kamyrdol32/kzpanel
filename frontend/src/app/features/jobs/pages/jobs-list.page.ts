@@ -173,6 +173,7 @@ export class JobsListPage implements OnInit, OnDestroy {
       {
         key: 'remoteTypes',
         label: this.t.instant('jobs.col.remoteType'),
+        sortKey: 'remoteTypes',
         value: (j) => this.translateEnum(j.remoteTypes, 'remote'),
       },
       {

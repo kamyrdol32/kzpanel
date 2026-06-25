@@ -5,10 +5,12 @@
       @if (facade.lastResult(); as r) {
         <span class="result-info">{{ r }}</span>
       }
-      <button class="primary-btn" [disabled]="facade.running()" (click)="facade.runAll()">
-        <span class="material-symbols-rounded">{{ facade.running() ? 'hourglass_empty' : 'play_arrow' }}</span>
-        {{ (facade.running() ? 'common.loading' : 'scraping.scrapeNow') | translate }}
-      </button>
+      @if (facade.isAdmin()) {
+        <button class="primary-btn" [disabled]="facade.running()" (click)="facade.runAll()">
+          <span class="material-symbols-rounded">{{ facade.running() ? 'hourglass_empty' : 'play_arrow' }}</span>
+          {{ (facade.running() ? 'common.loading' : 'scraping.scrapeNow') | translate }}
+        </button>
+      }
     </div>
   </div>
 
@@ -31,18 +33,33 @@
         </label>
 
         @for (f of fields(); track f.key) {
-          <label class="field">
-            <span class="field-label">{{ f.labelKey | translate }}{{ f.required ? ' *' : '' }}</span>
-            @if (f.type === 'select') {
-              <select [formControlName]="f.key">
-                @for (opt of f.options; track opt.value) {
-                  <option [value]="opt.value">{{ opt.label }}</option>
-                }
-              </select>
-            } @else {
-              <input type="text" [formControlName]="f.key" [placeholder]="f.placeholder ?? ''" />
-            }
-          </label>
+          @if (f.type === 'checkbox') {
+            <label class="field field-checkbox">
+              <input type="checkbox" [formControlName]="f.key" />
+              <span class="field-label">{{ f.labelKey | translate }}</span>
+            </label>
+          } @else {
+            <label class="field">
+              <span class="field-label">{{ f.labelKey | translate }}{{ f.required ? ' *' : '' }}</span>
+              @if (f.type === 'select') {
+                <select [formControlName]="f.key">
+                  @for (opt of f.options; track opt.value) {
+                    <option [value]="opt.value">{{ opt.label }}</option>
+                  }
+                </select>
+              } @else if (f.type === 'city') {
+                <ng-select
+                  [items]="cities"
+                  [formControlName]="f.key"
+                  [placeholder]="'scraping.cityPlaceholder' | translate"
+                  [clearable]="true"
+                  notFoundText=""
+                />
+              } @else {
+                <input type="text" [formControlName]="f.key" [placeholder]="f.placeholder ?? ''" />
+              }
+            </label>
+          }
         }
 
         @if (selectedSource()) {
@@ -92,12 +109,20 @@
                     [placeholder]="'scraping.fieldKeyword' | translate"
                   />
                   @if (editHasLocation()) {
-                    <input
-                      class="edit-input"
-                      type="text"
+                    <ng-select
+                      class="edit-city"
+                      [items]="cities"
                       formControlName="location"
-                      [placeholder]="'scraping.location' | translate"
+                      [placeholder]="'scraping.cityPlaceholder' | translate"
+                      [clearable]="true"
+                      notFoundText=""
                     />
+                  }
+                  @if (editHasIncludeAllRemote()) {
+                    <label class="edit-checkbox">
+                      <input type="checkbox" formControlName="includeAllRemote" />
+                      <span>{{ 'scraping.includeAllRemote' | translate }}</span>
+                    </label>
                   }
                   @if (editHasRemote()) {
                     <select class="edit-select" formControlName="remoteType">
@@ -145,9 +170,11 @@
                     {{ 'scraping.fetching' | translate }}
                   </span>
                 }
-                <button class="icon-btn" [title]="'scraping.scrapeNow' | translate" [disabled]="facade.running()" (click)="facade.runOne(t.id)">
-                  <span class="material-symbols-rounded">play_arrow</span>
-                </button>
+                @if (facade.isAdmin()) {
+                  <button class="icon-btn" [title]="'scraping.scrapeNow' | translate" [disabled]="facade.running()" (click)="facade.runOne(t.id)">
+                    <span class="material-symbols-rounded">play_arrow</span>
+                  </button>
+                }
                 <button class="icon-btn" [title]="'common.edit' | translate" [disabled]="facade.running()" (click)="startEdit(t)">
                   <span class="material-symbols-rounded">edit</span>
                 </button>
@@ -194,9 +221,11 @@
                   <span class="material-symbols-rounded">description</span>
                   {{ t.offerCount }}
                 </span>
-                <button class="icon-btn" [disabled]="facade.running()" [title]="'scraping.scrapeNow' | translate" (click)="facade.runOne(t.id)">
-                  <span class="material-symbols-rounded">play_arrow</span>
-                </button>
+                @if (facade.isAdmin()) {
+                  <button class="icon-btn" [disabled]="facade.running()" [title]="'scraping.scrapeNow' | translate" (click)="facade.runOne(t.id)">
+                    <span class="material-symbols-rounded">play_arrow</span>
+                  </button>
+                }
                 <button class="icon-btn danger" [title]="'common.delete' | translate" (click)="pendingDelete.set(t)">
                   <span class="material-symbols-rounded">delete</span>
                 </button>

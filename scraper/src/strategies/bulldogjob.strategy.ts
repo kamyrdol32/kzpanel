@@ -6,8 +6,13 @@ import { PlaywrightFetcher } from '../playwright/playwright.fetcher';
 
 import { JobRaw, JobScraperStrategy, JobStub } from './job-scraper.strategy';
 
-const SEARCH_BASE = (query: string): string =>
-  `https://bulldogjob.pl/companies/jobs/s/skills,${encodeURIComponent(query)}`;
+const SEARCH_BASE = (query: string, location?: string): string => {
+  let url = `https://bulldogjob.pl/companies/jobs/s/skills,${encodeURIComponent(query)}`;
+  if (location?.trim()) {
+    url += `/city,${encodeURIComponent(location.trim())}`;
+  }
+  return url;
+};
 const JOB_URL = (id: string): string => `https://bulldogjob.pl/companies/jobs/${id}`;
 
 /**
@@ -33,12 +38,13 @@ export class BulldogJobStrategy implements JobScraperStrategy {
 
   async fetchList(params: ScrapeParams): Promise<JobStub[]> {
     const query = (params.query ?? '').trim();
+    const location = params.location?.trim() || undefined;
     const byId = new Map<string, BdjJob>();
 
     try {
       await this.fetcher.withPage(async (page) => {
         for (let p = 1; p <= BulldogJobStrategy.MAX_PAGES; p++) {
-          const url = p === 1 ? SEARCH_BASE(query) : `${SEARCH_BASE(query)}/page,${p}`;
+          const url = p === 1 ? SEARCH_BASE(query, location) : `${SEARCH_BASE(query, location)}/page,${p}`;
           await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 30_000 });
 
           const pageProps = await page.evaluate(

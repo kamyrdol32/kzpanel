@@ -26,6 +26,7 @@ export class ScrapeService {
       query: req.query,
       location: req.location,
       remoteType: req.remoteType,
+      includeAllRemote: req.includeAllRemote,
     };
 
     if (this.config.mock) {

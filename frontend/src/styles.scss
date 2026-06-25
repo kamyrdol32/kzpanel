@@ -1,5 +1,98 @@
 @use 'styles/tokens' as *;
 @use 'styles/themes' as *;
+@import '@ng-select/ng-select/themes/default.theme.css';
+
+// ── ng-select theme override ─────────────────────────────────────────────
+// Must live in global styles — component encapsulation blocks inner elements.
+.ng-select {
+  .ng-select-container {
+    height: 36px;
+    min-height: 36px;
+    background: var(--ev-surface-2) !important;
+    border: 1px solid var(--ev-border-2) !important;
+    border-radius: $radius-md !important;
+    color: var(--ev-text) !important;
+    font-size: $fs-sm;
+    box-shadow: none !important;
+    transition: border-color 0.15s;
+
+    .ng-value-container {
+      padding-left: 10px;
+
+      .ng-placeholder { color: var(--ev-text-dim) !important; }
+
+      .ng-input {
+        top: 50% !important;
+        transform: translateY(-50%) !important;
+        padding-bottom: 0 !important;
+
+        > input {
+          color: var(--ev-text) !important;
+          font-size: $fs-sm;
+          caret-color: var(--ev-accent);
+          padding: 0 !important;
+          line-height: 1 !important;
+        }
+      }
+    }
+
+    .ng-arrow-wrapper {
+      padding-right: 8px;
+      .ng-arrow {
+        border-color: var(--ev-text-dim) transparent transparent !important;
+      }
+    }
+
+    .ng-clear-wrapper {
+      color: var(--ev-text-dim) !important;
+      &:hover { color: var(--ev-danger) !important; }
+    }
+  }
+
+  &.ng-select-opened > .ng-select-container {
+    border-color: var(--ev-accent) !important;
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--ev-accent) 20%, transparent) !important;
+  }
+
+  &.ng-select-focused:not(.ng-select-opened) > .ng-select-container {
+    border-color: var(--ev-accent) !important;
+    box-shadow: none !important;
+  }
+}
+
+.ng-dropdown-panel {
+  background: var(--ev-surface) !important;
+  border: 1px solid var(--ev-border) !important;
+  border-radius: $radius-md !important;
+  box-shadow: var(--ev-shadow-md) !important;
+  margin-top: 4px !important;
+
+  .ng-dropdown-panel-items {
+    .ng-option {
+      background: var(--ev-surface) !important;
+      color: var(--ev-text-muted) !important;
+      font-size: $fs-sm;
+      padding: 8px 12px;
+      transition: background 0.1s, color 0.1s;
+
+      &.ng-option-marked {
+        background: var(--ev-surface-2) !important;
+        color: var(--ev-text) !important;
+      }
+
+      &.ng-option-selected {
+        background: var(--ev-accent-dim) !important;
+        color: var(--ev-accent) !important;
+        font-weight: $fw-medium;
+      }
+
+      &.ng-option-selected.ng-option-marked {
+        background: var(--ev-accent-dim) !important;
+        color: var(--ev-accent) !important;
+      }
+    }
+  }
+}
 
 * {
   box-sizing: border-box;

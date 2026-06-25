@@ -64,6 +64,7 @@ export class ScrapeOrchestratorService {
       query: target.query,
       location: target.location ?? undefined,
       remoteType: target.remoteType ?? undefined,
+      includeAllRemote: target.includeAllRemote,
     });
 
     let count = 0;

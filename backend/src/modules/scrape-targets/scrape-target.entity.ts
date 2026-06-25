@@ -25,6 +25,9 @@ export class ScrapeTarget extends BaseEntity {
   @Column({ type: 'enum', enum: RemoteType, nullable: true })
   remoteType!: RemoteType | null;
 
+  @Column({ default: false })
+  includeAllRemote!: boolean;
+
   @Column({ default: true })
   enabled!: boolean;
 

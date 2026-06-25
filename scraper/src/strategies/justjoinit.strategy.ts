@@ -28,13 +28,15 @@ export class JustJoinITStrategy implements JobScraperStrategy {
     const perPage = 100;
     const q = (params.query ?? '').toLowerCase();
     const encodedQuery = encodeURIComponent(params.query ?? '');
+    const location = params.location?.trim() || undefined;
     const allOffers: JjitOffer[] = [];
     let page = 1;
     let totalPages = 1;
 
     try {
       do {
-        const url = `${API}?page=${page}&perPage=${perPage}&sortBy=published&orderBy=DESC&keywords%5B%5D=${encodedQuery}`;
+        const cityParam = location ? `&city=${encodeURIComponent(location)}` : '';
+        const url = `${API}?page=${page}&perPage=${perPage}&sortBy=published&orderBy=DESC&keywords%5B%5D=${encodedQuery}${cityParam}`;
         const res = await fetch(url, {
           headers: { 'User-Agent': UA, Version: '2' },
           signal: AbortSignal.timeout(15_000),

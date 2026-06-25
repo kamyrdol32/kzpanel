@@ -8,6 +8,7 @@ export interface ScrapeTargetDto extends BaseEntityDto {
   query: string;
   location: string | null;
   remoteType: RemoteType | null;
+  includeAllRemote: boolean;
   enabled: boolean;
   lastRunAt: string | null;
   offerCount: number;
@@ -22,6 +23,7 @@ export interface CreateScrapeTargetRequest {
   query: string;
   location?: string;
   remoteType?: RemoteType;
+  includeAllRemote?: boolean;
   enabled?: boolean;
 }
 

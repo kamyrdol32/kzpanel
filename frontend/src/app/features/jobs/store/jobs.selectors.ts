@@ -55,6 +55,10 @@ function sortJobs(jobs: JobOfferDto[], field: JobSortField, dir: SortDir): JobOf
         cmp = (a.location ?? '').localeCompare(b.location ?? '', undefined, { sensitivity: 'base' });
         break;
       }
+      case 'remoteTypes': {
+        cmp = (a.remoteTypes[0] ?? '').localeCompare(b.remoteTypes[0] ?? '', undefined, { sensitivity: 'base' });
+        break;
+      }
     }
 
     return dir === 'asc' ? cmp : -cmp;

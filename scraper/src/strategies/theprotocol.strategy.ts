@@ -6,8 +6,13 @@ import { PlaywrightFetcher } from '../playwright/playwright.fetcher';
 
 import { JobRaw, JobScraperStrategy, JobStub } from './job-scraper.strategy';
 
-const SEARCH_URL = (query: string): string =>
-  `https://theprotocol.it/filtry/${encodeURIComponent(query)};t`;
+const SEARCH_URL = (query: string, location?: string): string => {
+  const base = `https://theprotocol.it/filtry/${encodeURIComponent(query)};t`;
+  if (location?.trim()) {
+    return `${base}/${encodeURIComponent(location.trim())};c`;
+  }
+  return base;
+};
 
 /**
  * theprotocol.it strategy — manual page scrape.
@@ -32,12 +37,13 @@ export class TheProtocolStrategy implements JobScraperStrategy {
 
   async fetchList(params: ScrapeParams): Promise<JobStub[]> {
     const query = (params.query ?? '').trim();
+    const location = params.location?.trim() || undefined;
     const byUrl = new Map<string, TpCard>();
 
     try {
       await this.fetcher.withPage(async (page) => {
         for (let pn = 1; pn <= TheProtocolStrategy.MAX_PAGES; pn++) {
-          const url = pn === 1 ? SEARCH_URL(query) : `${SEARCH_URL(query)}?pageNumber=${pn}`;
+          const url = pn === 1 ? SEARCH_URL(query, location) : `${SEARCH_URL(query, location)}?pageNumber=${pn}`;
           await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 40_000 });
           await page.waitForSelector('[data-test="list-item-offer"]', { timeout: 15_000 }).catch(() => undefined);
           await page.waitForTimeout(800);
@@ -63,8 +69,13 @@ export class TheProtocolStrategy implements JobScraperStrategy {
     }
 
     let cards = [...byUrl.values()];
-    if (params.remoteType === RemoteType.REMOTE) {
-      cards = cards.filter((c) => /zdaln/i.test(c.workModes));
+    if (location) {
+      const needle = this.stripDiacritics(location.toLowerCase());
+      cards = cards.filter((c) => {
+        const isRemote = /zdaln/i.test(c.workModes);
+        const cityMatch = this.stripDiacritics(c.location.toLowerCase()).includes(needle);
+        return isRemote || cityMatch;
+      });
     }
 
     this.logger.log(`"${query}" → ${cards.length} offers (remote=${params.remoteType === RemoteType.REMOTE})`);
@@ -105,6 +116,10 @@ export class TheProtocolStrategy implements JobScraperStrategy {
       benefits: detail?.benefits ?? [],
       language: Language.PL,
     };
+  }
+
+  private stripDiacritics(s: string): string {
+    return s.normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/ł/g, 'l').replace(/Ł/g, 'L');
   }
 
   private extractCards(page: import('playwright-core').Page): Promise<TpCard[]> {

@@ -1,4 +1,4 @@
-import { JobSource, Language, RemoteType } from '../shared';
+import { JobLevel, JobSource, Language, RemoteType } from '../shared';
 import { Injectable, Logger } from '@nestjs/common';
 
 import { ScrapeParams } from '../config/scrape-params';
@@ -7,6 +7,51 @@ import { PlaywrightFetcher } from '../playwright/playwright.fetcher';
 import { JobRaw, JobScraperStrategy, JobStub } from './job-scraper.strategy';
 
 const GUEST_API = 'https://www.linkedin.com/jobs-guest/jobs/api/seeMoreJobPostings/search';
+
+const PL_TO_EN_CITY: Record<string, string> = {
+  warszawa: 'Warsaw, Poland',
+  krakow: 'Krakow, Poland',
+  wroclaw: 'Wroclaw, Poland',
+  poznan: 'Poznan, Poland',
+  gdansk: 'Gdansk, Poland',
+  gdynia: 'Gdynia, Poland',
+  lodz: 'Lodz, Poland',
+  katowice: 'Katowice, Poland',
+  szczecin: 'Szczecin, Poland',
+  bydgoszcz: 'Bydgoszcz, Poland',
+  lublin: 'Lublin, Poland',
+  bialystok: 'Bialystok, Poland',
+  rzeszow: 'Rzeszow, Poland',
+  torun: 'Torun, Poland',
+  kielce: 'Kielce, Poland',
+  olsztyn: 'Olsztyn, Poland',
+  gliwice: 'Gliwice, Poland',
+  zabrze: 'Zabrze, Poland',
+  bytom: 'Bytom, Poland',
+  'bielsko-biala': 'Bielsko-Biala, Poland',
+  czestochowa: 'Czestochowa, Poland',
+  radom: 'Radom, Poland',
+  sosnowiec: 'Sosnowiec, Poland',
+  trojmiasto: 'Tri-City, Poland',
+  trojcity: 'Tri-City, Poland',
+};
+
+function stripDiacritics(s: string): string {
+  return s.normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/ł/g, 'l').replace(/Ł/g, 'L');
+}
+
+function normalizeLinkedInCity(city: string): string {
+  const trimmed = city.trim();
+  const key = stripDiacritics(trimmed).toLowerCase();
+  const mapped = PL_TO_EN_CITY[key];
+  if (mapped) {
+    return mapped;
+  }
+  if (trimmed && !trimmed.toLowerCase().includes('poland')) {
+    return `${trimmed}, Poland`;
+  }
+  return trimmed;
+}
 
 /**
  * LinkedIn strategy — manual scrape of the public "guest" jobs endpoint.
@@ -29,46 +74,55 @@ export class LinkedInStrategy implements JobScraperStrategy {
 
   async fetchList(params: ScrapeParams): Promise<JobStub[]> {
     const query = (params.query ?? '').trim();
-    const location = (params.location ?? '').trim() || 'Poland';
-    const remote = params.remoteType === RemoteType.REMOTE;
+    const location = normalizeLinkedInCity((params.location ?? '').trim() || 'Poland');
 
-    const base =
-      `${GUEST_API}?keywords=${encodeURIComponent(query)}&location=${encodeURIComponent(location)}` +
-      (remote ? '&f_WT=2' : '');
+    const cityBase = `${GUEST_API}?keywords=${encodeURIComponent(query)}&location=${encodeURIComponent(location)}`;
+    const remoteBase = `${GUEST_API}?keywords=${encodeURIComponent(query)}&location=${encodeURIComponent('Poland')}&f_WT=2`;
 
     const byUrl = new Map<string, LinkedInCard>();
 
+    const crawl = async (page: import('playwright-core').Page, base: string, isRemoteCrawl: boolean): Promise<void> => {
+      let start = 0;
+      for (let i = 0; i < LinkedInStrategy.MAX_PAGES; i++) {
+        await page.goto(`${base}&start=${start}`, { waitUntil: 'domcontentloaded', timeout: 30_000 });
+        await page.waitForTimeout(700);
+
+        const cards = await this.extractCards(page);
+        if (cards.length === 0) {
+          break;
+        }
+
+        let newOnPage = 0;
+        for (const c of cards) {
+          if (c.url) {
+            if (isRemoteCrawl) {
+              c.remote = true;
+            }
+            if (!byUrl.has(c.url)) {
+              newOnPage++;
+            }
+            byUrl.set(c.url, c);
+          }
+        }
+
+        if (newOnPage === 0) {
+          break;
+        }
+        start += cards.length;
+      }
+    };
+
     try {
       await this.fetcher.withPage(async (page) => {
-        let start = 0;
-        for (let i = 0; i < LinkedInStrategy.MAX_PAGES; i++) {
-          await page.goto(`${base}&start=${start}`, { waitUntil: 'domcontentloaded', timeout: 30_000 });
-          await page.waitForTimeout(700);
-
-          const cards = await this.extractCards(page);
-          if (cards.length === 0) {
-            break;
-          }
-
-          const before = byUrl.size;
-          for (const c of cards) {
-            if (c.url) {
-              byUrl.set(c.url, c);
-            }
-          }
-
-          if (byUrl.size === before) {
-            break;
-          }
-          start += cards.length;
-        }
+        await crawl(page, cityBase, false);
+        await crawl(page, remoteBase, true);
       });
     } catch (err) {
       this.logger.warn(`fetchList failed: ${(err as Error).message}`);
     }
 
     const cards = [...byUrl.values()];
-    this.logger.log(`"${query}" → ${cards.length} offers (remote=${remote})`);
+    this.logger.log(`"${query}" → ${cards.length} offers (city=${location})`);
 
     return cards.map((c) => ({
       externalId: c.url,
@@ -85,6 +139,7 @@ export class LinkedInStrategy implements JobScraperStrategy {
    */
   async fetchDetails(stub: JobStub): Promise<JobRaw> {
     const c = stub.meta as LinkedInCard | undefined;
+    const detail = await this.fetchJobDetail(c?.url);
 
     return {
       title: stub.title,
@@ -92,20 +147,58 @@ export class LinkedInStrategy implements JobScraperStrategy {
       sourceUrl: stub.sourceUrl,
       source: this.source,
       location: c?.location || null,
-      remoteTypes: [/remote|zdaln/i.test(c?.location ?? '') ? RemoteType.REMOTE : RemoteType.ONSITE],
-      levels: [],
+      remoteTypes: [c?.remote ? RemoteType.REMOTE : RemoteType.ONSITE],
+      levels: this.mapSeniority(detail.seniority),
+      employmentTypes: this.mapEmploymentType(detail.employmentType),
       techStack: [],
-      description: (await this.fetchDescription(c?.url)) ?? undefined,
+      description: detail.description ?? undefined,
       language: Language.EN,
       publishedDate: c?.date ? new Date(c.date) : null,
     };
   }
 
-  /** Pull the description HTML fragment from the guest job-posting endpoint. */
-  private async fetchDescription(url?: string): Promise<string | null> {
+  private mapSeniority(seniority: string | null): JobLevel[] {
+    const s = (seniority ?? '').toLowerCase();
+    if (s.includes('intern') || s.includes('entry')) {
+      return [JobLevel.JUNIOR];
+    }
+    if (s.includes('associate') || s.includes('junior')) {
+      return [JobLevel.JUNIOR];
+    }
+    if (s.includes('mid') || s.includes('senior')) {
+      return [JobLevel.SENIOR];
+    }
+    if (s.includes('director') || s.includes('executive') || s.includes('lead')) {
+      return [JobLevel.LEAD];
+    }
+    return [];
+  }
+
+  private mapEmploymentType(type: string | null): string[] {
+    const t = (type ?? '').toLowerCase();
+    if (t.includes('full')) {
+      return ['PERMANENT'];
+    }
+    if (t.includes('contract')) {
+      return ['B2B'];
+    }
+    if (t.includes('part')) {
+      return ['OTHER'];
+    }
+    if (t.includes('intern')) {
+      return ['OTHER'];
+    }
+    if (t.includes('temporary')) {
+      return ['OTHER'];
+    }
+    return [];
+  }
+
+  private async fetchJobDetail(url?: string): Promise<{ description: string | null; employmentType: string | null; seniority: string | null }> {
+    const empty = { description: null, employmentType: null, seniority: null };
     const id = (url ?? '').match(/-(\d{6,})(?:\?|$)/)?.[1] ?? (url ?? '').match(/(\d{6,})/)?.[1];
     if (!id) {
-      return null;
+      return empty;
     }
     try {
       const res = await fetch(`https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/${id}`, {
@@ -113,13 +206,31 @@ export class LinkedInStrategy implements JobScraperStrategy {
         signal: AbortSignal.timeout(15_000),
       });
       if (!res.ok) {
-        return null;
+        return empty;
       }
       const html = await res.text();
-      const m = html.match(/class="[^"]*(?:show-more-less-html__markup|description__text)[^"]*"[^>]*>([\s\S]*?)<\/div>/i);
-      return this.htmlToText(m?.[1]);
+
+      const descMatch = html.match(/class="[^"]*(?:show-more-less-html__markup|description__text)[^"]*"[^>]*>([\s\S]*?)<\/div>/i);
+      const description = this.htmlToText(descMatch?.[1]);
+
+      const criteria = new Map<string, string>();
+      const criteriaRe = /<li class="description__job-criteria-item">([\s\S]*?)<\/li>/gi;
+      let m: RegExpExecArray | null;
+      while ((m = criteriaRe.exec(html)) !== null) {
+        const label = m[1].match(/<h3[^>]*>([\s\S]*?)<\/h3>/i)?.[1].replace(/<[^>]+>/g, '').trim() ?? '';
+        const value = m[1].match(/<span[^>]*criteria-text[^>]*>([\s\S]*?)<\/span>/i)?.[1].replace(/<[^>]+>/g, '').trim() ?? '';
+        if (label && value) {
+          criteria.set(label.toLowerCase(), value);
+        }
+      }
+
+      return {
+        description,
+        employmentType: criteria.get('employment type') ?? null,
+        seniority: criteria.get('seniority level') ?? null,
+      };
     } catch {
-      return null;
+      return empty;
     }
   }
 
@@ -165,4 +276,5 @@ interface LinkedInCard {
   location: string;
   url: string;
   date: string;
+  remote?: boolean;
 }

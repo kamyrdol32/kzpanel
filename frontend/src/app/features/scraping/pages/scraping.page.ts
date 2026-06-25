@@ -3,11 +3,13 @@ import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { JobSource, RemoteType, ScrapeTargetDto } from '@kzpanel/shared';
+import { NgSelectModule } from '@ng-select/ng-select';
 import { TranslateModule } from '@ngx-translate/core';
 
 import { ConfirmDialogComponent } from '../../../shared/ui/confirm-dialog/confirm-dialog.component';
 import { EmptyStateComponent } from '../../../shared/ui/empty-state/empty-state.component';
 import { StatusBadgeComponent } from '../../../shared/ui/status-badge/status-badge.component';
+import { PL_CITIES } from '../cities';
 import { ScrapingFacade } from '../facade/scraping.facade';
 import { SCRAPEABLE_SOURCES, SOURCE_FIELDS, SourceField } from '../source-fields';
 
@@ -21,6 +23,7 @@ import { SCRAPEABLE_SOURCES, SOURCE_FIELDS, SourceField } from '../source-fields
     EmptyStateComponent,
     StatusBadgeComponent,
     TranslateModule,
+    NgSelectModule,
   ],
   templateUrl: './scraping.page.html',
   styleUrl: './scraping.page.scss',
@@ -30,6 +33,7 @@ export class ScrapingPage implements OnInit {
   private readonly fb = inject(FormBuilder);
 
   protected readonly sources = SCRAPEABLE_SOURCES;
+  protected readonly cities = PL_CITIES;
 
   protected readonly addOpen = signal(false);
   protected readonly targetsOpen = signal(true);
@@ -57,6 +61,7 @@ export class ScrapingPage implements OnInit {
     query: [''],
     location: [''],
     remoteType: ['' as RemoteType | ''],
+    includeAllRemote: [false],
   });
 
   /** Form value mirrored as a signal so `canAdd` can be a computed. */
@@ -102,6 +107,7 @@ export class ScrapingPage implements OnInit {
     query: ['', Validators.required],
     location: [''],
     remoteType: ['' as RemoteType | ''],
+    includeAllRemote: [false],
   });
 
   protected readonly editHasLocation = computed(() =>
@@ -109,6 +115,9 @@ export class ScrapingPage implements OnInit {
   );
   protected readonly editHasRemote = computed(() =>
     this.editFields().some((f) => f.key === 'remoteType'),
+  );
+  protected readonly editHasIncludeAllRemote = computed(() =>
+    this.editFields().some((f) => f.key === 'includeAllRemote'),
   );
   protected readonly editRemoteOptions = computed(
     () => this.editFields().find((f) => f.key === 'remoteType')?.options ?? [],
@@ -120,7 +129,7 @@ export class ScrapingPage implements OnInit {
 
   protected onSourceChange(value: string): void {
     this.selectedSource.set(value as JobSource | '');
-    this.form.patchValue({ query: '', location: '', remoteType: '' });
+    this.form.patchValue({ query: '', location: '', remoteType: '', includeAllRemote: false });
   }
 
   private hasField(key: SourceField['key']): boolean {
@@ -137,8 +146,9 @@ export class ScrapingPage implements OnInit {
       query: v.query.trim(),
       location: this.hasField('location') && v.location.trim() ? v.location.trim() : undefined,
       remoteType: this.hasField('remoteType') && v.remoteType ? (v.remoteType as RemoteType) : undefined,
+      includeAllRemote: this.hasField('includeAllRemote') ? v.includeAllRemote : undefined,
     });
-    this.form.patchValue({ query: '', location: '', remoteType: '' });
+    this.form.patchValue({ query: '', location: '', remoteType: '', includeAllRemote: false });
   }
 
   protected startEdit(target: ScrapeTargetDto): void {
@@ -149,6 +159,7 @@ export class ScrapingPage implements OnInit {
       query: target.query,
       location: target.location ?? '',
       remoteType: (target.remoteType as RemoteType | undefined) ?? '',
+      includeAllRemote: target.includeAllRemote ?? false,
     });
   }
 
@@ -161,10 +172,12 @@ export class ScrapingPage implements OnInit {
     const hasLocation = this.editFields().some((f) => f.key === 'location');
     const hasRemote = this.editFields().some((f) => f.key === 'remoteType');
 
+    const hasIncludeAllRemote = this.editFields().some((f) => f.key === 'includeAllRemote');
     this.facade.edit(id, {
       query: v.query.trim(),
       location: hasLocation && v.location.trim() ? v.location.trim() : undefined,
       remoteType: hasRemote && v.remoteType ? (v.remoteType as RemoteType) : undefined,
+      includeAllRemote: hasIncludeAllRemote ? v.includeAllRemote : undefined,
     });
     this.editingId.set(null);
   }

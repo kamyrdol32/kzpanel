@@ -8,6 +8,7 @@ export interface ScrapeTargetDto extends BaseEntityDto {
   query: string;
   location: string | null;
   remoteType: RemoteType | null;
+  includeAllRemote: boolean;
   enabled: boolean;
   lastRunAt: string | null;
 }
@@ -17,6 +18,7 @@ export interface CreateScrapeTargetRequest {
   query: string;
   location?: string;
   remoteType?: RemoteType;
+  includeAllRemote?: boolean;
   enabled?: boolean;
 }
 
@@ -39,6 +41,7 @@ export interface ScrapeRequest {
   query?: string;
   location?: string;
   remoteType?: RemoteType;
+  includeAllRemote?: boolean;
   /** max listings to fetch */
   limit?: number;
 }

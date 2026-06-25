@@ -27,6 +27,11 @@ export class CreateScrapeTargetDto implements CreateScrapeTargetRequest {
   @IsEnum(RemoteType)
   remoteType?: RemoteType;
 
+  @ApiPropertyOptional({ default: false })
+  @IsOptional()
+  @IsBoolean()
+  includeAllRemote?: boolean;
+
   @ApiPropertyOptional({ default: true })
   @IsOptional()
   @IsBoolean()
