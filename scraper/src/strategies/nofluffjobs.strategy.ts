@@ -1,4 +1,4 @@
-import { JobSource, Language, RemoteType } from '../shared';
+import { JobLevel, JobSource, Language, RemoteType } from '../shared';
 import { Injectable, Logger } from '@nestjs/common';
 
 import { ScrapeParams } from '../config/scrape-params';
@@ -8,111 +8,78 @@ import { JobRaw, JobScraperStrategy, JobStub } from './job-scraper.strategy';
 
 const API = 'https://nofluffjobs.com/api';
 const UA = 'Mozilla/5.0 (compatible; KZPanel-Scraper/1.0)';
-const SEARCH_URL = (query: string): string => `https://nofluffjobs.com/pl/${encodeURIComponent(query)}`;
 const JOB_URL = (path: string): string => `https://nofluffjobs.com${path}`;
+const ALL_URL = (query: string): string => `https://nofluffjobs.com/pl/${encodeURIComponent(query)}`;
+const CITY_URL = (query: string, city: string): string =>
+  `https://nofluffjobs.com/pl/praca/${encodeURIComponent(city)}/${encodeURIComponent(query)}`;
+const REMOTE_URL = (query: string): string =>
+  `https://nofluffjobs.com/pl/praca/zdalna/${encodeURIComponent(query)}`;
 
 /**
- * NoFluffJobs strategy — manual page scrape.
- *
- * The results page (/pl/{tech}) is an Angular SPA that shows 20 offers and a
- * "Pokaż kolejne oferty" button — there is no infinite scroll, so we click that
- * button (via JS, to dodge cookie/tooltip overlays that intercept real clicks)
- * until the list stops growing, then read every card. The card already carries
- * title/company/location/salary/tech, so no per-offer detail visit is needed.
+ * NoFluffJobs strategy.
+ * Listing page (Playwright) collects only job slugs + title + company.
+ * All structured data (salary, location, work mode, level, employment type)
+ * comes from the per-offer detail API which is stable and complete.
+ * When a city is set, two pages are scraped in parallel: the city page and the
+ * remote-only page, so remote offers are always included regardless of location.
  */
 @Injectable()
 export class NoFluffJobsStrategy implements JobScraperStrategy {
   readonly source = JobSource.NOFLUFFJOBS;
   private readonly logger = new Logger(NoFluffJobsStrategy.name);
 
-  private static readonly MAX_CLICKS = 100;
+  private static readonly MAX_LOAD_MORE = 100;
 
   constructor(private readonly fetcher: PlaywrightFetcher) {}
 
   async fetchList(params: ScrapeParams): Promise<JobStub[]> {
-    const query = (params.query ?? '').trim();
-    let cards: NfjCard[] = [];
+    const query = params.query?.trim() ?? '';
+    const citySlug = params.location?.trim() ? this.normalize(params.location.trim()) : undefined;
 
-    try {
-      cards = await this.fetcher.withPage(async (page) => {
-        await page.goto(SEARCH_URL(query), { waitUntil: 'domcontentloaded', timeout: 30_000 });
-        await page.waitForTimeout(2_500);
+    let cards: NfjCard[];
 
-        await this.loadAllOffers(page);
-
-        return page.evaluate(() => {
-          const currency = /(PLN|EUR|USD|GBP|CHF)/;
-          const clean = (s: string): string => s.replace(/\s+/g, ' ').trim();
-          // strip the "NOWA"/"NEW" badge text that renders inside the title
-          const cleanTitle = (s: string): string => clean(s).replace(/\s*\b(NOWA|NEW)\b\s*$/i, '').trim();
-
-          return Array.from(document.querySelectorAll('a.posting-list-item')).map((card) => {
-            const text = (sel: string): string => clean(card.querySelector(sel)?.textContent ?? '');
-            const tags = Array.from(card.querySelectorAll('.posting-tag'))
-              .map((e) => clean(e.textContent ?? ''))
-              .filter(Boolean);
-
-            const salaryRaw = tags.find((t) => currency.test(t)) ?? null;
-            const nonSalary = tags.filter((t) => !currency.test(t));
-            // first non-salary tag is the category (Frontend/Backend/…) → drop it
-            const tech = nonSalary.slice(1);
-
-            return {
-              path: card.getAttribute('href') ?? '',
-              title: cleanTitle(card.querySelector('.posting-title__position')?.textContent ?? '') || 'Untitled',
-              company: text('.company-name') || text('.posting-title__company') || 'Unknown',
-              location: text('.posting-info__location') || null,
-              salaryRaw,
-              tech,
-            };
-          });
-        });
-      });
-    } catch (err) {
-      this.logger.warn(`fetchList failed: ${(err as Error).message}`);
-    }
-
-    let valid = cards.filter((c) => c.path);
     if (params.remoteType === RemoteType.REMOTE) {
-      valid = valid.filter((c) => this.isRemote(c.location));
+      cards = await this.scrapeListPage(REMOTE_URL(query));
+    } else if (citySlug) {
+      const [cityCards, remoteCards] = await Promise.all([
+        this.scrapeListPage(CITY_URL(query, citySlug)),
+        this.scrapeListPage(REMOTE_URL(query)),
+      ]);
+      const seen = new Set<string>();
+      cards = [...cityCards, ...remoteCards].filter((c) => {
+        if (seen.has(c.path)) {
+          return false;
+        }
+        seen.add(c.path);
+        return true;
+      });
+    } else {
+      cards = await this.scrapeListPage(ALL_URL(query));
     }
 
-    this.logger.log(`"${query}" → ${valid.length} offers (remote=${params.remoteType === RemoteType.REMOTE})`);
+    this.logger.log(`"${query}" → ${cards.length} listings`);
 
-    return valid.map((c) => ({
+    return cards.map((c) => ({
       externalId: c.path,
       title: c.title,
       company: c.company,
       sourceUrl: JOB_URL(c.path),
-      meta: c,
+      meta: { ...c, _query: query },
     }));
   }
 
-  /**
-   * The card covers salary/location/tech; the rich content (description,
-   * must/nice-to-have, responsibilities, benefits) comes from NFJ's stable
-   * per-offer detail API (a different endpoint than the flaky search API).
-   */
-  async fetchDetails(stub: JobStub): Promise<JobRaw> {
-    const c = stub.meta as NfjCard | undefined;
-    const salary = this.parseSalary(c?.salaryRaw);
+  async fetchDetails(stub: JobStub): Promise<JobRaw | null> {
+    const id = stub.externalId.split('/').filter(Boolean).pop() ?? '';
 
     const base: JobRaw = {
       title: stub.title,
       company: stub.company,
       sourceUrl: stub.sourceUrl,
       source: this.source,
-      salaryMin: salary.min,
-      salaryMax: salary.max,
-      currency: salary.currency,
-      salaryRaw: c?.salaryRaw ?? null,
-      location: c?.location ?? null,
-      remoteTypes: [this.isRemote(c?.location) ? RemoteType.REMOTE : RemoteType.HYBRID],
-      techStack: c?.tech ?? [],
+      remoteTypes: [],
       language: Language.PL,
     };
 
-    const id = (c?.path ?? '').split('/').filter(Boolean).pop();
     if (!id) {
       return base;
     }
@@ -123,48 +90,149 @@ export class NoFluffJobsStrategy implements JobScraperStrategy {
         signal: AbortSignal.timeout(15_000),
       });
       if (!res.ok) {
+        this.logger.warn(`Detail API ${res.status} for ${id}`);
         return base;
       }
       const d = (await res.json()) as NfjDetail;
+
+      const remoteValue = d.location?.remote ?? 0;
+      const remoteTypes =
+        remoteValue === 5
+          ? [RemoteType.REMOTE]
+          : remoteValue === 3
+            ? [RemoteType.HYBRID]
+            : [RemoteType.ONSITE];
+
+      const officePlaces = (d.location?.places ?? []).filter(
+        (p) => p.city && p.city !== 'Remote' && !p.provinceOnly,
+      );
+      const location = officePlaces[0]?.city ?? null;
+
+      const origSalary = d.essentials?.originalSalary;
+      const salaryTypes = origSalary?.types ?? {};
+      const currency = origSalary?.currency?.toUpperCase() ?? null;
+      const salaryEntry =
+        salaryTypes.b2b ??
+        salaryTypes.permanent ??
+        (Object.values(salaryTypes).find(Boolean) ?? null);
+      const range = salaryEntry?.range;
+      const period = (salaryEntry?.period ?? 'Month').toLowerCase();
+      const periodMultiplier = period === 'hour' ? 168 : period === 'day' ? 22 : 1;
+      const salaryMin = range?.[0] != null ? Math.round(range[0] * periodMultiplier) : null;
+      const salaryMax = range?.[1] != null ? Math.round(range[1] * periodMultiplier) : null;
+      const salaryRaw =
+        salaryMin && salaryMax ? `${salaryMin} – ${salaryMax} ${currency ?? ''}`.trim() : null;
+
+      const employmentTypes = Object.keys(salaryTypes)
+        .map((k) => this.mapEmployment(k))
+        .filter((e): e is string => e !== null);
+
+      const levels = (d.basics?.seniority ?? [])
+        .map((s) => this.mapLevel(s))
+        .filter((l): l is JobLevel => l !== null);
+
       const musts = (d.requirements?.musts ?? []).map((m) => m.value).filter(Boolean);
       const nices = (d.requirements?.nices ?? []).map((m) => m.value).filter(Boolean);
       const responsibilities = (d.specs?.dailyTasks ?? []).filter((t) => typeof t === 'string');
       const benefits = (d.benefits?.benefits ?? []).filter((b) => typeof b === 'string');
-      const description = this.htmlToText(d.requirements?.description) || responsibilities[0] || null;
+      const description =
+        this.htmlToText(d.details?.description ?? d.requirements?.description) || null;
 
-      return {
+      const result: JobRaw = {
         ...base,
+        location,
+        remoteTypes,
+        levels,
+        employmentTypes,
+        salaryMin,
+        salaryMax,
+        currency,
+        salaryRaw,
         description: description ?? undefined,
-        techStack: musts.length ? musts : base.techStack,
+        techStack: musts.length ? musts : [],
         requirements: musts,
         mustHave: musts,
         niceToHave: nices,
         responsibilities,
         benefits,
         language: this.detectLanguage(`${stub.title} ${musts.join(' ')} ${responsibilities.join(' ')}`),
+        publishedDate: d.posted != null ? new Date(d.posted) : null,
       };
-    } catch {
+
+      const q = ((stub.meta as any)?._query ?? '').toLowerCase().trim();
+      if (q) {
+        const searchText = [
+          result.title,
+          result.description ?? '',
+          ...(result.techStack ?? []),
+          ...(result.mustHave ?? []),
+          ...(result.niceToHave ?? []),
+          ...(result.responsibilities ?? []),
+        ]
+          .join(' ')
+          .toLowerCase();
+        if (!searchText.includes(q)) {
+          return null;
+        }
+      }
+
+      return result;
+    } catch (err) {
+      this.logger.warn(`fetchDetails failed for ${id}: ${(err as Error).message}`);
       return base;
     }
   }
 
-  private detectLanguage(text: string): Language {
-    return /[ąćęłńóśźż]/i.test(text) ? Language.PL : Language.EN;
-  }
+  private async scrapeListPage(url: string): Promise<NfjCard[]> {
+    try {
+      return await this.fetcher.withPage(async (page) => {
+        await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 30_000 });
+        await page.waitForTimeout(2_500);
+        await this.loadAllOffers(page);
 
-  private htmlToText(html?: string | null): string | null {
-    if (!html) {
-      return null;
+        return page.evaluate(() => {
+          const clean = (s: string): string => s.replace(/\s+/g, ' ').trim();
+          // strip "NOWA"/"NEW" badge text that renders inside the title
+          const stripBadge = (s: string): string =>
+            clean(s)
+              .replace(/\s*\b(NOWA|NEW)\b\s*$/i, '')
+              .trim();
+
+          const seen = new Set<string>();
+          return Array.from(
+            document.querySelectorAll('a.posting-list-item, a[href*="/pl/job/"]'),
+          )
+            .filter((a) => {
+              const href = a.getAttribute('href') ?? '';
+              if (!href || seen.has(href)) {
+                return false;
+              }
+              seen.add(href);
+              return true;
+            })
+            .map((a) => {
+              const text = (sel: string): string =>
+                clean(a.querySelector(sel)?.textContent ?? '');
+              return {
+                path: a.getAttribute('href') ?? '',
+                title:
+                  stripBadge(a.querySelector('.posting-title__position')?.textContent ?? '') ||
+                  stripBadge(a.querySelector('[class*="title"]')?.textContent ?? '') ||
+                  'Untitled',
+                company:
+                  text('.company-name') ||
+                  text('.posting-title__company') ||
+                  text('[class*="company"]') ||
+                  'Unknown',
+              };
+            })
+            .filter((c) => c.path);
+        });
+      });
+    } catch (err) {
+      this.logger.warn(`scrapeListPage failed for ${url}: ${(err as Error).message}`);
+      return [];
     }
-    return html
-      .replace(/<\/(p|li|h[1-6]|div|br)>/gi, '\n')
-      .replace(/<br\s*\/?>/gi, '\n')
-      .replace(/<[^>]+>/g, '')
-      .replace(/&nbsp;/g, ' ')
-      .replace(/&amp;/g, '&')
-      .replace(/\n{3,}/g, '\n\n')
-      .replace(/[ \t]+\n/g, '\n')
-      .trim();
   }
 
   /**
@@ -174,21 +242,21 @@ export class NoFluffJobsStrategy implements JobScraperStrategy {
    * batch of 20.
    */
   private async loadAllOffers(page: import('playwright-core').Page): Promise<void> {
-    const CARD = 'a.posting-list-item';
+    const CARD = 'a.posting-list-item, a[href*="/pl/job/"]';
     await page.waitForSelector(CARD, { timeout: 15_000 }).catch(() => undefined);
 
     let previous = 0;
     let stale = 0;
 
-    for (let i = 0; i < NoFluffJobsStrategy.MAX_CLICKS; i++) {
+    for (let i = 0; i < NoFluffJobsStrategy.MAX_LOAD_MORE; i++) {
       const clicked = await page.evaluate(() => {
-        const button = Array.from(document.querySelectorAll('button')).find((b) =>
+        const btn = Array.from(document.querySelectorAll('button')).find((b) =>
           /Pokaż kolejne oferty/i.test(b.textContent ?? ''),
         );
-        if (!button) {
+        if (!btn) {
           return false;
         }
-        (button as HTMLButtonElement).click();
+        (btn as HTMLButtonElement).click();
         return true;
       });
       if (!clicked) {
@@ -211,25 +279,64 @@ export class NoFluffJobsStrategy implements JobScraperStrategy {
     }
   }
 
-  private isRemote(location?: string | null): boolean {
-    return /zdalnie|remote/i.test(location ?? '');
+  private mapLevel(s: string): JobLevel | null {
+    switch (s.toLowerCase()) {
+      case 'junior':
+        return JobLevel.JUNIOR;
+      case 'mid':
+        return JobLevel.MID;
+      case 'senior':
+        return JobLevel.SENIOR;
+      case 'expert':
+      case 'lead':
+      case 'manager':
+        return JobLevel.LEAD;
+      default:
+        return null;
+    }
   }
 
-  /** Parse "21 840 – 23 520 PLN" / "20 000 PLN" into numeric min/max + currency. */
-  private parseSalary(raw?: string | null): { min: number | null; max: number | null; currency: string | null } {
-    if (!raw) {
-      return { min: null, max: null, currency: null };
+  private mapEmployment(type: string): string | null {
+    const t = (type ?? '').toLowerCase();
+    if (t.includes('b2b')) {
+      return 'B2B';
     }
-    const currency = raw.match(/(PLN|EUR|USD|GBP|CHF)/)?.[1] ?? null;
-    const parts = raw
-      .replace(/(PLN|EUR|USD|GBP|CHF)/g, '')
-      .split(/[–—-]/)
-      .map((p) => Number(p.replace(/[^0-9]/g, '')))
-      .filter((n) => Number.isFinite(n) && n > 0);
+    if (t.includes('permanent') || t.includes('uop') || t.includes('employment')) {
+      return 'PERMANENT';
+    }
+    if (t.includes('mandate') || t.includes('zlecenie')) {
+      return 'MANDATE';
+    }
+    return null;
+  }
 
-    const min = parts[0] ?? null;
-    const max = parts[1] ?? min;
-    return { min, max, currency };
+  private detectLanguage(text: string): Language {
+    return /[ąćęłńóśźż]/i.test(text) ? Language.PL : Language.EN;
+  }
+
+  private htmlToText(html?: string | null): string | null {
+    if (!html) {
+      return null;
+    }
+    return html
+      .replace(/<\/(p|li|h[1-6]|div|br)>/gi, '\n')
+      .replace(/<br\s*\/?>/gi, '\n')
+      .replace(/<[^>]+>/g, '')
+      .replace(/&nbsp;/g, ' ')
+      .replace(/&amp;/g, '&')
+      .replace(/\n{3,}/g, '\n\n')
+      .replace(/[ \t]+\n/g, '\n')
+      .trim();
+  }
+
+  private normalize(s: string): string {
+    return s
+      .normalize('NFD')
+      .replace(/[̀-ͯ]/g, '')
+      .replace(/ł/g, 'l')
+      .replace(/Ł/g, 'L')
+      .toLowerCase()
+      .trim();
   }
 }
 
@@ -237,12 +344,29 @@ interface NfjCard {
   path: string;
   title: string;
   company: string;
-  location: string | null;
-  salaryRaw: string | null;
-  tech: string[];
+}
+
+interface NfjSalaryEntry {
+  period?: string;
+  range?: number[];
+  paidHoliday?: boolean;
 }
 
 interface NfjDetail {
+  basics?: { seniority?: string[]; category?: string; technology?: string };
+  details?: { description?: string | null };
+  location?: {
+    remote?: number;
+    remoteFlexible?: boolean;
+    places?: { city?: string; provinceOnly?: boolean }[];
+  };
+  essentials?: {
+    originalSalary?: {
+      currency?: string;
+      disclosedAt?: string;
+      types?: { b2b?: NfjSalaryEntry; permanent?: NfjSalaryEntry; [key: string]: NfjSalaryEntry | undefined };
+    };
+  };
   requirements?: {
     musts?: { value: string }[];
     nices?: { value: string }[];
@@ -250,4 +374,5 @@ interface NfjDetail {
   };
   specs?: { dailyTasks?: string[] };
   benefits?: { benefits?: string[] };
+  posted?: number;
 }

@@ -39,7 +39,10 @@ export class ScrapeService {
 
     const offers: JobRaw[] = [];
     for (const stub of stubs) {
-      offers.push(await strategy.fetchDetails(stub));
+      const job = await strategy.fetchDetails(stub);
+      if (job) {
+        offers.push(job);
+      }
     }
     return offers;
   }

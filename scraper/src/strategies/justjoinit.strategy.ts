@@ -28,14 +28,14 @@ export class JustJoinITStrategy implements JobScraperStrategy {
     const perPage = 100;
     const q = (params.query ?? '').toLowerCase();
     const encodedQuery = encodeURIComponent(params.query ?? '');
-    const location = params.location?.trim() ? this.stripDiacritics(params.location.trim()) : undefined;
+    const location = params.location?.trim() || undefined;
     const allOffers: JjitOffer[] = [];
     let page = 1;
     let totalPages = 1;
 
     try {
       do {
-        const cityParam = location ? `&city=${encodeURIComponent(location)}` : '';
+        const cityParam = location ? `&city%5B%5D=${encodeURIComponent(location)}` : '';
         const url = `${API}?page=${page}&perPage=${perPage}&sortBy=published&orderBy=DESC&keywords%5B%5D=${encodedQuery}${cityParam}`;
         const res = await fetch(url, {
           headers: { 'User-Agent': UA, Version: '2' },
@@ -73,7 +73,15 @@ export class JustJoinITStrategy implements JobScraperStrategy {
         offers = offers.filter((o) => o.workplaceType === 'remote');
       }
 
-      this.logger.log(`"${params.query ?? ''}" → ${offers.length} offers matched (fetched ${allOffers.length}, remote=${params.remoteType === RemoteType.REMOTE})`);
+      if (location && !params.includeAllRemote) {
+        const normalizedLocation = this.normalize(location);
+        offers = offers.filter((o) => {
+          const isRemote = o.workplaceType === 'remote';
+          return isRemote || this.normalize(o.city ?? '') === normalizedLocation;
+        });
+      }
+
+      this.logger.log(`"${params.query ?? ''}" → ${offers.length} offers matched (fetched ${allOffers.length})`);
 
       return offers
         .filter((o) => o.slug)
@@ -137,8 +145,8 @@ export class JustJoinITStrategy implements JobScraperStrategy {
     });
   }
 
-  private stripDiacritics(s: string): string {
-    return s.normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/ł/g, 'l').replace(/Ł/g, 'L');
+  private normalize(s: string): string {
+    return s.normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/ł/g, 'l').replace(/Ł/g, 'L').toLowerCase().trim();
   }
 
   private mapEmployment(types?: JjitEmployment[]): string[] {

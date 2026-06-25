@@ -37,5 +37,5 @@ export interface JobRaw {
 export interface JobScraperStrategy {
   readonly source: JobSource;
   fetchList(params: ScrapeParams): Promise<JobStub[]>;
-  fetchDetails(stub: JobStub): Promise<JobRaw>;
+  fetchDetails(stub: JobStub): Promise<JobRaw | null>;
 }
