@@ -17,7 +17,6 @@ import { StatusBadgeComponent } from '../../../shared/ui/status-badge/status-bad
 import { JobsFacade } from '../facade/jobs.facade';
 import { JobSortField } from '../store/jobs.actions';
 
-/** Offer row augmented with view-only state so the template calls no methods. */
 type JobRow = JobOfferDto & { applied: boolean; extraTech: string[] };
 
 
@@ -48,12 +47,10 @@ export class JobsListPage implements OnInit, OnDestroy {
   private readonly route = inject(ActivatedRoute);
   private readonly destroy$ = new Subject<void>();
 
-  /** scraper id from the URL we still need to resolve once scrapers load */
   private pendingScraperId: string | null = null;
 
   protected readonly PAGE_SIZE = 100;
 
-  // ── scraper selection (offers are browsed per scraper) ───────────────
   protected readonly scrapers = signal<ScrapeTargetDto[]>([]);
   protected readonly otherScrapers = signal<ScrapeTargetDto[]>([]);
   protected readonly selectedScraper = signal<ScrapeTargetDto | null>(null);
@@ -122,13 +119,11 @@ export class JobsListPage implements OnInit, OnDestroy {
 
   protected columns: TableColumn<JobRow>[] = [];
 
-  /** Tech-stack tags not already listed among the requirements (avoids duplication). */
   private extraTech(job: JobOfferDto): string[] {
     const must = new Set((job.mustHave ?? []).map((m) => m.toLowerCase()));
     return (job.techStack ?? []).filter((t) => !must.has(t.toLowerCase()));
   }
 
-  /** Join + translate an array of enum values (e.g. ["REMOTE","HYBRID"]). */
   private translateEnum(values: string[] | undefined, group: string): string | null {
     if (!values?.length) {
       return null;
@@ -186,8 +181,6 @@ export class JobsListPage implements OnInit, OnDestroy {
     this.recruitmentFacade.load();
     this.loadScrapers();
 
-    // Selection lives in the URL (?scraper=ID) so the browser/back button moves
-    // between the scraper list and a scraper's offers naturally.
     this.route.queryParamMap.pipe(takeUntil(this.destroy$)).subscribe((params) => {
       const id = params.get('scraper');
       if (!id) {
@@ -255,7 +248,6 @@ export class JobsListPage implements OnInit, OnDestroy {
     }
   }
 
-  /** Apply a scraper id carried in the URL once its scraper data is available. */
   private resolvePending(): void {
     if (!this.pendingScraperId) {
       return;
@@ -275,7 +267,6 @@ export class JobsListPage implements OnInit, OnDestroy {
     this.facade.setFilter({ scrapeTargetId: scraper.id });
   }
 
-  /** User clicked a scraper — record it in the URL; the query-param subscription applies it. */
   protected selectScraper(scraper: ScrapeTargetDto): void {
     this.router.navigate([], { relativeTo: this.route, queryParams: { scraper: scraper.id } });
   }

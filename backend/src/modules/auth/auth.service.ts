@@ -32,7 +32,6 @@ export class AuthService {
     private readonly refreshRepo: Repository<RefreshToken>,
   ) {}
 
-  // ── Registration / activation ───────────────────────────────
   async register(username: string, password: string, email?: string): Promise<{ activationToken?: string }> {
     const existing = await this.users.findByUsernameWithSecrets(username);
     if (existing) {
@@ -61,7 +60,6 @@ export class AuthService {
     await this.users.update(user.id, { isActive: true, activationToken: null });
   }
 
-  // ── Login / refresh / logout ────────────────────────────────
   async login(username: string, password: string): Promise<LoginResponse> {
     const user = await this.users.findByUsernameWithSecrets(username);
     if (!user || !(await bcrypt.compare(password, user.passwordHash))) {
@@ -107,7 +105,6 @@ export class AuthService {
     await this.refreshRepo.update({ userId, revokedAt: undefined }, { revokedAt: new Date() });
   }
 
-  // ── Password management ─────────────────────────────────────
   async forgotPassword(email: string): Promise<{ resetToken?: string }> {
     const user = await this.users.findByEmailWithSecrets(email);
     // Always answer the same way so the endpoint can't be used to probe which
@@ -147,7 +144,6 @@ export class AuthService {
     await this.logout(userId);
   }
 
-  // ── helpers ─────────────────────────────────────────────────
   private async issueTokens(user: User): Promise<AuthTokens> {
     const payload: JwtPayload = { sub: user.id, username: user.username, role: user.role };
     const accessToken = await this.jwt.signAsync(payload, {

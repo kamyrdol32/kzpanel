@@ -228,7 +228,6 @@ export class BulldogJobStrategy implements JobScraperStrategy {
   }
 }
 
-// ── Shapes for the fields we read out of __NEXT_DATA__ ──────────
 interface BdjSalary {
   money?: string;
   currency?: string;

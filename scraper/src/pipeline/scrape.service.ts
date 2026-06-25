@@ -6,12 +6,6 @@ import { ScrapeParams } from '../config/scrape-params';
 import { JobRaw } from '../strategies/job-scraper.strategy';
 import { StrategyRegistry } from '../strategies/strategy.registry';
 
-/**
- * Thin, stateless scrape executor. Receives one request, runs the matching
- * portal strategy (list → details) and returns RAW offers. No DB, no cron, no
- * normalization — all of that is the backend's job. With SCRAPER_MOCK=true it
- * returns a single synthetic offer so the end-to-end path can be tested offline.
- */
 @Injectable()
 export class ScrapeService {
   private readonly logger = new Logger(ScrapeService.name);

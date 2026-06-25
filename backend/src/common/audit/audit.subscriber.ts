@@ -11,10 +11,6 @@ import {
 
 import { AuditLog } from './audit-log.entity';
 
-/**
- * Global TypeORM subscriber that records CREATE/UPDATE/DELETE for every entity
- * (except AuditLog itself) into the audit_log table.
- */
 @EventSubscriber()
 export class AuditSubscriber implements EntitySubscriberInterface {
   constructor(dataSource: DataSource) {

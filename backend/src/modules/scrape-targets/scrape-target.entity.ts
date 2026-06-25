@@ -3,11 +3,9 @@ import { Column, Entity, Index } from 'typeorm';
 
 import { BaseEntity } from '../../common/entities/base.entity';
 
-/** Configured scraping target managed from the panel. Owned by the user that created it. */
 @Entity('scrape_targets')
 @Index(['userId', 'source', 'query', 'location'], { unique: true })
 export class ScrapeTarget extends BaseEntity {
-  /** Owner — the account that created this target. */
   @Index()
   @Column({ type: 'uuid' })
   userId!: string;

@@ -2,14 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { TranslateLoader, TranslateModuleConfig } from '@ngx-translate/core';
 import { forkJoin, map, Observable } from 'rxjs';
 
-/** Namespaces matching assets/i18n/{lang}/*.json */
 const NAMESPACES = ['common', 'auth', 'jobs', 'recruitment', 'scraping', 'users'] as const;
 
-/**
- * Merges one or more namespace bundles for a language. The root config loads all
- * namespaces; a lazy feature can instead instantiate this with just its own
- * namespace (+ common) and register via TranslateModule.forChild({ extend: true }).
- */
 export class ModuleTranslateLoader implements TranslateLoader {
   constructor(
     private readonly http: HttpClient,

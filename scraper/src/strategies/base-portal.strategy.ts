@@ -8,11 +8,8 @@ import { SiteConfig } from '../playwright/site-config';
 import { JobRaw, JobScraperStrategy, JobStub } from './job-scraper.strategy';
 
 /**
- * Shared base for DOM-scraped portals that follow the simple "one results page
- * + per-card selectors" pattern. Each concrete portal declares its own `config`
- * (search URL + selectors) in its own file and the base delegates the actual
- * browsing to the Playwright fetcher. Portals needing bespoke pagination logic
- * implement JobScraperStrategy directly instead of extending this.
+ * Base for DOM-scraped portals that follow the "one results page + per-card selectors" pattern.
+ * Portals needing bespoke pagination logic implement JobScraperStrategy directly instead.
  */
 export abstract class BasePortalStrategy implements JobScraperStrategy {
   abstract readonly source: JobSource;

@@ -1,40 +1,28 @@
 @use 'tokens' as *;
 
-// ──────────────────────────────────────────────────────────────
-// Theme contracts via CSS custom properties.
-// Components ONLY consume var(--ev-*) — switching themes never
-// requires rewriting a component. Default = dark.
-// ──────────────────────────────────────────────────────────────
-
 @mixin dark-theme {
-  // Backgrounds
   --ev-bg:         #080808;
   --ev-surface:    #111111;
   --ev-surface-2:  #181818;
   --ev-surface-3:  #222222;
 
-  // Borders
   --ev-border:     #2a2a2a;
   --ev-border-2:   #333333;
 
-  // Text
   --ev-text:       #f0ede8;
   --ev-text-muted: #9a9690;
   --ev-text-dim:   #837e77;
 
-  // Accent (orange)
   --ev-accent:        #{$ev-orange};
   --ev-accent-strong: #{$ev-orange-hover};
   --ev-accent-dim:    #{$ev-orange-dim};
   --ev-accent-border: #{$ev-orange-border};
 
-  // Semantic
   --ev-success: #3fbf6f;
   --ev-warning: #e0b341;
   --ev-danger:  #e2574c;
   --ev-info:    #4a90d9;
 
-  // Shadows
   --ev-shadow-sm: #{$shadow-sm};
   --ev-shadow-md: #{$shadow-md};
   --ev-shadow-lg: #{$shadow-lg};

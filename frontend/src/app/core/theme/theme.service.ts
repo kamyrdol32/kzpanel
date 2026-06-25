@@ -4,10 +4,6 @@ import { computed, inject, Injectable, signal } from '@angular/core';
 export type ThemeMode = 'dark' | 'light';
 const STORAGE_KEY = 'ev-theme';
 
-/**
- * Single source of truth for the active theme. Toggles a class on <html>;
- * components never read this directly — they consume CSS variables.
- */
 @Injectable({ providedIn: 'root' })
 export class ThemeService {
   private readonly document = inject(DOCUMENT);

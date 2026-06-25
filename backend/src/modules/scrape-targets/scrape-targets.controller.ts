@@ -36,7 +36,6 @@ export class ScrapeTargetsController {
     return this.targets.findAll(user.sub);
   }
 
-  /** Admin-only: every other account's scrapers, shown in a separate section. */
   @Get('others')
   @Roles(Role.ADMIN)
   findOthers(@CurrentUser() user: JwtPayload) {

@@ -2,7 +2,6 @@
 @use 'styles/themes' as *;
 @import '@ng-select/ng-select/themes/default.theme.css';
 
-// ── ng-select theme override ─────────────────────────────────────────────
 // Must live in global styles — component encapsulation blocks inner elements.
 .ng-select {
   .ng-select-container {
@@ -106,7 +105,6 @@ textarea {
   font-size: inherit;
 }
 
-// Global orange glows
 body::before {
   content: '';
   position: fixed;
@@ -120,7 +118,6 @@ body::before {
     radial-gradient(ellipse 200px 160px at 20%  85%, rgba(245, 119, 15, 0.06) 0%, transparent 60%);
 }
 
-// Global grid
 body::after {
   content: '';
   position: fixed;
@@ -155,7 +152,6 @@ html {
   background: var(--ev-bg);
 }
 
-// Content default stays at the app's dense 14px scale.
 body {
   font-size: $fs-md;
 }
@@ -166,7 +162,6 @@ a {
   &:hover { color: var(--ev-accent-strong); }
 }
 
-// Focus ring
 :focus-visible {
   outline: 2px solid var(--ev-accent);
   outline-offset: 3px;
@@ -176,14 +171,12 @@ a {
   outline: none;
 }
 
-// Scrollbar
 ::-webkit-scrollbar { width: 10px; height: 10px; }
 ::-webkit-scrollbar-thumb {
   background: var(--ev-surface-3);
   border-radius: $radius-pill;
 }
 
-// Material icons
 .material-symbols-rounded {
   font-family: 'Material Symbols Rounded';
   font-weight: normal;
@@ -193,7 +186,6 @@ a {
   user-select: none;
 }
 
-// Animations
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(24px); }
   to   { opacity: 1; transform: translateY(0); }
@@ -216,7 +208,6 @@ a {
   }
 }
 
-// ── Page utilities ───────────────────────────────────────────
 .ev-page { padding: $space-5; }
 
 .ev-page-title {
@@ -301,7 +292,6 @@ a {
   &:disabled { opacity: 0.5; cursor: not-allowed; }
 }
 
-// Section label (per DESIGN.md)
 .section-label {
   font-size: 0.72rem;
   font-weight: $fw-medium;
@@ -321,7 +311,6 @@ a {
   }
 }
 
-// Card (per DESIGN.md)
 .ev-card {
   background: var(--ev-surface);
   border: 1px solid var(--ev-border);

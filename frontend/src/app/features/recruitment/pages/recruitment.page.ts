@@ -80,7 +80,6 @@ export class RecruitmentPage implements OnInit {
       !!this.filterWorkMode(),
   );
 
-  /** View-model rows with precomputed state, so the template calls no methods. */
   protected readonly rows = computed(() => {
     const expandedId = this.expandedId();
     return this.filteredItems().map((item) => ({

@@ -3,7 +3,6 @@ import { Injectable } from '@nestjs/common';
 
 const PL_STOPWORDS = [' i ', ' oraz ', ' praca ', ' wymagania ', ' obowiązki ', ' znajomość '];
 
-/** Naive heuristic language detection (PL vs EN). Replace with a lib/AI later. */
 @Injectable()
 export class LanguageDetector {
   detect(text: string): Language {

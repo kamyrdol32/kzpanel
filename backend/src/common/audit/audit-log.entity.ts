@@ -1,7 +1,6 @@
 import { AuditAction } from '../../shared';
 import { Column, CreateDateColumn, Entity, Index, PrimaryGeneratedColumn } from 'typeorm';
 
-/** Append-only audit trail of entity mutations. */
 @Entity('audit_log')
 export class AuditLog {
   @PrimaryGeneratedColumn('uuid')

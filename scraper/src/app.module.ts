@@ -15,11 +15,6 @@ import { StrategyRegistry } from './strategies/strategy.registry';
 import { OlxStrategy } from './strategies/olx.strategy';
 import { TheProtocolStrategy } from './strategies/theprotocol.strategy';
 
-/**
- * Stateless scraper worker: a single guarded endpoint (POST /scrape) backed by
- * Playwright + per-portal strategies. No database, no scheduler — orchestration
- * and persistence live in the backend.
- */
 @Module({
   imports: [ConfigModule.forRoot({ isGlobal: true, envFilePath: ['.env'] })],
   controllers: [ScrapeController],

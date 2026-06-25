@@ -10,8 +10,6 @@
   overflow: auto;
 }
 
-// ── Navbar ────────────────────────────────────────────────────────
-
 .navbar {
   position: fixed;
   top: 0;
@@ -100,7 +98,6 @@
   }
 }
 
-// ── Dropdown ─────────────────────────────────────────────────────
 
 .nav-dropdown {
   position: relative;
@@ -176,7 +173,6 @@
   }
 }
 
-// ── Right side ────────────────────────────────────────────────────
 
 .nav-right {
   justify-self: end;
@@ -234,7 +230,6 @@
   }
 }
 
-// ── Profile menu ──────────────────────────────────────────────────
 .profile {
   position: relative;
 

@@ -28,7 +28,7 @@ export class JustJoinITStrategy implements JobScraperStrategy {
     const perPage = 100;
     const q = (params.query ?? '').toLowerCase();
     const encodedQuery = encodeURIComponent(params.query ?? '');
-    const location = params.location?.trim() || undefined;
+    const location = params.location?.trim() ? this.stripDiacritics(params.location.trim()) : undefined;
     const allOffers: JjitOffer[] = [];
     let page = 1;
     let totalPages = 1;
@@ -90,7 +90,6 @@ export class JustJoinITStrategy implements JobScraperStrategy {
     }
   }
 
-  // The listing already contains all fields — just map it.
   async fetchDetails(stub: JobStub): Promise<JobRaw> {
     const o = stub.meta as JjitOffer | undefined;
     const salary = this.mapSalary(o?.employmentTypes?.[0]);
@@ -138,6 +137,10 @@ export class JustJoinITStrategy implements JobScraperStrategy {
     });
   }
 
+  private stripDiacritics(s: string): string {
+    return s.normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/ł/g, 'l').replace(/Ł/g, 'L');
+  }
+
   private mapEmployment(types?: JjitEmployment[]): string[] {
     const out = new Set<string>();
     for (const t of types ?? []) {
@@ -183,9 +186,12 @@ export class JustJoinITStrategy implements JobScraperStrategy {
       case 'remote':
         return RemoteType.REMOTE;
       case 'office':
+      case 'stationary':
         return RemoteType.ONSITE;
-      default:
+      case 'hybrid':
         return RemoteType.HYBRID;
+      default:
+        return RemoteType.ONSITE;
     }
   }
 
@@ -204,7 +210,6 @@ export class JustJoinITStrategy implements JobScraperStrategy {
   }
 }
 
-// ── Loose shapes for the public API (only fields we read) ──────
 interface JjitEmployment {
   from?: number | null;
   to?: number | null;

@@ -1,6 +1,5 @@
 @use '../../../../styles/tokens' as *;
 
-// ── shared buttons ─────────────────────────────────────────────────────
 .primary-btn {
   display: inline-flex;
   align-items: center;
@@ -57,7 +56,6 @@
   color: var(--ev-text-muted);
 }
 
-// ── sections ───────────────────────────────────────────────────────────
 .add-section,
 .targets-section {
   background: var(--ev-surface);
@@ -132,7 +130,6 @@
   color: var(--ev-text-muted);
 }
 
-// ── add form ───────────────────────────────────────────────────────────
 .form {
   display: flex;
   flex-wrap: wrap;
@@ -186,7 +183,6 @@ select {
   &::placeholder { color: var(--ev-text-muted); }
 }
 
-// ── target list ────────────────────────────────────────────────────────
 .targets {
   display: flex;
   flex-direction: column;

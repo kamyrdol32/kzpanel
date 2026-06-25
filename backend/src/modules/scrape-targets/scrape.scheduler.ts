@@ -5,12 +5,6 @@ import { CronJob } from 'cron';
 
 import { ScrapeQueueService } from './scrape-queue.service';
 
-/**
- * Daily scrape cron (SCRAPER_INTERVAL_CRON, default 04:00) over every enabled
- * target. On-demand runs come through the controller. Disabled when
- * SCRAPER_ENABLED=false. Orchestration moved here from the scraper worker so
- * the worker can stay stateless.
- */
 @Injectable()
 export class ScrapeScheduler implements OnModuleInit {
   private readonly logger = new Logger(ScrapeScheduler.name);

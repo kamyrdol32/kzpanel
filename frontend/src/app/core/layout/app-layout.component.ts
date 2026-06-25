@@ -35,7 +35,6 @@ export class AppLayoutComponent implements OnInit {
   protected readonly profileOpen = signal(false);
 
   protected readonly user = this.auth.user;
-  /** First letter of the username for the avatar. */
   protected readonly initial = computed(() => (this.user()?.username ?? '?').charAt(0).toUpperCase());
 
   protected readonly dropdownItems: NavItem[] = [

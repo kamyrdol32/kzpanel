@@ -11,7 +11,6 @@ export class UsersService {
     private readonly repo: Repository<User>,
   ) {}
 
-  /** Includes password hash + tokens (normally `select: false`). For auth use only. */
   findByUsernameWithSecrets(username: string): Promise<User | null> {
     return this.repo
       .createQueryBuilder('u')
@@ -28,7 +27,6 @@ export class UsersService {
       .getOne();
   }
 
-  /** Finds a user by a (normally hidden) token column. For auth flows only. */
   findBySecret(column: 'activationToken' | 'resetToken', value: string): Promise<User | null> {
     return this.repo
       .createQueryBuilder('u')
@@ -49,7 +47,6 @@ export class UsersService {
     return user;
   }
 
-  /** All accounts, newest first — admin user management. */
   listAll(): Promise<User[]> {
     return this.repo.createQueryBuilder('u').orderBy('u.createdAt', 'DESC').getMany();
   }

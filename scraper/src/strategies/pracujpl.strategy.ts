@@ -93,9 +93,6 @@ export class PracujPlStrategy implements JobScraperStrategy {
       }));
   }
 
-  // The card covers the summary; the description, responsibilities,
-  // requirements and tech come from the offer page (rendered through the
-  // stealth browser, since pracuj.pl is behind Cloudflare).
   async fetchDetails(stub: JobStub): Promise<JobRaw> {
     const c = stub.meta as PracujCard | undefined;
     const salary = this.parseSalary(c?.salary);
@@ -260,7 +257,6 @@ export class PracujPlStrategy implements JobScraperStrategy {
   }
 }
 
-// ── Shape of the data we pull out of each result card ──────────
 interface PracujCard {
   id: string;
   title: string;

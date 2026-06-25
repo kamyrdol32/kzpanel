@@ -233,7 +233,6 @@ export class NoFluffJobsStrategy implements JobScraperStrategy {
   }
 }
 
-// ── Shape of the data we pull out of each result card ──────────
 interface NfjCard {
   path: string;
   title: string;
@@ -243,7 +242,6 @@ interface NfjCard {
   tech: string[];
 }
 
-// ── Shape of the per-offer detail API response (fields we read) ──
 interface NfjDetail {
   requirements?: {
     musts?: { value: string }[];

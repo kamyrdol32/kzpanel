@@ -17,7 +17,6 @@ export class ScrapingApi {
     return this.api.get<ScrapeTargetDto[]>('/scrape-targets');
   }
 
-  /** Admin-only: scrapers owned by other accounts. */
   public listOthers(): Observable<ScrapeTargetDto[]> {
     return this.api.get<ScrapeTargetDto[]>('/scrape-targets/others');
   }

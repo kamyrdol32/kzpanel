@@ -18,10 +18,6 @@ const remoteOptions = [
   ...Object.values(RemoteType).map((r) => ({ value: r, label: r })),
 ];
 
-/**
- * Per-portal available filters. After the user picks a service, only these
- * fields are shown. Reflects what each scraper actually supports today.
- */
 export const SOURCE_FIELDS: Record<string, SourceField[]> = {
   [JobSource.NOFLUFFJOBS]: [
     { key: 'query', labelKey: 'scraping.fieldTech', type: 'text', required: true, placeholder: 'Angular' },

@@ -10,7 +10,6 @@ export const reducers: ActionReducerMap<RootState> = {
   router: routerReducer,
 };
 
-/** Logs every action + resulting state in dev. */
 function logger(reducer: ActionReducer<RootState>): ActionReducer<RootState> {
   return (state, action) => {
     const next = reducer(state, action);

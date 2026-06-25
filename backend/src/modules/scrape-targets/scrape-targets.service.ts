@@ -27,13 +27,11 @@ export class ScrapeTargetsService {
     private readonly users: Repository<User>,
   ) {}
 
-  /** Targets owned by the given account. */
   async findAll(userId: string): Promise<ScrapeTargetWithCount[]> {
     const targets = await this.repo.find({ where: { userId }, order: { createdAt: 'DESC' } });
     return this.withOfferCounts(targets);
   }
 
-  /** Every other account's targets — admin-only "all scrapers" section. */
   async findOthers(userId: string): Promise<ScrapeTargetWithCount[]> {
     const targets = await this.repo.find({
       where: { userId: Not(userId) },
@@ -59,7 +57,6 @@ export class ScrapeTargetsService {
     return target;
   }
 
-  /** Loads a target and ensures the caller may use it (owner or admin). */
   async findOneForUser(id: string, userId: string, role: Role): Promise<ScrapeTarget> {
     const target = await this.findOne(id);
     if (target.userId !== userId && role !== Role.ADMIN) {
@@ -98,7 +95,6 @@ export class ScrapeTargetsService {
     return { deleted: result.affected ?? 0 };
   }
 
-  /** Removes the target AND hard-deletes every offer it fetched. */
   async remove(id: string): Promise<void> {
     await this.findOne(id);
     await this.offers.delete({ scrapeTargetId: id });

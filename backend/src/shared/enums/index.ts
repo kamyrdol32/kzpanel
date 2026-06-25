@@ -1,10 +1,8 @@
-/** User roles (RBAC). */
 export enum Role {
   ADMIN = 'ADMIN',
   USER = 'USER',
 }
 
-/** Recruitment pipeline status. */
 export enum RecruitmentStatus {
   NEW = 'NEW',
   CV_SENT = 'CV_SENT',
@@ -15,7 +13,6 @@ export enum RecruitmentStatus {
   HIRED = 'HIRED',
 }
 
-/** Seniority level for offers / recruitments. */
 export enum JobLevel {
   INTERN = 'INTERN',
   JUNIOR = 'JUNIOR',
@@ -24,20 +21,17 @@ export enum JobLevel {
   LEAD = 'LEAD',
 }
 
-/** Work / remote arrangement. */
 export enum RemoteType {
   ONSITE = 'ONSITE',
   HYBRID = 'HYBRID',
   REMOTE = 'REMOTE',
 }
 
-/** Offer / content language. */
 export enum Language {
   PL = 'PL',
   EN = 'EN',
 }
 
-/** Source portals supported by the scraper. */
 export enum JobSource {
   NOFLUFFJOBS = 'NOFLUFFJOBS',
   JUSTJOINIT = 'JUSTJOINIT',
@@ -49,7 +43,6 @@ export enum JobSource {
   MANUAL = 'MANUAL',
 }
 
-/** Audit log action. */
 export enum AuditAction {
   CREATE = 'CREATE',
   UPDATE = 'UPDATE',

@@ -28,12 +28,9 @@ export class AuthService {
   readonly isAuthenticated = computed(() => !!this.tokens.getAccessToken());
 
   constructor() {
-    // Rehydrate the user from the stored access token after a reload, so the
-    // profile (avatar/login) shows up without needing to log in again.
     this._user.set(this.userFromToken());
   }
 
-  /** Build a user from the JWT payload (sub/username/role) carried in the access token. */
   private userFromToken(): AuthUser | null {
     const token = this.tokens.getAccessToken();
     if (!token) {

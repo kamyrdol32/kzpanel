@@ -64,7 +64,6 @@ export class ScrapingPage implements OnInit {
     includeAllRemote: [false],
   });
 
-  /** Form value mirrored as a signal so `canAdd` can be a computed. */
   private readonly formValue = toSignal(this.form.valueChanges, {
     initialValue: this.form.getRawValue(),
   });
@@ -79,7 +78,6 @@ export class ScrapingPage implements OnInit {
       .every((f) => !!value[f.key]?.toString().trim());
   });
 
-  // ── confirmation modals ───────────────────────────────────────────────
   protected readonly pendingDelete = signal<ScrapeTargetDto | null>(null);
   protected readonly pendingClear = signal<ScrapeTargetDto | null>(null);
 
@@ -99,7 +97,6 @@ export class ScrapingPage implements OnInit {
     this.pendingClear.set(null);
   }
 
-  // ── inline edit ──────────────────────────────────────────────────────
   protected readonly editingId = signal<string | null>(null);
   protected readonly editFields = signal<SourceField[]>([]);
 

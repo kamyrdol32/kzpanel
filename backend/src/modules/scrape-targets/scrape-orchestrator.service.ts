@@ -10,11 +10,6 @@ import { LanguageDetector } from './language.detector';
 import { ScrapeTarget } from './scrape-target.entity';
 import { ScraperClient } from './scraper-client.service';
 
-/**
- * Owns scrape orchestration: loads targets, asks the stateless scraper worker
- * for RAW offers, then normalizes / parses / detects language / deduplicates /
- * persists. The scraper holds none of this — it only fetches.
- */
 @Injectable()
 export class ScrapeOrchestratorService {
   private readonly logger = new Logger(ScrapeOrchestratorService.name);
@@ -29,11 +24,6 @@ export class ScrapeOrchestratorService {
     private readonly targets: Repository<ScrapeTarget>,
   ) {}
 
-  /**
-   * Runs scrape targets. With `targetId` → that one target; with `userId` →
-   * every enabled target owned by that account (manual "scrape all" from the
-   * panel); with neither → every enabled target (the scheduled cron).
-   */
   async runTargets(opts: { targetId?: string; userId?: string } = {}): Promise<ScrapeRunResult> {
     const where = opts.targetId
       ? { id: opts.targetId }
@@ -81,8 +71,6 @@ export class ScrapeOrchestratorService {
       }
     }
 
-    // Prune offers this target no longer returns (e.g. after a query/filter change)
-    // so stale results don't linger. Only when the run actually produced offers.
     if (seenUrls.length > 0) {
       const pruned = await this.pruneStale(target.id, seenUrls);
       if (pruned > 0) {
@@ -95,7 +83,6 @@ export class ScrapeOrchestratorService {
     return count;
   }
 
-  /** Mark offers that the scraper no longer returns as stale instead of deleting them. */
   private async pruneStale(scrapeTargetId: string, keepUrls: string[]): Promise<number> {
     const res = await this.offers
       .createQueryBuilder()
@@ -136,7 +123,6 @@ export class ScrapeOrchestratorService {
     };
   }
 
-  /** Extracts {min,max,currency} from raw salary text like "18 000 - 24 000 PLN". */
   private parseSalary(raw?: string | null): {
     min: number | null;
     max: number | null;
@@ -156,12 +142,6 @@ export class ScrapeOrchestratorService {
     };
   }
 
-  /**
-   * Insert new or update existing, keyed on (scrapeTargetId, sourceUrl) — the
-   * pair the DB enforces as unique. Dedup is per scraper: the same offer URL
-   * found by another scraper is a separate row, so re-scraping a target updates
-   * its own copy instead of clashing with another scraper's.
-   */
   private async upsert(data: Partial<JobOffer>, scrapeTargetId: string): Promise<void> {
     const payload = { ...data, scrapeTargetId };
     const existing = await this.offers

@@ -18,7 +18,6 @@ export class ForgotPasswordPage {
 
   protected readonly loading = signal(false);
   protected readonly done = signal(false);
-  /** Returned only outside production (no email configured) so the user can continue the flow. */
   protected readonly devToken = signal<string | null>(null);
 
   protected readonly form = this.fb.nonNullable.group({

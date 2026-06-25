@@ -3,6 +3,7 @@ import { Injectable, Logger, OnModuleDestroy } from '@nestjs/common';
 import { Browser, BrowserContext, Page, chromium as coreChromium } from 'playwright-core';
 import { addExtra } from 'playwright-extra';
 
+import { ScraperConfig } from '../config/scraper.config';
 import { ScrapeParams } from '../config/scrape-params';
 import { JobRaw, JobStub } from '../strategies/job-scraper.strategy';
 
@@ -35,14 +36,17 @@ export class PlaywrightFetcher implements OnModuleDestroy {
   private readonly logger = new Logger(PlaywrightFetcher.name);
   private browser: Browser | null = null;
 
+  constructor(private readonly config: ScraperConfig) {}
+
   private async getBrowser(): Promise<Browser> {
     if (this.browser) {
       return this.browser;
     }
 
-    const proxyUrl = process.env.PROXY_URL;
+    const proxyUrl = this.config.proxyUrl;
+    const chromiumPath = this.config.chromiumPath;
     this.browser = await chromium.launch({
-      executablePath: process.env.CHROMIUM_PATH || undefined,
+      executablePath: chromiumPath,
       args: ['--no-sandbox', '--disable-dev-shm-usage', '--disable-blink-features=AutomationControlled'],
       ...(proxyUrl ? { proxy: { server: proxyUrl } } : {}),
     });

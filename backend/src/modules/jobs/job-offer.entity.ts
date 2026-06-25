@@ -27,15 +27,12 @@ export class JobOffer extends BaseEntity {
   @Column({ type: 'varchar', nullable: true })
   location!: string | null;
 
-  /** Work modes — an offer may allow several (e.g. remote + hybrid). */
   @Column({ type: 'jsonb', default: () => "'[]'" })
   remoteTypes!: RemoteType[];
 
-  /** Seniority levels — an offer may target several (e.g. mid + senior). */
   @Column({ type: 'jsonb', default: () => "'[]'" })
   levels!: JobLevel[];
 
-  /** Employment forms — B2B / PERMANENT / MANDATE / OTHER; an offer may allow several. */
   @Column({ type: 'jsonb', default: () => "'[]'" })
   employmentTypes!: string[];
 
@@ -73,17 +70,14 @@ export class JobOffer extends BaseEntity {
   @Column({ type: 'jsonb', default: () => "'[]'" })
   techStack!: string[];
 
-  /** Scrape target this offer originated from; used to cascade-delete on target removal. */
   @Index()
   @Column({ type: 'uuid', nullable: true })
   scrapeTargetId!: string | null;
 
-  /** Reviewed and marked as not interesting — greyed out on the list. */
   @Index()
   @Column({ type: 'boolean', default: false })
   dismissed!: boolean;
 
-  /** Set when the scraper no longer returns this offer; null means still active on the portal. */
   @Column({ type: 'timestamptz', nullable: true, default: null })
   staleAt!: Date | null;
 }

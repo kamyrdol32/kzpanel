@@ -3,7 +3,6 @@
   margin-bottom: 20px;
 }
 
-// ── expanded offer detail panel ───────────────────────────────────────
 .offer-detail {
   padding: 20px 24px 24px;
   border-top: 1px solid var(--ev-border);
@@ -127,7 +126,6 @@
   color: var(--ev-text-muted);
 }
 
-// ── scraper selection (step 1) ────────────────────────────────────────
 .scraper-section {
   margin-bottom: 28px;
 
@@ -218,7 +216,6 @@
   }
 }
 
-// ── filter bar ────────────────────────────────────────────────────────
 .filter-bar {
   display: flex;
   flex-direction: column;
@@ -318,7 +315,6 @@
 }
 
 
-// ── pagination ────────────────────────────────────────────────────────
 .pagination {
   display: flex;
   align-items: center;
@@ -381,7 +377,6 @@
   color: var(--ev-text-muted);
 }
 
-// ── jobs count badge in page header ───────────────────────────────────
 .jobs-count {
   display: inline-flex;
   align-items: center;
@@ -397,7 +392,6 @@
   letter-spacing: 0.2px;
 }
 
-// ── status indicator dot in the prefix cell ───────────────────────────
 .status-dot {
   display: inline-flex;
   align-items: center;
@@ -419,7 +413,6 @@
   }
 }
 
-// ── row state styling (driven by rowClass) ────────────────────────────
 :host ::ng-deep .job-row-dismissed td {
   opacity: 0.5;
 
@@ -436,7 +429,6 @@
   background: color-mix(in srgb, var(--ev-success, #22c55e) 8%, transparent);
 }
 
-// ── row action icon buttons ───────────────────────────────────────────
 .row-actions {
   display: inline-flex;
   align-items: center;
@@ -479,7 +471,6 @@
   }
 }
 
-// ── chips ──────────────────────────────────────────────────────────────
 .chip-success {
   display: inline-flex;
   align-items: center;
@@ -489,7 +480,6 @@
   font-weight: 500;
 }
 
-// ── expanded detail panel ──────────────────────────────────────────────
 .job-detail {
   padding: 24px;
   display: flex;
@@ -536,7 +526,6 @@
   }
 }
 
-// field card — shared visual with recruitment details
 .field {
   display: flex;
   flex-direction: column;

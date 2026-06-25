@@ -16,8 +16,6 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     this.theme.init();
-    // Init language app-wide (not just inside the authenticated layout) so
-    // translations are loaded on public routes (login) too — page titles etc.
     this.language.init();
   }
 }

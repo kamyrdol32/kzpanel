@@ -6,11 +6,6 @@ import { ScrapeService } from '../pipeline/scrape.service';
 
 import { InternalTokenGuard } from './internal-token.guard';
 
-/**
- * Internal HTTP endpoint the backend calls to run one scrape. Returns RAW
- * offers; the backend normalizes, deduplicates and persists them.
- * Reachable only on the internal network (guarded by a shared token).
- */
 @Controller('scrape')
 @UseGuards(InternalTokenGuard)
 export class ScrapeController {

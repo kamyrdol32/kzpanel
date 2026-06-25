@@ -6,7 +6,6 @@ import { environment } from '../../../environments/environment';
 
 type ParamValue = string | number | boolean;
 
-/** Typed thin wrapper over HttpClient with the API base URL baked in. */
 @Injectable({ providedIn: 'root' })
 export class ApiService {
   private readonly http = inject(HttpClient);

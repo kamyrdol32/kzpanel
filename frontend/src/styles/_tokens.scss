@@ -1,14 +1,8 @@
-// ──────────────────────────────────────────────────────────────
-// EvPanel Design System — design tokens (theme-agnostic)
-// ──────────────────────────────────────────────────────────────
-
-// Brand palette
 $ev-orange:        #f5770f;
 $ev-orange-hover:  #e06a0c;
 $ev-orange-dim:    #2a1500;
 $ev-orange-border: #4a2200;
 
-// Spacing scale (4px base)
 $space-0: 0;
 $space-1: 4px;
 $space-2: 8px;
@@ -19,13 +13,11 @@ $space-6: 32px;
 $space-7: 48px;
 $space-8: 64px;
 
-// Border radius
 $radius-sm: 6px;
 $radius-md: 6px;
 $radius-lg: 12px;
 $radius-pill: 999px;
 
-// Typography
 $font-display: 'Space Grotesk', sans-serif;
 $font-sans:    'Inter', sans-serif;
 $fs-xs:  12px;
@@ -39,17 +31,14 @@ $fw-medium:   500;
 $fw-semibold: 600;
 $fw-bold:     700;
 
-// Shadows
 $shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
 $shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
 $shadow-lg: 0 24px 60px rgba(0, 0, 0, 0.45);
 
-// Motion
 $ease-standard: cubic-bezier(0.2, 0, 0, 1);
 $dur-fast: 150ms;
 $dur-base: 200ms;
 $dur-slow: 300ms;
 
-// Layout
 $sidebar-width: 248px;
 $topbar-height: 56px;

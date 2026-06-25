@@ -3,9 +3,8 @@ import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from
 import { ScraperConfig } from '../config/scraper.config';
 
 /**
- * Guards the internal trigger endpoint. The scraper is only reachable on the
- * docker network, but a shared-secret header adds defence in depth.
  * When INTERNAL_API_TOKEN is empty (local dev) the guard is a no-op.
+ * Otherwise validates the shared-secret header as defence in depth.
  */
 @Injectable()
 export class InternalTokenGuard implements CanActivate {

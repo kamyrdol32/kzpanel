@@ -3,7 +3,6 @@ import { Injectable } from '@angular/core';
 const ACCESS = 'ev-access-token';
 const REFRESH = 'ev-refresh-token';
 
-/** Thin wrapper around token persistence (swap to httpOnly cookies later). */
 @Injectable({ providedIn: 'root' })
 export class TokenStorageService {
   public getAccessToken(): string | null {
@@ -19,7 +18,6 @@ export class TokenStorageService {
     localStorage.setItem(REFRESH, refresh);
   }
 
-  /** Replace just the access token (sliding-session renewal). */
   public setAccess(access: string): void {
     localStorage.setItem(ACCESS, access);
   }

@@ -16,7 +16,6 @@ export interface JobOfferDto extends BaseEntityDto {
   source: JobSource;
   sourceUrl: string;
   publishedDate: string | null;
-  // details
   description: string | null;
   responsibilities: string[];
   requirements: string[];
@@ -24,15 +23,11 @@ export interface JobOfferDto extends BaseEntityDto {
   niceToHave: string[];
   benefits: string[];
   techStack: string[];
-  /** the scrape target this offer was fetched from (null for manual entries) */
   scrapeTargetId: string | null;
-  /** reviewed and marked as not interesting — hidden/greyed on the list */
   dismissed: boolean;
-  /** set when the scraper no longer returns this offer; null means still active on the portal */
   staleAt: string | null;
 }
 
-/** Partial update for an offer (e.g. mark as dismissed). */
 export interface UpdateJobRequest {
   dismissed?: boolean;
 }
@@ -43,11 +38,9 @@ export interface JobFilter {
   level?: JobLevel;
   remoteType?: RemoteType;
   language?: Language;
-  /** Restrict to offers found by a specific scrape target. */
   scrapeTargetId?: string;
 }
 
-/** Raw normalized offer produced by a scraper strategy before persistence. */
 export interface JobRawDto {
   title: string;
   company: string;

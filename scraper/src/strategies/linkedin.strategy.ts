@@ -133,10 +133,6 @@ export class LinkedInStrategy implements JobScraperStrategy {
     }));
   }
 
-  /**
-   * The card has title/company/location; the full description comes from the
-   * guest job-posting endpoint (a plain HTML fragment, no login needed).
-   */
   async fetchDetails(stub: JobStub): Promise<JobRaw> {
     const c = stub.meta as LinkedInCard | undefined;
     const detail = await this.fetchJobDetail(c?.url);
@@ -269,7 +265,6 @@ export class LinkedInStrategy implements JobScraperStrategy {
   }
 }
 
-// ── Shape of the data we pull out of each guest card ───────────
 interface LinkedInCard {
   title: string;
   company: string;

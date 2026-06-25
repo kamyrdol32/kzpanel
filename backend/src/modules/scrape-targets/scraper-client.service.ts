@@ -2,11 +2,6 @@ import { ScrapeRequest, ScrapedOfferDto } from '../../shared';
 import { HttpException, Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
-/**
- * Calls the stateless scraper worker. The scraper runs one scrape and returns
- * RAW offers; this backend normalizes + persists them. Reachable only on the
- * internal network (not via nginx).
- */
 @Injectable()
 export class ScraperClient {
   private readonly logger = new Logger(ScraperClient.name);

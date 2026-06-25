@@ -18,7 +18,6 @@ export class JobsService {
   ) {}
 
   async findAll(filter: JobFilter, user: { sub: string; role: Role }): Promise<JobOffer[]> {
-    // Offers are browsed per scraper; make sure the caller owns the one asked for.
     if (filter.scrapeTargetId) {
       const target = await this.targets.findOne({ where: { id: filter.scrapeTargetId } });
       if (!target) {
@@ -47,7 +46,6 @@ export class JobsService {
     if (filter.scrapeTargetId) {
       qb.andWhere('o.scrapeTargetId = :scrapeTargetId', { scrapeTargetId: filter.scrapeTargetId });
     }
-    // level / remoteType are arrays — match offers whose array contains the value
     if (filter.level) {
       qb.andWhere('o.levels @> :level::jsonb', { level: JSON.stringify([filter.level]) });
     }
