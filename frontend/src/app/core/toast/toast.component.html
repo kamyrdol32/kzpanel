@@ -9,7 +9,11 @@
           @default { info }
         }
       </span>
-      <span class="toast-message">{{ t.message }}</span>
+      @if (t.html) {
+        <span class="toast-message" [innerHTML]="t.html"></span>
+      } @else {
+        <span class="toast-message">{{ t.message }}</span>
+      }
       <button class="toast-close" (click)="toast.dismiss(t.id)" [title]="'common.cancel' | translate">
         <span class="material-symbols-rounded">close</span>
       </button>
