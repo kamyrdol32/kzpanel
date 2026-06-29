@@ -6,8 +6,18 @@ export class InitSchema1781523528502 implements MigrationInterface {
     public async up(queryRunner: QueryRunner): Promise<void> {
         // Required extensions: uuid_generate_v4() (uuid PKs) + citext (case-insensitive email).
         // Self-contained so the baseline applies to any fresh DB, not only the Docker-init one.
-        await queryRunner.query(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`);
-        await queryRunner.query(`CREATE EXTENSION IF NOT EXISTS "citext"`);
+        await queryRunner.query(`
+            DO $$ BEGIN
+              CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+            EXCEPTION WHEN insufficient_privilege THEN NULL;
+            END $$
+        `);
+        await queryRunner.query(`
+            DO $$ BEGIN
+              CREATE EXTENSION IF NOT EXISTS "citext";
+            EXCEPTION WHEN insufficient_privilege THEN NULL;
+            END $$
+        `);
         await queryRunner.query(`CREATE TYPE "public"."scrape_targets_source_enum" AS ENUM('NOFLUFFJOBS', 'JUSTJOINIT', 'LINKEDIN', 'BULLDOGJOB', 'PRACUJPL', 'MANUAL')`);
         await queryRunner.query(`CREATE TYPE "public"."scrape_targets_remotetype_enum" AS ENUM('ONSITE', 'HYBRID', 'REMOTE')`);
         await queryRunner.query(`CREATE TABLE "scrape_targets" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP WITH TIME ZONE, "source" "public"."scrape_targets_source_enum" NOT NULL, "query" character varying NOT NULL, "location" character varying, "remoteType" "public"."scrape_targets_remotetype_enum", "enabled" boolean NOT NULL DEFAULT true, "lastRunAt" TIMESTAMP WITH TIME ZONE, CONSTRAINT "PK_85a8c793895a163e7c80def1c58" PRIMARY KEY ("id"))`);
