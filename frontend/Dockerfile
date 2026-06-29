@@ -18,5 +18,5 @@ COPY nginx.conf /etc/nginx/nginx.conf
 # Built Angular app
 COPY --from=build /app/dist/kzpanel/browser /usr/share/nginx/html
 
-EXPOSE 80
+EXPOSE 3001
 CMD ["nginx", "-g", "daemon off;"]
