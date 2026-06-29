@@ -1,4 +1,4 @@
-﻿import { inject, Injectable, signal } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 
 export type AppLang = 'pl' | 'en';

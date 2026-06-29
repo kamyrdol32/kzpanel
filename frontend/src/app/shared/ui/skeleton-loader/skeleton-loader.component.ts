@@ -1,4 +1,4 @@
-﻿import { NgStyle } from '@angular/common';
+import { NgStyle } from '@angular/common';
 import { Component, input } from '@angular/core';
 
 @Component({

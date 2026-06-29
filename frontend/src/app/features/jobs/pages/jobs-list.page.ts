@@ -1,4 +1,4 @@
-﻿import { DatePipe } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { Component, computed, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { JobFilter, JobLevel, JobOfferDto, Language, RemoteType, Role, ScrapeTargetDto } from '@kzpanel/shared';

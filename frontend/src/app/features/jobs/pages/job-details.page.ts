@@ -1,4 +1,4 @@
-﻿import { Component, inject, input, OnInit } from '@angular/core';
+import { Component, inject, input, OnInit } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 
 import { CardComponent } from '../../../shared/ui/card/card.component';

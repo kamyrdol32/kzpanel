@@ -1,4 +1,4 @@
-﻿import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
 import { LanguageService } from './core/i18n/language.service';

@@ -1,4 +1,4 @@
-﻿import { UpperCasePipe } from '@angular/common';
+import { UpperCasePipe } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { AbstractControl, FormBuilder, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';

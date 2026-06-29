@@ -1,4 +1,4 @@
-﻿import { NgTemplateOutlet } from '@angular/common';
+import { NgTemplateOutlet } from '@angular/common';
 import { Component, computed, contentChild, input, output, TemplateRef } from '@angular/core';
 
 export interface TableColumn<T> {

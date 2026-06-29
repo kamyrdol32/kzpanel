@@ -1,4 +1,4 @@
-﻿import { DatePipe } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { AdminUserDto, Permission, Role } from '@kzpanel/shared';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';

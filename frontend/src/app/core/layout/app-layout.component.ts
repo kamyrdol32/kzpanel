@@ -1,4 +1,4 @@
-﻿import { Component, computed, ElementRef, HostListener, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, ElementRef, HostListener, inject, OnInit, signal } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { Permission, Role } from '@kzpanel/shared';
 import { TranslateModule } from '@ngx-translate/core';
