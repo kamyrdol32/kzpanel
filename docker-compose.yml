@@ -20,7 +20,7 @@ services:
     depends_on:
       - kzpanel-backend
     ports:
-      - '80:3001'
+      - '3001:3001'
     healthcheck:
       test: [ 'CMD', 'curl', '-fsS', 'http://localhost:3001/' ]
       interval: 15s
