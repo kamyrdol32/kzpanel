@@ -17,7 +17,7 @@ COPY package*.json ./
 RUN npm install --omit=dev
 COPY --from=build /app/dist ./dist
 
-EXPOSE 3000
+EXPOSE 5001
 # Migrations are the single source of truth (DB_SYNC=false): apply any pending
 # migrations against the compiled data-source, then boot the API.
 CMD ["sh", "-c", "node_modules/.bin/typeorm migration:run -d dist/database/data-source.js && node dist/main.js"]
