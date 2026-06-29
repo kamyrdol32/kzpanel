@@ -5,11 +5,12 @@
   place-items: center;
   min-height: 100vh;
   position: relative;
+  padding: $space-4;
 
   &-card {
     position: relative;
     z-index: 1;
-    width: 360px;
+    width: min(360px, 100%);
     background: var(--kz-surface);
     border: 1px solid var(--kz-border);
     border-radius: $radius-lg;
@@ -19,6 +20,10 @@
     flex-direction: column;
     gap: $space-4;
     animation: fadeUp 0.6s ease both;
+
+    @media (max-width: 400px) {
+      padding: $space-5 $space-4;
+    }
   }
 
   &-brand {

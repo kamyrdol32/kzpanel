@@ -146,26 +146,29 @@
             </div>
           } @else {
             <div class="target" [class.target-running]="facade.runningId() === t.id || (facade.running() && !facade.runningId())">
-              <div class="target-left">
-                <kz-status-badge [label]="t.source" tone="info" />
-                <div class="target-meta">
-                  <span class="target-query">{{ t.query }}</span>
-                  @if (t.location || t.remoteType) {
-                    <span class="target-sub">
-                      {{ t.location ?? '' }}{{ t.location && t.remoteType ? ' · ' : '' }}{{ t.remoteType ?? '' }}
-                    </span>
-                  }
-                </div>
+              <kz-status-badge class="target-service" [label]="t.source" tone="info" />
+
+              <div class="target-meta">
+                <span class="target-query">{{ t.query }}</span>
+                @if (t.location || t.remoteType) {
+                  <span class="target-sub">
+                    {{ t.location ?? '' }}{{ t.location && t.remoteType ? ' · ' : '' }}{{ t.remoteType ?? '' }}
+                  </span>
+                }
               </div>
-              <div class="target-right">
-                <span class="offer-count" [title]="'scraping.offerCount' | translate">
+
+              <div class="target-stats">
+                <span class="target-stat target-stat-count" [title]="'scraping.offerCount' | translate">
                   <span class="material-symbols-rounded">description</span>
-                  {{ t.offerCount }}
+                  <span class="target-stat-value">{{ t.offerCount }}</span>
                 </span>
-                <span class="last-run">
+                <span class="target-stat target-stat-date">
                   <span class="material-symbols-rounded">schedule</span>
-                  {{ t.lastRunAt ? (t.lastRunAt | date: 'dd.MM.yy HH:mm') : '—' }}
+                  <span class="target-stat-value">{{ t.lastRunAt ? (t.lastRunAt | date: 'dd.MM.yy HH:mm') : '—' }}</span>
                 </span>
+              </div>
+
+              <div class="target-actions">
                 @if (facade.runningId() === t.id || (facade.running() && !facade.runningId())) {
                   <span class="running-indicator">
                     <span class="spinner"></span>
@@ -211,20 +214,27 @@
         <div class="targets">
           @for (t of facade.otherTargets(); track t.id) {
             <div class="target">
-              <div class="target-left">
-                <kz-status-badge [label]="t.source" tone="info" />
-                <div class="target-meta">
-                  <span class="target-query">{{ t.query }}</span>
-                  <span class="target-sub">
-                    {{ t.ownerUsername }}{{ t.location ? ' · ' + t.location : '' }}
-                  </span>
-                </div>
-              </div>
-              <div class="target-right">
-                <span class="offer-count" [title]="'scraping.offerCount' | translate">
-                  <span class="material-symbols-rounded">description</span>
-                  {{ t.offerCount }}
+              <kz-status-badge class="target-service" [label]="t.source" tone="info" />
+
+              <div class="target-meta">
+                <span class="target-query">{{ t.query }}</span>
+                <span class="target-sub">
+                  {{ t.ownerUsername }}{{ t.location ? ' · ' + t.location : '' }}
                 </span>
+              </div>
+
+              <div class="target-stats">
+                <span class="target-stat target-stat-count" [title]="'scraping.offerCount' | translate">
+                  <span class="material-symbols-rounded">description</span>
+                  <span class="target-stat-value">{{ t.offerCount }}</span>
+                </span>
+                <span class="target-stat target-stat-date">
+                  <span class="material-symbols-rounded">schedule</span>
+                  <span class="target-stat-value">{{ t.lastRunAt ? (t.lastRunAt | date: 'dd.MM.yy HH:mm') : '—' }}</span>
+                </span>
+              </div>
+
+              <div class="target-actions">
                 @if (facade.canRun()) {
                   <button class="icon-btn" [disabled]="facade.running()" [title]="'scraping.scrapeNow' | translate" (click)="facade.runOne(t.id)">
                     <span class="material-symbols-rounded">play_arrow</span>

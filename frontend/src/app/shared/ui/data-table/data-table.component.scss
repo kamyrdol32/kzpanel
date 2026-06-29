@@ -88,3 +88,54 @@
   &-actions { text-align: right; }
   &-actions-col { width: 1%; }
 }
+
+// Mobile: collapse to a single tappable column (status + title); every other
+// column and the action buttons live inside the expandable detail row.
+@media (max-width: 640px) {
+  .table {
+    thead { display: none; }
+
+    // Hide everything from the 3rd cell onward (company, salary, …, actions).
+    // The prefix is cell 1, the title is cell 2; the expanded row has a single
+    // colspan cell (nth-child 1), so it stays visible.
+    tbody td:nth-child(n + 3) { display: none; }
+
+    tbody td:nth-child(2) {
+      width: 100%;
+      position: relative;
+      padding: 16px 44px 16px 16px;
+      white-space: normal;
+    }
+
+    td.table-prefix { padding: 16px 4px 16px 16px; }
+
+    .cell {
+      display: block;
+      max-width: none;
+      white-space: normal;
+      overflow: visible;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+
+    // Chevron affordance on expandable rows.
+    tr.table-row-clickable td:nth-child(2)::after {
+      content: 'expand_more';
+      font-family: 'Material Symbols Rounded';
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 20px;
+      color: var(--kz-text-muted);
+    }
+
+    tr.table-row-selected td:nth-child(2)::after { content: 'expand_less'; }
+
+    // The detail cell must span full width and never inherit nowrap.
+    tbody tr.table-row-expanded td {
+      display: table-cell;
+      padding: 0;
+    }
+  }
+}

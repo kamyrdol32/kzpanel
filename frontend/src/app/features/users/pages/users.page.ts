@@ -41,6 +41,7 @@ export class UsersPage implements OnInit {
   protected readonly pendingDelete = signal<AdminUserDto | null>(null);
   protected readonly pendingRoleChange = signal<PendingRoleChange | null>(null);
   protected readonly permissionsPanel = signal<PermissionsPanel | null>(null);
+  protected readonly expandedId = signal<string | null>(null);
 
   protected readonly currentUserId = computed(() => this.auth.user()?.id ?? '');
 
@@ -68,6 +69,10 @@ export class UsersPage implements OnInit {
 
   public ngOnInit(): void {
     this.load();
+  }
+
+  protected toggleExpand(id: string): void {
+    this.expandedId.update((current) => (current === id ? null : id));
   }
 
   protected toggleActive(id: string, isActive: boolean): void {

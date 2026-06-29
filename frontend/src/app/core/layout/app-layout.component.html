@@ -80,8 +80,78 @@
           </li>
         </ul>
       </div>
+
+      <button
+        class="nav-burger"
+        type="button"
+        [class.is-open]="mobileMenuOpen()"
+        [attr.aria-label]="'nav.menu' | translate"
+        (click)="toggleMobileMenu()"
+      >
+        <span class="material-symbols-rounded">{{ mobileMenuOpen() ? 'close' : 'menu' }}</span>
+      </button>
     </div>
   </nav>
+
+  <div class="mobile-menu" [class.is-open]="mobileMenuOpen()">
+    <div class="mobile-menu-backdrop" (click)="closeMobileMenu()"></div>
+
+    <nav class="mobile-menu-panel">
+      <div class="mobile-menu-user">
+        <span class="profile-avatar">{{ initial() }}</span>
+        <span class="mobile-menu-username">{{ user()?.username }}</span>
+      </div>
+
+      <div class="mobile-menu-section">
+        @for (item of dropdownItems(); track item.path) {
+          <a
+            class="mobile-menu-link"
+            [routerLink]="item.path"
+            routerLinkActive="active"
+          >
+            <span class="material-symbols-rounded">{{ item.icon }}</span>
+            {{ item.labelKey | translate }}
+          </a>
+        }
+      </div>
+
+      @if (isAdmin()) {
+        <div class="mobile-menu-section">
+          <span class="mobile-menu-section-label">{{ 'nav.admin' | translate }}</span>
+          @for (item of adminItems; track item.path) {
+            <a
+              class="mobile-menu-link"
+              [routerLink]="item.path"
+              routerLinkActive="active"
+            >
+              <span class="material-symbols-rounded">{{ item.icon }}</span>
+              {{ item.labelKey | translate }}
+            </a>
+          }
+        </div>
+      }
+
+      <div class="mobile-menu-section">
+        <a class="mobile-menu-link" routerLink="/settings" routerLinkActive="active">
+          <span class="material-symbols-rounded">settings</span>
+          {{ 'settings.title' | translate }}
+        </a>
+      </div>
+
+      <div class="mobile-menu-footer">
+        <button class="lang-toggle" (click)="language.toggle()">
+          <span class="lang-opt" [class.active]="language.lang() === 'pl'">PL</span>
+          <span class="lang-sep">/</span>
+          <span class="lang-opt" [class.active]="language.lang() === 'en'">EN</span>
+        </button>
+
+        <button class="mobile-menu-logout" (click)="logout()">
+          <span class="material-symbols-rounded">logout</span>
+          {{ 'common.logout' | translate }}
+        </button>
+      </div>
+    </nav>
+  </div>
 
   <main class="layout-content">
     <router-outlet />

@@ -24,7 +24,27 @@
     "jobs": "Oferty pracy",
     "scraping": "Scrapowanie",
     "users": "Użytkownicy",
-    "admin": "Administracja"
+    "admin": "Administracja",
+    "menu": "Menu"
+  },
+  "forbidden": {
+    "title": "Brak dostępu",
+    "desc": "Nie masz uprawnień do tej sekcji. Skontaktuj się z administratorem, jeśli potrzebujesz dostępu.",
+    "backHome": "Wróć na stronę główną"
+  },
+  "landing": {
+    "login": "Zaloguj się",
+    "register": "Załóż konto",
+    "eyebrow": "Panel agregacji ofert pracy",
+    "title": "Wszystkie oferty w jednym miejscu",
+    "subtitle": "Automatyczny scraping ofert z wielu portali, zebrany w jednym przejrzystym panelu z filtrowaniem i analizą.",
+    "cta": "Zacznij teraz",
+    "stats": {
+      "scrapers": "Skonfigurowanych scraperów",
+      "offers": "Zebranych ofert",
+      "companies": "Firm",
+      "sources": "Źródeł danych"
+    }
   },
   "enum": {
     "remote": {

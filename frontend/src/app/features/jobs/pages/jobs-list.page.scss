@@ -1,6 +1,36 @@
 .page-header-row {
   justify-content: space-between;
   margin-bottom: 20px;
+
+  @media (max-width: 640px) {
+    flex-wrap: wrap;
+    gap: 12px;
+
+    kz-global-search { width: 100%; }
+  }
+}
+
+.header-lead {
+  gap: 14px;
+  min-width: 0;
+
+  @media (max-width: 640px) {
+    width: 100%;
+    gap: 12px;
+  }
+}
+
+.header-query {
+  margin-left: 4px;
+  font-weight: 500;
+  color: var(--kz-text-muted);
+}
+
+.jobs-count {
+  @media (max-width: 640px) {
+    margin-left: auto;
+    align-self: flex-start;
+  }
 }
 
 .offer-detail {
@@ -14,52 +44,51 @@
   max-width: 100%;
   overflow: hidden;
 
-  // Header mirrors the body grid so the meta column lines up with the side column.
-  &-header {
-    display: grid;
-    grid-template-columns: 1.7fr 1fr;
-    gap: 28px;
-    align-items: start;
-
-    @media (max-width: 860px) {
-      grid-template-columns: 1fr;
-      gap: 16px;
-    }
+  @media (max-width: 640px) {
+    padding: 16px 14px;
+    gap: 14px;
   }
 
-  &-actions {
+  &-toolbar {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
-    align-content: flex-start;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--kz-border);
+
+    .material-symbols-rounded { font-size: 16px; }
+
+    @media (max-width: 640px) {
+      padding-bottom: 16px;
+    }
   }
 
   &-meta {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 8px;
     min-width: 0;
   }
 
   &-meta-item {
     display: inline-flex;
     align-items: center;
-    gap: 7px;
-    padding: 8px 14px;
-    border-radius: 10px;
-    background: var(--kz-surface);
-    border: 1px solid var(--kz-border);
-    font-size: 14px;
+    gap: 6px;
+    padding: 5px 12px;
+    border-radius: 999px;
+    background: var(--kz-surface-2);
+    font-size: 13px;
     font-weight: 500;
-    color: var(--kz-text);
+    color: var(--kz-text-muted);
 
     .material-symbols-rounded {
-      font-size: 18px;
-      color: var(--kz-text-muted);
+      font-size: 16px;
+      color: var(--kz-text-dim);
     }
   }
 
   &-meta-salary {
+    background: color-mix(in srgb, var(--kz-success, #22c55e) 14%, transparent);
     color: var(--kz-success, #22c55e);
     font-weight: 600;
 
@@ -71,11 +100,12 @@
   &-body {
     display: grid;
     grid-template-columns: 1.7fr 1fr;
-    gap: 28px;
+    gap: 32px;
+    padding-top: 4px;
 
     @media (max-width: 860px) {
       grid-template-columns: 1fr;
-      gap: 18px;
+      gap: 24px;
     }
   }
 
@@ -83,25 +113,25 @@
   &-side {
     display: flex;
     flex-direction: column;
-    gap: 18px;
+    gap: 22px;
     min-width: 0;
   }
 
   &-section-title {
-    margin: 0 0 8px;
+    margin: 0 0 10px;
     font-size: 11px;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.6px;
-    color: var(--kz-text-muted);
+    letter-spacing: 0.8px;
+    color: var(--kz-accent);
   }
 
   &-text {
     margin: 0;
     max-width: 72ch;
-    font-size: 13px;
-    line-height: 1.65;
-    color: var(--kz-text);
+    font-size: 13.5px;
+    line-height: 1.7;
+    color: var(--kz-text-muted);
     white-space: pre-line;
     overflow-wrap: anywhere;
     word-break: break-word;
@@ -112,11 +142,11 @@
     padding-left: 18px;
     font-size: 13px;
     line-height: 1.7;
-    color: var(--kz-text);
+    color: var(--kz-text-muted);
     overflow-wrap: anywhere;
     word-break: break-word;
 
-    li { margin-bottom: 2px; }
+    li { margin-bottom: 5px; }
   }
 }
 
@@ -232,6 +262,23 @@
   align-items: center;
   gap: 8px;
   flex-wrap: wrap;
+
+  @media (max-width: 640px) {
+    .search-wrap {
+      flex: 1 1 100%;
+      min-width: 0;
+    }
+
+    .filter-select {
+      flex: 1 1 100%;
+      min-width: 0;
+    }
+
+    .clear-btn {
+      flex: 1 1 100%;
+      justify-content: center;
+    }
+  }
 }
 
 .search-wrap {
@@ -273,9 +320,14 @@
 }
 
 .filter-select {
-  height: 36px;
-  padding: 0 10px;
-  background: var(--kz-bg);
+  height: 38px;
+  padding: 0 38px 0 14px;
+  appearance: none;
+  -webkit-appearance: none;
+  background-color: var(--kz-bg);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12' fill='none'%3E%3Cpath d='M2 4l4 4 4-4' stroke='%239a9a9a' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
   border: 1px solid var(--kz-border);
   border-radius: 8px;
   color: var(--kz-text);

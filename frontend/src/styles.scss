@@ -208,7 +208,13 @@ a {
   }
 }
 
-.kz-page { padding: $space-5; }
+.kz-page {
+  padding: $space-5;
+
+  @media (max-width: 640px) {
+    padding: $space-4 $space-3;
+  }
+}
 
 .kz-page-title {
   font-family: $font-display;
@@ -220,6 +226,11 @@ a {
   color: var(--kz-text);
   padding-left: 14px;
   border-left: 3px solid var(--kz-accent);
+
+  @media (max-width: 640px) {
+    font-size: $fs-xl;
+    margin-bottom: $space-4;
+  }
 }
 
 .kz-row  { display: flex; align-items: center; gap: $space-3; }

@@ -24,7 +24,27 @@
     "jobs": "Job offers",
     "scraping": "Scraping",
     "users": "Users",
-    "admin": "Administration"
+    "admin": "Administration",
+    "menu": "Menu"
+  },
+  "forbidden": {
+    "title": "Access denied",
+    "desc": "You don't have permission to view this section. Contact an administrator if you need access.",
+    "backHome": "Back to home"
+  },
+  "landing": {
+    "login": "Sign in",
+    "register": "Create account",
+    "eyebrow": "Job offer aggregation panel",
+    "title": "Every job offer in one place",
+    "subtitle": "Automated scraping of offers from multiple portals, gathered into one clean dashboard with filtering and analysis.",
+    "cta": "Get started",
+    "stats": {
+      "scrapers": "Configured scrapers",
+      "offers": "Offers collected",
+      "companies": "Companies",
+      "sources": "Data sources"
+    }
   },
   "enum": {
     "remote": {

@@ -1,7 +1,8 @@
 import { Component, computed, ElementRef, HostListener, inject, OnInit, signal } from '@angular/core';
-import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { Permission, Role } from '@kzpanel/shared';
 import { TranslateModule } from '@ngx-translate/core';
+import { filter } from 'rxjs';
 
 import { AuthService } from '../auth/auth.service';
 import { LanguageService } from '../i18n/language.service';
@@ -12,6 +13,7 @@ import { WebSocketService } from '../websocket/websocket.service';
 interface NavItem {
   path: string;
   labelKey: string;
+  icon: string;
   permissions?: Permission[];
 }
 
@@ -34,14 +36,15 @@ export class AppLayoutComponent implements OnInit {
   protected readonly dropdownOpen = signal(false);
   protected readonly adminOpen = signal(false);
   protected readonly profileOpen = signal(false);
+  protected readonly mobileMenuOpen = signal(false);
 
   protected readonly user = this.auth.user;
   protected readonly initial = computed(() => (this.user()?.username ?? '?').charAt(0).toUpperCase());
 
   private readonly allDropdownItems: NavItem[] = [
-    { path: '/recruitment', labelKey: 'nav.recruitment', permissions: [Permission.RECRUITMENT_MANAGE] },
-    { path: '/jobs',        labelKey: 'nav.jobs',        permissions: [Permission.JOBS_VIEW] },
-    { path: '/scraping',    labelKey: 'nav.scraping',    permissions: [Permission.SCRAPE_RUN, Permission.SCRAPE_TARGETS_MANAGE] },
+    { path: '/recruitment', labelKey: 'nav.recruitment', icon: 'groups',         permissions: [Permission.RECRUITMENT_MANAGE] },
+    { path: '/jobs',        labelKey: 'nav.jobs',        icon: 'work',           permissions: [Permission.JOBS_VIEW] },
+    { path: '/scraping',    labelKey: 'nav.scraping',    icon: 'travel_explore', permissions: [Permission.SCRAPE_RUN, Permission.SCRAPE_TARGETS_MANAGE] },
   ];
 
   protected readonly isAdmin = computed(() => this.user()?.role === Role.ADMIN);
@@ -56,7 +59,7 @@ export class AppLayoutComponent implements OnInit {
   );
 
   protected readonly adminItems: NavItem[] = [
-    { path: '/users', labelKey: 'nav.users' },
+    { path: '/users', labelKey: 'nav.users', icon: 'group' },
   ];
 
   @HostListener('window:scroll', [])
@@ -76,6 +79,17 @@ export class AppLayoutComponent implements OnInit {
   public ngOnInit(): void {
     this.language.init();
     this.ws.connect();
+    this.router.events
+      .pipe(filter((e) => e instanceof NavigationEnd))
+      .subscribe(() => this.closeMobileMenu());
+  }
+
+  protected toggleMobileMenu(): void {
+    this.mobileMenuOpen.update((v) => !v);
+  }
+
+  protected closeMobileMenu(): void {
+    this.mobileMenuOpen.set(false);
   }
 
   protected toggleDropdown(): void {
@@ -103,6 +117,7 @@ export class AppLayoutComponent implements OnInit {
   }
 
   protected logout(): void {
+    this.closeMobileMenu();
     this.ws.disconnect();
     this.auth.logout();
     void this.router.navigate(['/auth/login']);

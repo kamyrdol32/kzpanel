@@ -1,11 +1,14 @@
 <div class="kz-page">
   <div class="kz-row page-header-row">
     @if (selectedScraper()) {
-      <div class="kz-row" style="gap: 10px">
+      <div class="kz-row header-lead">
         <button class="back-btn" type="button" [title]="'jobs.backToScrapers' | translate" (click)="backToScrapers()">
           <span class="material-symbols-rounded">arrow_back</span>
         </button>
-        <h1 class="kz-page-title" style="margin: 0">{{ selectedScraper()!.source }} · {{ selectedScraper()!.query }}</h1>
+        <h1 class="kz-page-title" style="margin: 0">
+          {{ selectedScraper()!.source }}
+          <span class="header-query">({{ selectedScraper()!.query }})</span>
+        </h1>
         @if (!facade.loading() && facade.jobs().length > 0) {
           <span class="jobs-count">{{ facade.jobs().length }}</span>
         }
@@ -160,37 +163,34 @@
 
       <ng-template #expanded let-job>
         <div class="offer-detail">
-          <!-- header: actions (left) + meta (right) on one row -->
-          <div class="offer-detail-header">
-          <div class="offer-detail-actions">
+          <!-- action toolbar -->
+          <div class="offer-detail-toolbar">
             @if (job.applied) {
               <span class="chip chip-success">
-                <span class="material-symbols-rounded" style="font-size:16px">mark_email_read</span>
+                <span class="material-symbols-rounded">mark_email_read</span>
                 {{ 'jobs.applied' | translate }}
               </span>
             } @else {
               <button class="btn btn-primary" (click)="apply(job)">
-                <span class="material-symbols-rounded" style="font-size:16px">send</span>
+                <span class="material-symbols-rounded">send</span>
                 {{ 'jobs.apply' | translate }}
               </button>
             }
             <button class="btn btn-ghost" (click)="openSource(job)">
-              <span class="material-symbols-rounded" style="font-size:16px">open_in_new</span>
+              <span class="material-symbols-rounded">open_in_new</span>
               {{ 'jobs.openSource' | translate }}
             </button>
             <button class="btn btn-ghost" (click)="toggleDismissed(job)">
-              <span class="material-symbols-rounded" style="font-size:16px">
-                {{ job.dismissed ? 'undo' : 'visibility_off' }}
-              </span>
+              <span class="material-symbols-rounded">{{ job.dismissed ? 'undo' : 'visibility_off' }}</span>
               {{ job.dismissed ? ('jobs.restore' | translate) : ('jobs.dismiss' | translate) }}
             </button>
             <button class="btn btn-ghost btn-danger" (click)="remove(job.id)">
-              <span class="material-symbols-rounded" style="font-size:16px">delete</span>
+              <span class="material-symbols-rounded">delete</span>
               {{ 'common.delete' | translate }}
             </button>
           </div>
 
-          <!-- meta chips -->
+          <!-- meta strip -->
           <div class="offer-detail-meta">
             @if (job.salaryMin) {
               <span class="offer-detail-meta-item offer-detail-meta-salary">
@@ -214,7 +214,6 @@
               <span class="offer-detail-meta-item"><span class="material-symbols-rounded">schedule</span>{{ job.publishedDate | date:'dd.MM.yyyy' }}</span>
             }
             <span class="offer-detail-meta-item"><span class="material-symbols-rounded">public</span>{{ job.source }}</span>
-          </div>
           </div>
 
           <!-- two-column content -->

@@ -4,7 +4,7 @@
   @if (rows().length === 0) {
     <kz-empty-state icon="group" [title]="'common.noData' | translate" />
   } @else {
-    <div class="table-wrap">
+    <div class="table-wrap users-desktop">
       <table class="users-table">
         <thead>
           <tr>
@@ -70,6 +70,87 @@
           }
         </tbody>
       </table>
+    </div>
+
+    <div class="users-cards">
+      @for (row of rows(); track row.id) {
+        <div class="user-card" [class.is-open]="expandedId() === row.id">
+          <button class="user-card-head" type="button" (click)="toggleExpand(row.id)">
+            <span class="status-dot" [class]="row.statusClass"></span>
+            <span class="user-card-name">
+              {{ row.username }}
+              @if (row.isSelf) {
+                <span class="self-badge">{{ 'users.you' | translate }}</span>
+              }
+            </span>
+            <span class="material-symbols-rounded user-card-chevron">expand_more</span>
+          </button>
+
+          @if (expandedId() === row.id) {
+            <div class="user-card-body">
+              <div class="user-card-field">
+                <span class="user-card-label">{{ 'users.email' | translate }}</span>
+                <span class="user-card-value">{{ row.email ?? '—' }}</span>
+              </div>
+
+              <div class="user-card-field">
+                <span class="user-card-label">{{ 'users.role' | translate }}</span>
+                <select
+                  class="role-select"
+                  [disabled]="row.pending || row.isSelf"
+                  (change)="askRoleChange(row, $any($event.target).value)"
+                >
+                  @for (r of roles; track r) {
+                    <option [value]="r" [selected]="r === row.role">{{ 'enum.role.' + r | translate }}</option>
+                  }
+                </select>
+              </div>
+
+              <div class="user-card-field">
+                <span class="user-card-label">{{ 'users.status' | translate }}</span>
+                <span class="user-card-value"><span class="status-dot" [class]="row.statusClass"></span>{{ row.statusLabel | translate }}</span>
+              </div>
+
+              <div class="user-card-field">
+                <span class="user-card-label">{{ 'users.created' | translate }}</span>
+                <span class="user-card-value">{{ row.createdAt | date: 'dd.MM.yyyy HH:mm' }}</span>
+              </div>
+
+              <div class="user-card-field">
+                <span class="user-card-label">{{ 'users.lastLogin' | translate }}</span>
+                <span class="user-card-value">{{ row.lastLoginAt ? (row.lastLoginAt | date: 'dd.MM.yyyy HH:mm') : '—' }}</span>
+              </div>
+
+              <div class="user-card-actions">
+                <button
+                  class="card-btn card-btn-primary"
+                  [disabled]="row.pending || row.isSelf"
+                  (click)="toggleActive(row.id, row.isActive)"
+                >
+                  <span class="material-symbols-rounded">{{ row.isActive ? 'toggle_off' : 'toggle_on' }}</span>
+                  {{ (row.pending ? 'common.loading' : row.actionLabel) | translate }}
+                </button>
+                <button
+                  class="card-btn"
+                  [disabled]="row.isSelf"
+                  (click)="openPermissions(row)"
+                >
+                  <span class="material-symbols-rounded">manage_accounts</span>
+                  {{ 'users.permissions' | translate }}
+                </button>
+                <button
+                  class="card-btn card-btn-danger"
+                  [disabled]="row.isSelf"
+                  (click)="askDelete(row)"
+                >
+                  <span class="material-symbols-rounded">delete</span>
+                  {{ 'common.delete' | translate }}
+                </button>
+              </div>
+            </div>
+          }
+        </div>
+      }
     </div>
   }
 
