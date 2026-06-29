@@ -2,6 +2,9 @@ import { ScrapeRequest, ScrapedOfferDto } from '../../shared';
 import { HttpException, Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
+// eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-unsafe-assignment
+const { Agent } = require('undici');
+
 @Injectable()
 export class ScraperClient {
   private readonly logger = new Logger(ScraperClient.name);
@@ -17,6 +20,9 @@ export class ScraperClient {
         headers: { 'Content-Type': 'application/json', 'x-internal-token': token },
         body: JSON.stringify(req),
         signal: AbortSignal.timeout(1_800_000),
+        // @ts-expect-error - undici dispatcher, no types needed (bundled with Node.js)
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+        dispatcher: new Agent({ bodyTimeout: 0, headersTimeout: 0 }),
       });
       if (!res.ok) {
         throw new HttpException(`Scraper returned ${res.status}`, 502);

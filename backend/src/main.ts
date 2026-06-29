@@ -2,12 +2,8 @@ import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { Agent, setGlobalDispatcher } from 'undici';
-
 import { AppModule } from './app.module';
 import { AllExceptionsFilter } from './common/filters/http-exception.filter';
-
-setGlobalDispatcher(new Agent({ bodyTimeout: 0, headersTimeout: 0 }));
 
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule);
