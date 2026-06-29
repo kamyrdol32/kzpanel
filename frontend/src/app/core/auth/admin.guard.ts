@@ -7,5 +7,5 @@ import { AuthService } from './auth.service';
 export const adminGuard: CanActivateFn = () => {
   const auth = inject(AuthService);
   const router = inject(Router);
-  return auth.user()?.role === Role.ADMIN ? true : router.createUrlTree(['/']);
+  return auth.user()?.role === Role.ADMIN ? true : router.createUrlTree(['/forbidden']);
 };

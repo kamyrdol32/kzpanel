@@ -3,6 +3,7 @@ import { Permission } from '@kzpanel/shared';
 
 import { adminGuard } from './core/auth/admin.guard';
 import { authGuard } from './core/auth/auth.guard';
+import { landingGuard } from './core/auth/landing.guard';
 import { permissionGuard } from './core/auth/permission.guard';
 import { AppLayoutComponent } from './core/layout/app-layout.component';
 
@@ -13,10 +14,15 @@ export const APP_ROUTES: Routes = [
   },
   {
     path: '',
+    pathMatch: 'full',
+    canActivate: [landingGuard],
+    loadComponent: () => import('./features/landing/landing.page').then((m) => m.LandingPage),
+  },
+  {
+    path: '',
     component: AppLayoutComponent,
     canActivate: [authGuard],
     children: [
-      { path: '', pathMatch: 'full', redirectTo: 'recruitment' },
       {
         path: 'recruitment',
         canActivate: [permissionGuard(Permission.RECRUITMENT_MANAGE)],
@@ -41,6 +47,11 @@ export const APP_ROUTES: Routes = [
         path: 'settings',
         data: { titleKey: 'settings.title' },
         loadComponent: () => import('./features/settings/settings.page').then((m) => m.SettingsPage),
+      },
+      {
+        path: 'forbidden',
+        data: { titleKey: 'forbidden.title' },
+        loadComponent: () => import('./features/errors/forbidden.page').then((m) => m.ForbiddenPage),
       },
       {
         path: 'users',

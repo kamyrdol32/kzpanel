@@ -42,6 +42,7 @@ export class WebSocketService implements OnDestroy {
 
     this.socket.on('connect_error', () => {
       this.socket?.disconnect();
+      this.socket = null;
     });
   }
 

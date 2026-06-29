@@ -9,5 +9,5 @@ export const permissionGuard = (...permissions: Permission[]): CanActivateFn =>
     const auth = inject(AuthService);
     const router = inject(Router);
     const allowed = permissions.some((p) => auth.hasPermission(p));
-    return allowed ? true : router.createUrlTree(['/']);
+    return allowed ? true : router.createUrlTree(['/forbidden']);
   };

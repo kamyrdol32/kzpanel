@@ -21,7 +21,10 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     tap((event) => {
       if (event instanceof HttpResponse) {
         const renewed = event.headers.get('x-access-token');
-        if (renewed) {
+        // Only renew while a session is still active. After logout the token is
+        // cleared synchronously, so a late logout response carrying a fresh
+        // x-access-token must not silently log the user back in.
+        if (renewed && tokens.getAccessToken()) {
           tokens.setAccess(renewed);
         }
       }
