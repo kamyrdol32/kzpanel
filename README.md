@@ -1,6 +1,6 @@
 # KŻ-Panel
 
-Aggregates IT job offers from six Polish and global boards into one place, deduplicates them per saved search, and lets you track which ones you applied to.
+Aggregates IT job offers from multiple Polish and global job boards into one place, deduplicates them per saved search, and lets you track which ones you applied to.
 
 ## Authors
 
@@ -19,10 +19,11 @@ Aggregates IT job offers from six Polish and global boards into one place, dedup
 
 ## Highlights
 
-- **Six sources, one inbox** — NoFluffJobs, JustJoinIT, Pracuj.pl, BulldogJob, LinkedIn and theProtocol, each behind its own scraping strategy.
+- **Multiple sources, one inbox** — NoFluffJobs, JustJoinIT, Pracuj.pl, BulldogJob, LinkedIn, theProtocol and OLX, each behind its own scraping strategy.
 - **Dedicated scraper microservice** — a stateless NestJS + Playwright worker. API-based boards use their JSON APIs; JS-rendered / Cloudflare-protected ones are driven through a stealth browser.
 - **Per-account saved searches** — every scraper belongs to the user who created it; offers are deduplicated per scraper so two searches on different boards never clash.
 - **Rich, normalized offers** — title, company, salary, work modes, contract types, seniority levels, tech stack, requirements and full description — mapped into one model regardless of source.
+- **Per-user permissions** — admin can grant granular permissions (scraper run, scraper management, job view, recruitment management) per user; carried in JWT and enforced on both backend and frontend.
 - **Polished SPA** — Angular standalone components with signals, NgRx behind a facade layer, i18n (PL/EN), light/dark themes, PWA, and a sliding JWT session.
 
 ## Architecture
@@ -38,7 +39,7 @@ Aggregates IT job offers from six Polish and global boards into one place, dedup
                     └────────────┘
 ```
 
-- **frontend** — Angular SPA, served by Nginx which also reverse-proxies `/api`.
+- **frontend** — Angular SPA served by Nginx, which also reverse-proxies `/api` and `/ws` to the backend.
 - **backend** — owns auth, persistence, orchestration and offer normalization.
 - **scraper** — one guarded endpoint (`POST /scrape`); given a source + query it runs the matching strategy and returns raw offers. No state, no database access.
 
@@ -54,29 +55,54 @@ Aggregates IT job offers from six Polish and global boards into one place, dedup
 **`backend/.env`**
 
 ```bash
+# --- App ---
+NODE_ENV=production
+TZ=Europe/Warsaw
+BACKEND_PORT=5001
+
+# --- Database ---
 POSTGRES_HOST=
 POSTGRES_PORT=5432
 POSTGRES_USER=
 POSTGRES_PASSWORD=
 POSTGRES_DB=
+DB_SYNC=false
 
-JWT_SECRET=
+# --- Auth ---
+JWT_ACCESS_SECRET=
+JWT_ACCESS_TTL=900s
 JWT_REFRESH_SECRET=
-JWT_EXPIRES_IN=15m
-JWT_REFRESH_EXPIRES_IN=7d
+JWT_REFRESH_TTL=30d
 
-PORT=3000
-CORS_ORIGIN=https://evpanel.kamilzeglen.pl
+# --- CORS ---
+CORS_ORIGIN=
 
-SCRAPER_URL=http://scraper:3100
-SCRAPER_INTERNAL_TOKEN=
+# --- Internal services ---
+SCRAPER_INTERNAL_URL=http://kzpanel-scraper:4001
+INTERNAL_API_TOKEN=
+
+# --- AI provider ---
+AI_PROVIDER=noop
+AI_API_KEY=
 ```
 
 **`scraper/.env`**
 
 ```bash
-SCRAPER_PORT=3100
-INTERNAL_TOKEN=
+# --- App ---
+NODE_ENV=production
+TZ=Europe/Warsaw
+SCRAPER_PORT=4001
+
+# --- Scraper ---
+SCRAPER_ENABLED=true
+SCRAPER_INTERVAL_CRON=0 0 4 * * *
+SCRAPER_LIMIT=20
+SCRAPER_MOCK=false
+
+# --- Internal services ---
+BACKEND_INTERNAL_URL=http://kzpanel-backend:5001
+INTERNAL_API_TOKEN=
 ```
 
 ### Run with Docker
@@ -84,10 +110,11 @@ INTERNAL_TOKEN=
 ```bash
 cp backend/.env.example backend/.env
 cp scraper/.env.example scraper/.env
+# fill in the values, then:
 docker compose up -d --build
 ```
 
-Nginx serves the app on port `80` (`/` → frontend, `/api` → backend).
+Ports: frontend `3001`, backend `5001`, scraper `4001`.  
 Database migrations run automatically on backend start.
 
 ### Run locally
@@ -99,8 +126,8 @@ cd frontend && npm install && npm start
 ```
 
 - App: http://localhost:4200
-- Swagger: http://localhost:3000/api/docs
-- Health: http://localhost:3000/api/health
+- Swagger: http://localhost:5001/api/docs
+- Health: http://localhost:5001/api/health
 
 ### Database migrations
 
