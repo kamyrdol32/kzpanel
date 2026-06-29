@@ -1,9 +1,10 @@
+import * as http from 'node:http';
+
 import { ScrapeRequest, ScrapedOfferDto } from '../../shared';
 import { HttpException, Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
-// eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-unsafe-assignment
-const { Agent } = require('undici');
+const SCRAPE_TIMEOUT_MS = 30 * 60 * 1000;
 
 @Injectable()
 export class ScraperClient {
@@ -15,19 +16,9 @@ export class ScraperClient {
     const base = this.config.get<string>('SCRAPER_INTERNAL_URL') ?? 'http://scraper:3100';
     const token = this.config.get<string>('INTERNAL_API_TOKEN') ?? '';
     try {
-      const res = await fetch(`${base}/scrape`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'x-internal-token': token },
-        body: JSON.stringify(req),
-        signal: AbortSignal.timeout(1_800_000),
-        // @ts-expect-error - undici dispatcher, no types needed (bundled with Node.js)
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-        dispatcher: new Agent({ bodyTimeout: 0, headersTimeout: 0 }),
-      });
-      if (!res.ok) {
-        throw new HttpException(`Scraper returned ${res.status}`, 502);
-      }
-      return (await res.json()) as ScrapedOfferDto[];
+      const body = JSON.stringify(req);
+      const raw = await this.post(base, '/scrape', body, token);
+      return JSON.parse(raw) as ScrapedOfferDto[];
     } catch (err) {
       this.logger.error(`Scrape request failed: ${(err as Error).message}`);
       if (err instanceof HttpException) {
@@ -35,5 +26,41 @@ export class ScraperClient {
       }
       throw new HttpException('Scraper worker unreachable', 502);
     }
+  }
+
+  private post(base: string, path: string, body: string, token: string): Promise<string> {
+    const url = new URL(path, base);
+    return new Promise((resolve, reject) => {
+      const req = http.request(
+        {
+          hostname: url.hostname,
+          port: url.port || 80,
+          path: url.pathname,
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Content-Length': Buffer.byteLength(body),
+            'x-internal-token': token,
+          },
+        },
+        (res) => {
+          if (res.statusCode && res.statusCode >= 400) {
+            reject(new HttpException(`Scraper returned ${res.statusCode}`, 502));
+            res.resume();
+            return;
+          }
+          const chunks: Buffer[] = [];
+          res.on('data', (chunk: Buffer) => chunks.push(chunk));
+          res.on('end', () => resolve(Buffer.concat(chunks).toString('utf8')));
+          res.on('error', reject);
+        },
+      );
+      req.setTimeout(SCRAPE_TIMEOUT_MS, () => {
+        req.destroy(new Error(`Scrape timed out after ${SCRAPE_TIMEOUT_MS / 60000} minutes`));
+      });
+      req.on('error', reject);
+      req.write(body);
+      req.end();
+    });
   }
 }
