@@ -81,6 +81,10 @@ CORS_ORIGIN=https://panel.kamilzeglen.pl
 SCRAPER_INTERNAL_URL=http://kzpanel-scraper:4001
 INTERNAL_API_TOKEN=
 
+# --- Scraper scheduler ---
+SCRAPER_ENABLED=false
+SCRAPER_INTERVAL_CRON=0 0 4 * * *
+
 ```
 
 **`scraper/.env`**
@@ -92,13 +96,13 @@ TZ=Europe/Warsaw
 SCRAPER_PORT=4001
 
 # --- Scraper ---
-SCRAPER_ENABLED=true
-SCRAPER_INTERVAL_CRON=0 0 4 * * *
-SCRAPER_LIMIT=20
 SCRAPER_MOCK=false
 
+# --- Playwright (optional) ---
+# PROXY_URL=http://user:pass@host:port
+# CHROMIUM_PATH=/usr/bin/chromium
+
 # --- Internal services ---
-BACKEND_INTERNAL_URL=http://kzpanel-backend:5001
 INTERNAL_API_TOKEN=
 ```
 

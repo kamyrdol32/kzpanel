@@ -12,7 +12,7 @@ export class ScraperClient {
 
   constructor(private readonly config: ConfigService) {}
 
-  async scrape(req: ScrapeRequest): Promise<ScrapedOfferDto[]> {
+  public async scrape(req: ScrapeRequest): Promise<ScrapedOfferDto[]> {
     const base = this.config.get<string>('SCRAPER_INTERNAL_URL') ?? 'http://scraper:3100';
     const token = this.config.get<string>('INTERNAL_API_TOKEN') ?? '';
     try {
