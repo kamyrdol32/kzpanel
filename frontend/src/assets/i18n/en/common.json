@@ -53,6 +53,12 @@
       "USER": "User",
       "ADMIN": "Admin"
     },
+    "permission": {
+      "SCRAPE_RUN": "Run scraper manually",
+      "SCRAPE_TARGETS_MANAGE": "Manage scrapers",
+      "JOBS_VIEW": "View job offers",
+      "RECRUITMENT_MANAGE": "Manage recruitment"
+    },
     "status": {
       "NEW": "New",
       "CV_SENT": "CV sent",

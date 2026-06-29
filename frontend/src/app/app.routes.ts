@@ -1,7 +1,9 @@
 import { Routes } from '@angular/router';
+import { Permission } from '@kzpanel/shared';
 
 import { adminGuard } from './core/auth/admin.guard';
 import { authGuard } from './core/auth/auth.guard';
+import { permissionGuard } from './core/auth/permission.guard';
 import { AppLayoutComponent } from './core/layout/app-layout.component';
 
 export const APP_ROUTES: Routes = [
@@ -17,17 +19,20 @@ export const APP_ROUTES: Routes = [
       { path: '', pathMatch: 'full', redirectTo: 'recruitment' },
       {
         path: 'recruitment',
+        canActivate: [permissionGuard(Permission.RECRUITMENT_MANAGE)],
         data: { titleKey: 'nav.recruitment' },
         loadChildren: () =>
           import('./features/recruitment/recruitment.routes').then((m) => m.RECRUITMENT_ROUTES),
       },
       {
         path: 'jobs',
+        canActivate: [permissionGuard(Permission.JOBS_VIEW)],
         data: { titleKey: 'nav.jobs', descriptionKey: 'jobs.title' },
         loadChildren: () => import('./features/jobs/jobs.routes').then((m) => m.JOBS_ROUTES),
       },
       {
         path: 'scraping',
+        canActivate: [permissionGuard(Permission.SCRAPE_RUN, Permission.SCRAPE_TARGETS_MANAGE)],
         data: { titleKey: 'nav.scraping' },
         loadChildren: () =>
           import('./features/scraping/scraping.routes').then((m) => m.SCRAPING_ROUTES),

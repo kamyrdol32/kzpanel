@@ -12,10 +12,12 @@ import {
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
+import { RequirePermissions } from '../../common/decorators/permissions.decorator';
 import { Roles } from '../../common/decorators/roles.decorator';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
+import { PermissionsGuard } from '../../common/guards/permissions.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
-import { JwtPayload, Role } from '../../shared';
+import { JwtPayload, Permission, Role } from '../../shared';
 
 import { CreateScrapeTargetDto, UpdateScrapeTargetDto } from './dto/scrape-target.dto';
 import { ScrapeQueueService } from './scrape-queue.service';
@@ -23,7 +25,7 @@ import { ScrapeTargetsService } from './scrape-targets.service';
 
 @ApiTags('scrape-targets')
 @ApiBearerAuth()
-@UseGuards(JwtAuthGuard, RolesGuard)
+@UseGuards(JwtAuthGuard, RolesGuard, PermissionsGuard)
 @Controller('scrape-targets')
 export class ScrapeTargetsController {
   constructor(
@@ -43,11 +45,13 @@ export class ScrapeTargetsController {
   }
 
   @Post()
+  @RequirePermissions(Permission.SCRAPE_TARGETS_MANAGE)
   create(@Body() dto: CreateScrapeTargetDto, @CurrentUser() user: JwtPayload) {
     return this.targets.create(dto, user.sub);
   }
 
   @Patch(':id')
+  @RequirePermissions(Permission.SCRAPE_TARGETS_MANAGE)
   async update(
     @Param('id') id: string,
     @Body() dto: UpdateScrapeTargetDto,
@@ -58,12 +62,14 @@ export class ScrapeTargetsController {
   }
 
   @Delete(':id/offers')
+  @RequirePermissions(Permission.SCRAPE_TARGETS_MANAGE)
   async clearOffers(@Param('id') id: string, @CurrentUser() user: JwtPayload) {
     await this.targets.findOneForUser(id, user.sub, user.role);
     return this.targets.clearOffers(id);
   }
 
   @Delete(':id')
+  @RequirePermissions(Permission.SCRAPE_TARGETS_MANAGE)
   async remove(@Param('id') id: string, @CurrentUser() user: JwtPayload) {
     await this.targets.findOneForUser(id, user.sub, user.role);
     return this.targets.remove(id);
@@ -71,12 +77,14 @@ export class ScrapeTargetsController {
 
   @Post('run')
   @HttpCode(200)
+  @RequirePermissions(Permission.SCRAPE_RUN)
   runAll(@CurrentUser() user: JwtPayload) {
     return this.queue.enqueue({ userId: user.sub });
   }
 
   @Post(':id/run')
   @HttpCode(200)
+  @RequirePermissions(Permission.SCRAPE_RUN)
   async runOne(@Param('id') id: string, @CurrentUser() user: JwtPayload) {
     await this.targets.findOneForUser(id, user.sub, user.role);
     return this.queue.enqueue({ targetId: id });

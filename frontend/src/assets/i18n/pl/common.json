@@ -53,6 +53,12 @@
       "USER": "Użytkownik",
       "ADMIN": "Administrator"
     },
+    "permission": {
+      "SCRAPE_RUN": "Ręczne uruchamianie scrapera",
+      "SCRAPE_TARGETS_MANAGE": "Zarządzanie scraperami",
+      "JOBS_VIEW": "Przeglądanie ofert",
+      "RECRUITMENT_MANAGE": "Zarządzanie rekrutacją"
+    },
     "status": {
       "NEW": "Nowa",
       "CV_SENT": "CV wysłane",

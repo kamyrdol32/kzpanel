@@ -7,6 +7,7 @@ import {
   ForgotPasswordRequest,
   JwtPayload,
   LoginResponse,
+  Permission,
   RegisterRequest,
   ResetPasswordRequest,
   Role,
@@ -49,6 +50,7 @@ export class AuthService {
         role: payload.role ?? Role.USER,
         email: null,
         isActive: true,
+        permissions: payload.permissions ?? [],
       };
     } catch {
       return null;
@@ -84,6 +86,17 @@ export class AuthService {
     return this.http
       .post<AuthTokens>(`${this.base}/refresh`, { refreshToken: this.tokens.getRefreshToken() })
       .pipe(tap((res) => this.tokens.set(res.accessToken, res.refreshToken)));
+  }
+
+  public hasPermission(permission: Permission): boolean {
+    const user = this._user();
+    if (!user) {
+      return false;
+    }
+    if (user.role === Role.ADMIN) {
+      return true;
+    }
+    return user.permissions.includes(permission);
   }
 
   public logout(): void {

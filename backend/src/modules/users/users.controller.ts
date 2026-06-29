@@ -7,7 +7,7 @@ import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { AdminUserDto, JwtPayload, Role } from '../../shared';
 
-import { SetUserActiveDto, SetUserRoleDto } from './dto/users.dto';
+import { SetUserActiveDto, SetUserPermissionsDto, SetUserRoleDto } from './dto/users.dto';
 import { User } from './user.entity';
 import { UsersService } from './users.service';
 
@@ -43,6 +43,15 @@ export class UsersController {
     return this.toDto(user);
   }
 
+  @Patch(':id/permissions')
+  async setPermissions(
+    @Param('id') id: string,
+    @Body() dto: SetUserPermissionsDto,
+  ): Promise<AdminUserDto> {
+    const user = await this.users.setPermissions(id, dto.permissions);
+    return this.toDto(user);
+  }
+
   @Delete(':id')
   @HttpCode(204)
   async remove(
@@ -59,6 +68,7 @@ export class UsersController {
       email: user.email,
       role: user.role,
       isActive: user.isActive,
+      permissions: user.permissions ?? [],
       createdAt: user.createdAt.toISOString(),
       lastLoginAt: user.lastLoginAt ? user.lastLoginAt.toISOString() : null,
     };

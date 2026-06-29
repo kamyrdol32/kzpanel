@@ -1,4 +1,4 @@
-import { Role } from '../enums';
+import { Permission, Role } from '../enums';
 
 export interface LoginRequest {
   username: string;
@@ -22,6 +22,7 @@ export interface AuthUser {
   email: string | null;
   role: Role;
   isActive: boolean;
+  permissions: Permission[];
 }
 
 export interface LoginResponse extends AuthTokens {
@@ -56,6 +57,7 @@ export interface AdminUserDto {
   email: string | null;
   role: Role;
   isActive: boolean;
+  permissions: Permission[];
   createdAt: string;
   lastLoginAt: string | null;
 }
@@ -68,9 +70,14 @@ export interface SetUserRoleRequest {
   role: Role;
 }
 
+export interface SetUserPermissionsRequest {
+  permissions: Permission[];
+}
+
 /** JWT payload carried in access/refresh tokens. */
 export interface JwtPayload {
   sub: string;
   username: string;
   role: Role;
+  permissions: Permission[];
 }

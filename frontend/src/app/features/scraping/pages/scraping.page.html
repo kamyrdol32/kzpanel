@@ -5,7 +5,7 @@
       @if (facade.lastResult(); as r) {
         <span class="result-info">{{ r }}</span>
       }
-      @if (facade.isAdmin()) {
+      @if (facade.canRun()) {
         <button class="primary-btn" [disabled]="facade.running()" (click)="facade.runAll()">
           <span class="material-symbols-rounded">{{ facade.running() ? 'hourglass_empty' : 'play_arrow' }}</span>
           {{ (facade.running() ? 'common.loading' : 'scraping.scrapeNow') | translate }}
@@ -15,6 +15,7 @@
   </div>
 
   <!-- Add form -->
+  @if (facade.canManageTargets()) {
   <section class="add-section">
     <button type="button" class="section-header section-header-toggle" (click)="toggleAdd()">
       <span class="material-symbols-rounded section-icon">add_circle</span>
@@ -79,6 +80,7 @@
     </div>
     }
   </section>
+  }
 
   <!-- Target list -->
   <section class="targets-section">
@@ -170,20 +172,22 @@
                     {{ 'scraping.fetching' | translate }}
                   </span>
                 }
-                @if (facade.isAdmin()) {
+                @if (facade.canRun()) {
                   <button class="icon-btn" [title]="'scraping.scrapeNow' | translate" [disabled]="facade.running()" (click)="facade.runOne(t.id)">
                     <span class="material-symbols-rounded">play_arrow</span>
                   </button>
                 }
-                <button class="icon-btn" [title]="'common.edit' | translate" [disabled]="facade.running()" (click)="startEdit(t)">
-                  <span class="material-symbols-rounded">edit</span>
-                </button>
-                <button class="icon-btn" [title]="'scraping.clearOffers' | translate" [disabled]="facade.running()" (click)="pendingClear.set(t)">
-                  <span class="material-symbols-rounded">delete_sweep</span>
-                </button>
-                <button class="icon-btn danger" [title]="'common.delete' | translate" [disabled]="facade.running()" (click)="pendingDelete.set(t)">
-                  <span class="material-symbols-rounded">delete</span>
-                </button>
+                @if (facade.canManageTargets()) {
+                  <button class="icon-btn" [title]="'common.edit' | translate" [disabled]="facade.running()" (click)="startEdit(t)">
+                    <span class="material-symbols-rounded">edit</span>
+                  </button>
+                  <button class="icon-btn" [title]="'scraping.clearOffers' | translate" [disabled]="facade.running()" (click)="pendingClear.set(t)">
+                    <span class="material-symbols-rounded">delete_sweep</span>
+                  </button>
+                  <button class="icon-btn danger" [title]="'common.delete' | translate" [disabled]="facade.running()" (click)="pendingDelete.set(t)">
+                    <span class="material-symbols-rounded">delete</span>
+                  </button>
+                }
               </div>
             </div>
           }
@@ -221,7 +225,7 @@
                   <span class="material-symbols-rounded">description</span>
                   {{ t.offerCount }}
                 </span>
-                @if (facade.isAdmin()) {
+                @if (facade.canRun()) {
                   <button class="icon-btn" [disabled]="facade.running()" [title]="'scraping.scrapeNow' | translate" (click)="facade.runOne(t.id)">
                     <span class="material-symbols-rounded">play_arrow</span>
                   </button>

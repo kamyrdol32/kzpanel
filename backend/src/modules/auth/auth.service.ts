@@ -74,7 +74,7 @@ export class AuthService {
     const tokens = await this.issueTokens(user);
     return {
       ...tokens,
-      user: { id: user.id, username: user.username, email: user.email, role: user.role, isActive: user.isActive },
+      user: { id: user.id, username: user.username, email: user.email, role: user.role, isActive: user.isActive, permissions: user.permissions ?? [] },
     };
   }
 
@@ -145,7 +145,7 @@ export class AuthService {
   }
 
   private async issueTokens(user: User): Promise<AuthTokens> {
-    const payload: JwtPayload = { sub: user.id, username: user.username, role: user.role };
+    const payload: JwtPayload = { sub: user.id, username: user.username, role: user.role, permissions: user.permissions ?? [] };
     const accessToken = await this.jwt.signAsync(payload, {
       secret: this.config.get('jwt.accessSecret'),
       expiresIn: this.config.get('jwt.accessTtl'),

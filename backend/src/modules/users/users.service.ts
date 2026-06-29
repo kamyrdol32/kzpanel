@@ -55,6 +55,10 @@ export class UsersService {
     return this.update(id, { isActive });
   }
 
+  setPermissions(id: string, permissions: import('../../shared').Permission[]): Promise<User> {
+    return this.update(id, { permissions });
+  }
+
   async remove(id: string, callerId: string): Promise<void> {
     if (id === callerId) {
       throw new BadRequestException('Cannot delete your own account');

@@ -1,6 +1,6 @@
 import { DatePipe } from '@angular/common';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
-import { AdminUserDto, Role } from '@kzpanel/shared';
+import { AdminUserDto, Permission, Role } from '@kzpanel/shared';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 import { AuthService } from '../../../core/auth/auth.service';
@@ -12,6 +12,11 @@ import { UsersApi } from '../data-access/users.api';
 interface PendingRoleChange {
   user: AdminUserDto;
   role: Role;
+}
+
+interface PermissionsPanel {
+  user: AdminUserDto;
+  selected: Permission[];
 }
 
 @Component({
@@ -28,12 +33,14 @@ export class UsersPage implements OnInit {
   private readonly translate = inject(TranslateService);
 
   protected readonly roles = Object.values(Role);
+  protected readonly allPermissions = Object.values(Permission);
 
   protected readonly users = signal<AdminUserDto[]>([]);
   protected readonly loading = signal(false);
   protected readonly pendingId = signal<string | null>(null);
   protected readonly pendingDelete = signal<AdminUserDto | null>(null);
   protected readonly pendingRoleChange = signal<PendingRoleChange | null>(null);
+  protected readonly permissionsPanel = signal<PermissionsPanel | null>(null);
 
   protected readonly currentUserId = computed(() => this.auth.user()?.id ?? '');
 
@@ -109,6 +116,42 @@ export class UsersPage implements OnInit {
 
   protected cancelRoleChange(): void {
     this.pendingRoleChange.set(null);
+  }
+
+  protected openPermissions(user: AdminUserDto): void {
+    this.permissionsPanel.set({ user, selected: [...user.permissions] });
+  }
+
+  protected togglePermission(permission: Permission): void {
+    const panel = this.permissionsPanel();
+    if (!panel) {
+      return;
+    }
+    const has = panel.selected.includes(permission);
+    const selected = has
+      ? panel.selected.filter((p) => p !== permission)
+      : [...panel.selected, permission];
+    this.permissionsPanel.set({ ...panel, selected });
+  }
+
+  protected savePermissions(): void {
+    const panel = this.permissionsPanel();
+    if (!panel) {
+      return;
+    }
+    this.permissionsPanel.set(null);
+    this.pendingId.set(panel.user.id);
+    this.api.setPermissions(panel.user.id, { permissions: panel.selected }).subscribe({
+      next: (updated) => {
+        this.users.update((list) => list.map((u) => (u.id === updated.id ? updated : u)));
+        this.pendingId.set(null);
+        this.toast.success(this.translate.instant('users.toastPermissionsSaved', { username: updated.username }));
+      },
+      error: () => {
+        this.pendingId.set(null);
+        this.toast.error(this.translate.instant('common.errorGeneric'));
+      },
+    });
   }
 
   protected askDelete(user: AdminUserDto): void {

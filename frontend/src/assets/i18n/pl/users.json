@@ -19,6 +19,9 @@
     "toastActivated": "Użytkownik {{ username }} został aktywowany.",
     "toastDeactivated": "Użytkownik {{ username }} został dezaktywowany.",
     "toastRoleChanged": "Rola użytkownika {{ username }} zmieniona na {{ role }}.",
-    "toastDeleted": "Użytkownik {{ username }} został usunięty."
+    "toastDeleted": "Użytkownik {{ username }} został usunięty.",
+    "permissions": "Uprawnienia",
+    "permissionsTitle": "Uprawnienia: {{ username }}",
+    "toastPermissionsSaved": "Uprawnienia użytkownika {{ username }} zostały zapisane."
   }
 }

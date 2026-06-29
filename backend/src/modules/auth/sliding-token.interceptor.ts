@@ -27,7 +27,7 @@ export class SlidingTokenInterceptor implements NestInterceptor {
           return;
         }
         const token = this.jwt.sign(
-          { sub: user.sub, username: user.username, role: user.role },
+          { sub: user.sub, username: user.username, role: user.role, permissions: user.permissions ?? [] },
           {
             secret: this.config.get<string>('jwt.accessSecret'),
             expiresIn: this.config.get<string>('jwt.accessTtl'),

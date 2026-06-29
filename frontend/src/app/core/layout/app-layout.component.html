@@ -12,7 +12,7 @@
         </button>
 
         <ul class="nav-dropdown-menu">
-          @for (item of dropdownItems; track item.path) {
+          @for (item of dropdownItems(); track item.path) {
             <li>
               <a
                 class="nav-dropdown-item"

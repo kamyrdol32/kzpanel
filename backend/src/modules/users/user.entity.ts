@@ -1,4 +1,4 @@
-import { Role } from '../../shared';
+import { Permission, Role } from '../../shared';
 import { Column, Entity, Index } from 'typeorm';
 
 import { BaseEntity } from '../../common/entities/base.entity';
@@ -18,6 +18,9 @@ export class User extends BaseEntity {
 
   @Column({ type: 'enum', enum: Role, default: Role.USER })
   role!: Role;
+
+  @Column({ type: 'simple-array', default: '' })
+  permissions!: Permission[];
 
   @Column({ default: false })
   isActive!: boolean;

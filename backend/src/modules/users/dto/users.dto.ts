@@ -1,6 +1,6 @@
-import { SetUserActiveRequest, SetUserRoleRequest } from '../../../shared';
+import { Permission, SetUserActiveRequest, SetUserPermissionsRequest, SetUserRoleRequest } from '../../../shared';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsBoolean, IsEnum } from 'class-validator';
+import { IsArray, IsBoolean, IsEnum } from 'class-validator';
 import { Role } from '../../../shared';
 
 export class SetUserActiveDto implements SetUserActiveRequest {
@@ -13,4 +13,11 @@ export class SetUserRoleDto implements SetUserRoleRequest {
   @ApiProperty({ enum: Role })
   @IsEnum(Role)
   role!: Role;
+}
+
+export class SetUserPermissionsDto implements SetUserPermissionsRequest {
+  @ApiProperty({ enum: Permission, isArray: true })
+  @IsArray()
+  @IsEnum(Permission, { each: true })
+  permissions!: Permission[];
 }

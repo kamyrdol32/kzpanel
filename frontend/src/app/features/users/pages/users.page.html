@@ -50,6 +50,14 @@
                   {{ (row.pending ? 'common.loading' : row.actionLabel) | translate }}
                 </button>
                 <button
+                  class="icon-btn"
+                  [disabled]="row.isSelf"
+                  [title]="'users.permissions' | translate"
+                  (click)="openPermissions(row)"
+                >
+                  <span class="material-symbols-rounded">manage_accounts</span>
+                </button>
+                <button
                   class="icon-danger"
                   [disabled]="row.isSelf"
                   [title]="'common.delete' | translate"
@@ -62,6 +70,39 @@
           }
         </tbody>
       </table>
+    </div>
+  }
+
+  @if (permissionsPanel()) {
+    <div class="permissions-overlay" (click)="permissionsPanel.set(null)">
+      <div class="permissions-panel" (click)="$event.stopPropagation()">
+        <h3 class="permissions-title">
+          {{ 'users.permissionsTitle' | translate: { username: permissionsPanel()!.user.username } }}
+        </h3>
+        <ul class="permissions-list">
+          @for (perm of allPermissions; track perm) {
+            <li class="permissions-item">
+              <label class="permissions-label">
+                <input
+                  type="checkbox"
+                  class="permissions-checkbox"
+                  [checked]="permissionsPanel()!.selected.includes(perm)"
+                  (change)="togglePermission(perm)"
+                />
+                {{ 'enum.permission.' + perm | translate }}
+              </label>
+            </li>
+          }
+        </ul>
+        <div class="permissions-footer">
+          <button class="btn-ghost" (click)="permissionsPanel.set(null)">
+            {{ 'common.cancel' | translate }}
+          </button>
+          <button class="btn-primary" (click)="savePermissions()">
+            {{ 'common.save' | translate }}
+          </button>
+        </div>
+      </div>
     </div>
   }
 

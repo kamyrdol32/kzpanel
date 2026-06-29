@@ -1,5 +1,5 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
-import { CreateScrapeTargetRequest, Role, ScrapeTargetDto, UpdateScrapeTargetRequest } from '@kzpanel/shared';
+import { CreateScrapeTargetRequest, Permission, Role, ScrapeTargetDto, UpdateScrapeTargetRequest } from '@kzpanel/shared';
 import { TranslateService } from '@ngx-translate/core';
 import { finalize } from 'rxjs';
 
@@ -17,6 +17,8 @@ export class ScrapingFacade {
   readonly targets = signal<ScrapeTargetDto[]>([]);
   readonly otherTargets = signal<ScrapeTargetDto[]>([]);
   readonly isAdmin = computed(() => this.auth.user()?.role === Role.ADMIN);
+  readonly canRun = computed(() => this.auth.hasPermission(Permission.SCRAPE_RUN));
+  readonly canManageTargets = computed(() => this.auth.hasPermission(Permission.SCRAPE_TARGETS_MANAGE));
   readonly loading = signal(false);
   readonly running = signal(false);
   readonly runningId = signal<string | null>(null);

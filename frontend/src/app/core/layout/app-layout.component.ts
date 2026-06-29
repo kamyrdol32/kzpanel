@@ -1,6 +1,6 @@
 import { Component, computed, ElementRef, HostListener, inject, OnInit, signal } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
-import { Role } from '@kzpanel/shared';
+import { Permission, Role } from '@kzpanel/shared';
 import { TranslateModule } from '@ngx-translate/core';
 
 import { AuthService } from '../auth/auth.service';
@@ -12,6 +12,7 @@ import { WebSocketService } from '../websocket/websocket.service';
 interface NavItem {
   path: string;
   labelKey: string;
+  permissions?: Permission[];
 }
 
 @Component({
@@ -37,13 +38,22 @@ export class AppLayoutComponent implements OnInit {
   protected readonly user = this.auth.user;
   protected readonly initial = computed(() => (this.user()?.username ?? '?').charAt(0).toUpperCase());
 
-  protected readonly dropdownItems: NavItem[] = [
-    { path: '/recruitment', labelKey: 'nav.recruitment' },
-    { path: '/jobs',        labelKey: 'nav.jobs' },
-    { path: '/scraping',    labelKey: 'nav.scraping' },
+  private readonly allDropdownItems: NavItem[] = [
+    { path: '/recruitment', labelKey: 'nav.recruitment', permissions: [Permission.RECRUITMENT_MANAGE] },
+    { path: '/jobs',        labelKey: 'nav.jobs',        permissions: [Permission.JOBS_VIEW] },
+    { path: '/scraping',    labelKey: 'nav.scraping',    permissions: [Permission.SCRAPE_RUN, Permission.SCRAPE_TARGETS_MANAGE] },
   ];
 
   protected readonly isAdmin = computed(() => this.user()?.role === Role.ADMIN);
+
+  protected readonly dropdownItems = computed(() =>
+    this.allDropdownItems.filter((item) => {
+      if (!item.permissions) {
+        return true;
+      }
+      return item.permissions.some((p) => this.auth.hasPermission(p));
+    }),
+  );
 
   protected readonly adminItems: NavItem[] = [
     { path: '/users', labelKey: 'nav.users' },
