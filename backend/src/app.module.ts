@@ -15,6 +15,7 @@ import { JobsModule } from './modules/jobs/jobs.module';
 import { RecruitmentModule } from './modules/recruitment/recruitment.module';
 import { ScrapeTargetsModule } from './modules/scrape-targets/scrape-targets.module';
 import { SearchModule } from './modules/search/search.module';
+import { StatsModule } from './modules/stats/stats.module';
 import { UsersModule } from './modules/users/users.module';
 
 @Module({
@@ -39,6 +40,7 @@ import { UsersModule } from './modules/users/users.module';
     JobsModule,
     ScrapeTargetsModule,
     SearchModule,
+    StatsModule,
   ],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
 })

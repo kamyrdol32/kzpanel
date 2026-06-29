@@ -1,0 +1,30 @@
+<div class="landing">
+  <header class="landing-nav">
+    <a class="landing-logo" routerLink="/">KŻ<span>.</span></a>
+    <nav class="landing-actions">
+      <a class="landing-btn landing-btn-ghost" routerLink="/auth/login">{{ 'landing.login' | translate }}</a>
+      <a class="landing-btn landing-btn-primary" routerLink="/auth/register">{{ 'landing.register' | translate }}</a>
+    </nav>
+  </header>
+
+  <main class="landing-hero">
+    <span class="landing-eyebrow">{{ 'landing.eyebrow' | translate }}</span>
+    <h1 class="landing-title">{{ 'landing.title' | translate }}</h1>
+    <p class="landing-subtitle">{{ 'landing.subtitle' | translate }}</p>
+
+    <div class="landing-stats">
+      @for (card of cards(); track card.labelKey; let i = $index) {
+        <div class="stat-card" [style.animation-delay.ms]="i * 120">
+          <span class="material-symbols-rounded stat-icon">{{ card.icon }}</span>
+          <span class="stat-value">{{ display()[i] }}</span>
+          <span class="stat-label">{{ card.labelKey | translate }}</span>
+        </div>
+      }
+    </div>
+
+    <a class="landing-cta" routerLink="/auth/login">
+      {{ 'landing.cta' | translate }}
+      <span class="material-symbols-rounded">arrow_forward</span>
+    </a>
+  </main>
+</div>
