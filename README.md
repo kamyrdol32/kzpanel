@@ -81,9 +81,6 @@ CORS_ORIGIN=
 SCRAPER_INTERNAL_URL=http://kzpanel-scraper:4001
 INTERNAL_API_TOKEN=
 
-# --- AI provider ---
-AI_PROVIDER=noop
-AI_API_KEY=
 ```
 
 **`scraper/.env`**
