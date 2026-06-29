@@ -1,4 +1,4 @@
-# KŻ-Panel
+﻿# KŻ-Panel
 
 Aggregates IT job offers from multiple Polish and global job boards into one place, deduplicates them per saved search, and lets you track which ones you applied to.
 
@@ -136,7 +136,7 @@ npm run migration:run
 
 ## Demo
 
-🔗 **Live:** [evpanel.kamilzeglen.pl](https://evpanel.kamilzeglen.pl)
+🔗 **Live:** [panel.kamilzeglen.pl](https://panel.kamilzeglen.pl)
 
 ## Screenshots
 

@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+﻿import { Component, inject, OnInit, signal } from '@angular/core';
 import { AbstractControl, FormBuilder, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
@@ -12,7 +12,7 @@ function passwordsMatch(group: AbstractControl): ValidationErrors | null {
 }
 
 @Component({
-  selector: 'ev-reset-password',
+  selector: 'kz-reset-password',
   standalone: true,
   imports: [ReactiveFormsModule, RouterLink, TranslateModule],
   templateUrl: './reset-password.page.html',

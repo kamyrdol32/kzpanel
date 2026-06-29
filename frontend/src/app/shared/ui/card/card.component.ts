@@ -1,7 +1,7 @@
-import { Component, input } from '@angular/core';
+﻿import { Component, input } from '@angular/core';
 
 @Component({
-  selector: 'ev-card',
+  selector: 'kz-card',
   standalone: true,
   template: `
     <section class="card">
@@ -14,15 +14,15 @@ import { Component, input } from '@angular/core';
   styles: [
     `
       .card {
-        background: var(--ev-surface);
-        border: 1px solid var(--ev-border);
+        background: var(--kz-surface);
+        border: 1px solid var(--kz-border);
         border-radius: 16px;
-        box-shadow: var(--ev-shadow-sm);
+        box-shadow: var(--kz-shadow-sm);
       }
       .card-header {
         padding: 16px 20px;
         font-weight: 600;
-        border-bottom: 1px solid var(--ev-border);
+        border-bottom: 1px solid var(--kz-border);
       }
       .card-body { padding: 20px; }
     `,

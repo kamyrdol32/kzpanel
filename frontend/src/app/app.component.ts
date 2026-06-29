@@ -1,11 +1,11 @@
-import { Component, inject, OnInit } from '@angular/core';
+﻿import { Component, inject, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
 import { LanguageService } from './core/i18n/language.service';
 import { ThemeService } from './core/theme/theme.service';
 
 @Component({
-  selector: 'ev-root',
+  selector: 'kz-root',
   standalone: true,
   imports: [RouterOutlet],
   template: '<router-outlet />',

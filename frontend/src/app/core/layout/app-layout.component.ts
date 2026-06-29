@@ -1,4 +1,4 @@
-import { Component, computed, ElementRef, HostListener, inject, OnInit, signal } from '@angular/core';
+﻿import { Component, computed, ElementRef, HostListener, inject, OnInit, signal } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { Permission, Role } from '@kzpanel/shared';
 import { TranslateModule } from '@ngx-translate/core';
@@ -16,7 +16,7 @@ interface NavItem {
 }
 
 @Component({
-  selector: 'ev-app-layout',
+  selector: 'kz-app-layout',
   standalone: true,
   imports: [RouterOutlet, RouterLink, RouterLinkActive, TranslateModule, ToastComponent],
   templateUrl: './app-layout.component.html',

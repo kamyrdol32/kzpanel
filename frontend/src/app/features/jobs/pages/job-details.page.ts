@@ -1,4 +1,4 @@
-import { Component, inject, input, OnInit } from '@angular/core';
+﻿import { Component, inject, input, OnInit } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 
 import { CardComponent } from '../../../shared/ui/card/card.component';
@@ -6,7 +6,7 @@ import { StatusBadgeComponent } from '../../../shared/ui/status-badge/status-bad
 import { JobsFacade } from '../facade/jobs.facade';
 
 @Component({
-  selector: 'ev-job-details',
+  selector: 'kz-job-details',
   standalone: true,
   imports: [CardComponent, StatusBadgeComponent, TranslateModule],
   templateUrl: './job-details.page.html',

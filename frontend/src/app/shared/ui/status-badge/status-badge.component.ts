@@ -1,9 +1,9 @@
-import { Component, input } from '@angular/core';
+﻿import { Component, input } from '@angular/core';
 
 export type BadgeTone = 'success' | 'danger' | 'warning' | 'info' | 'neutral';
 
 @Component({
-  selector: 'ev-status-badge',
+  selector: 'kz-status-badge',
   standalone: true,
   template: `<span class="badge" [class]="'badge-' + tone()"><span class="dot"></span>{{ label() }}</span>`,
   styles: [
@@ -16,16 +16,16 @@ export type BadgeTone = 'success' | 'danger' | 'warning' | 'info' | 'neutral';
         border-radius: 999px;
         font-size: 12px;
         font-weight: 600;
-        border: 1px solid var(--ev-border);
-        background: var(--ev-surface-2);
-        color: var(--ev-text);
+        border: 1px solid var(--kz-border);
+        background: var(--kz-surface-2);
+        color: var(--kz-text);
       }
       .dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
-      .badge-success { color: var(--ev-success); }
-      .badge-danger { color: var(--ev-danger); }
-      .badge-warning { color: var(--ev-warning); }
-      .badge-info { color: var(--ev-info); }
-      .badge-neutral { color: var(--ev-text-muted); }
+      .badge-success { color: var(--kz-success); }
+      .badge-danger { color: var(--kz-danger); }
+      .badge-warning { color: var(--kz-warning); }
+      .badge-info { color: var(--kz-info); }
+      .badge-neutral { color: var(--kz-text-muted); }
     `,
   ],
 })

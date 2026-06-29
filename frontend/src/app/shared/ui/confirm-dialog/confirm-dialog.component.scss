@@ -1,4 +1,4 @@
-@use 'tokens' as *;
+﻿@use 'tokens' as *;
 
 .overlay {
   position: fixed;
@@ -13,15 +13,15 @@
 .dialog {
   width: 380px;
   max-width: calc(100vw - 32px);
-  background: var(--ev-surface);
-  border: 1px solid var(--ev-border);
+  background: var(--kz-surface);
+  border: 1px solid var(--kz-border);
   border-radius: $radius-lg;
-  box-shadow: var(--ev-shadow-lg);
+  box-shadow: var(--kz-shadow-lg);
   padding: $space-5;
   animation: pop $dur-base $ease-standard;
 
   &-title { margin: 0 0 $space-2; font-size: $fs-lg; font-weight: $fw-semibold; }
-  &-msg { margin: 0 0 $space-5; color: var(--ev-text-muted); font-size: $fs-sm; }
+  &-msg { margin: 0 0 $space-5; color: var(--kz-text-muted); font-size: $fs-sm; }
   &-actions { display: flex; justify-content: flex-end; gap: $space-2; }
 }
 
@@ -30,11 +30,11 @@
   border-radius: $radius-md;
   font-weight: $fw-semibold;
   cursor: pointer;
-  border: 1px solid var(--ev-border);
+  border: 1px solid var(--kz-border);
   transition: background $dur-fast $ease-standard, opacity $dur-fast $ease-standard;
 
-  &-ghost { background: transparent; color: var(--ev-text); &:hover { background: var(--ev-surface-2); } }
-  &-danger { background: var(--ev-danger); color: #fff; border-color: transparent; &:hover { opacity: 0.9; } }
+  &-ghost { background: transparent; color: var(--kz-text); &:hover { background: var(--kz-surface-2); } }
+  &-danger { background: var(--kz-danger); color: #fff; border-color: transparent; &:hover { opacity: 0.9; } }
 }
 
 @keyframes fade { from { opacity: 0; } to { opacity: 1; } }

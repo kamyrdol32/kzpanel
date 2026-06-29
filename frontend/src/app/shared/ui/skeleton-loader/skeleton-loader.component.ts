@@ -1,8 +1,8 @@
-import { NgStyle } from '@angular/common';
+﻿import { NgStyle } from '@angular/common';
 import { Component, input } from '@angular/core';
 
 @Component({
-  selector: 'ev-skeleton',
+  selector: 'kz-skeleton',
   standalone: true,
   imports: [NgStyle],
   template: `
@@ -17,9 +17,9 @@ import { Component, input } from '@angular/core';
         margin-bottom: 10px;
         background: linear-gradient(
           90deg,
-          var(--ev-surface) 25%,
-          var(--ev-surface-2) 37%,
-          var(--ev-surface) 63%
+          var(--kz-surface) 25%,
+          var(--kz-surface-2) 37%,
+          var(--kz-surface) 63%
         );
         background-size: 400% 100%;
         animation: shimmer 1.4s ease infinite;

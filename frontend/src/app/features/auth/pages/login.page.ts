@@ -1,14 +1,14 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+﻿import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 
 import { AuthService } from '../../../core/auth/auth.service';
 
-const STORAGE_KEY = 'ev-saved-username';
+const STORAGE_KEY = 'kz-saved-username';
 
 @Component({
-  selector: 'ev-login',
+  selector: 'kz-login',
   standalone: true,
   imports: [ReactiveFormsModule, RouterLink, TranslateModule],
   templateUrl: './login.page.html',

@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+﻿import { Component, inject, signal } from '@angular/core';
 import { AbstractControl, FormBuilder, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
@@ -12,7 +12,7 @@ function passwordsMatch(group: AbstractControl): ValidationErrors | null {
 }
 
 @Component({
-  selector: 'ev-register',
+  selector: 'kz-register',
   standalone: true,
   imports: [ReactiveFormsModule, RouterLink, TranslateModule],
   templateUrl: './register.page.html',

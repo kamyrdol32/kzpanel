@@ -1,8 +1,8 @@
-<div class="ev-page">
-  <h1 class="ev-page-title">{{ 'users.title' | translate }}</h1>
+﻿<div class="kz-page">
+  <h1 class="kz-page-title">{{ 'users.title' | translate }}</h1>
 
   @if (rows().length === 0) {
-    <ev-empty-state icon="group" [title]="'common.noData' | translate" />
+    <kz-empty-state icon="group" [title]="'common.noData' | translate" />
   } @else {
     <div class="table-wrap">
       <table class="users-table">
@@ -106,14 +106,14 @@
     </div>
   }
 
-  <ev-confirm-dialog
+  <kz-confirm-dialog
     [open]="!!pendingDelete()"
     [message]="'users.deleteConfirm' | translate"
     (confirm)="confirmDelete()"
     (cancel)="pendingDelete.set(null)"
   />
 
-  <ev-confirm-dialog
+  <kz-confirm-dialog
     [open]="!!pendingRoleChange()"
     [message]="roleChangeMessage()"
     title="users.roleChangeTitle"

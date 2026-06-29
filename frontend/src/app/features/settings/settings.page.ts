@@ -1,4 +1,4 @@
-import { UpperCasePipe } from '@angular/common';
+﻿import { UpperCasePipe } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { AbstractControl, FormBuilder, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
@@ -14,7 +14,7 @@ function passwordsMatch(group: AbstractControl): ValidationErrors | null {
 }
 
 @Component({
-  selector: 'ev-settings',
+  selector: 'kz-settings',
   standalone: true,
   imports: [TranslateModule, UpperCasePipe, ReactiveFormsModule],
   templateUrl: './settings.page.html',

@@ -1,4 +1,4 @@
-import { DatePipe } from '@angular/common';
+﻿import { DatePipe } from '@angular/common';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -14,7 +14,7 @@ import { ScrapingFacade } from '../facade/scraping.facade';
 import { SCRAPEABLE_SOURCES, SOURCE_FIELDS, SourceField } from '../source-fields';
 
 @Component({
-  selector: 'ev-scraping',
+  selector: 'kz-scraping',
   standalone: true,
   imports: [
     ReactiveFormsModule,

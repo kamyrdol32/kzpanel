@@ -1,4 +1,4 @@
-@use '../../../../styles/tokens' as *;
+﻿@use '../../../../styles/tokens' as *;
 
 .primary-btn {
   display: inline-flex;
@@ -6,7 +6,7 @@
   gap: 6px;
   height: 36px;
   padding: 0 16px;
-  background: var(--ev-accent);
+  background: var(--kz-accent);
   color: #fff;
   border: none;
   border-radius: $radius-md;
@@ -28,38 +28,38 @@
   justify-content: center;
   width: 32px;
   height: 32px;
-  border: 1px solid var(--ev-border);
+  border: 1px solid var(--kz-border);
   border-radius: $radius-md;
   background: transparent;
-  color: var(--ev-text-muted);
+  color: var(--kz-text-muted);
   cursor: pointer;
   transition: background $dur-fast $ease-standard, color $dur-fast $ease-standard;
 
   .material-symbols-rounded { font-size: 18px; }
 
   &:hover:not(:disabled) {
-    background: var(--ev-surface-2);
-    color: var(--ev-text);
+    background: var(--kz-surface-2);
+    color: var(--kz-text);
   }
 
   &:disabled { opacity: 0.45; cursor: not-allowed; }
 
   &.danger:hover:not(:disabled) {
-    background: color-mix(in srgb, var(--ev-danger) 10%, transparent);
-    color: var(--ev-danger);
-    border-color: var(--ev-danger);
+    background: color-mix(in srgb, var(--kz-danger) 10%, transparent);
+    color: var(--kz-danger);
+    border-color: var(--kz-danger);
   }
 }
 
 .result-info {
   font-size: $fs-sm;
-  color: var(--ev-text-muted);
+  color: var(--kz-text-muted);
 }
 
 .add-section,
 .targets-section {
-  background: var(--ev-surface);
-  border: 1px solid var(--ev-border);
+  background: var(--kz-surface);
+  border: 1px solid var(--kz-border);
   border-radius: 16px;
   overflow: hidden;
 }
@@ -73,28 +73,28 @@
   align-items: center;
   gap: $space-2;
   padding: 16px 20px;
-  border-bottom: 1px solid var(--ev-border);
+  border-bottom: 1px solid var(--kz-border);
   font-size: $fs-md;
   font-weight: $fw-semibold;
-  color: var(--ev-text);
+  color: var(--kz-text);
 
   &-toggle {
     width: 100%;
     background: none;
     border: none;
-    border-bottom: 1px solid var(--ev-border);
+    border-bottom: 1px solid var(--kz-border);
     cursor: pointer;
     text-align: left;
     transition: background $dur-fast $ease-standard;
 
-    &:hover { background: var(--ev-surface-2); }
+    &:hover { background: var(--kz-surface-2); }
   }
 }
 
 .section-chevron {
   margin-left: auto;
   font-size: 20px;
-  color: var(--ev-text-muted);
+  color: var(--kz-text-muted);
   transition: transform $dur-fast $ease-standard;
 
   &.is-open { transform: rotate(180deg); }
@@ -102,7 +102,7 @@
 
 .section-icon {
   font-size: 18px;
-  color: var(--ev-accent);
+  color: var(--kz-accent);
 }
 
 .count-badge {
@@ -114,10 +114,10 @@
   padding: 0 7px;
   margin-left: 4px;
   border-radius: 999px;
-  background: var(--ev-surface-2);
+  background: var(--kz-surface-2);
   font-size: $fs-xs;
   font-weight: $fw-semibold;
-  color: var(--ev-text-muted);
+  color: var(--kz-text-muted);
 }
 
 .section-body {
@@ -127,7 +127,7 @@
 .hint {
   margin: 12px 0 0;
   font-size: $fs-sm;
-  color: var(--ev-text-muted);
+  color: var(--kz-text-muted);
 }
 
 .form {
@@ -154,8 +154,8 @@
     padding-bottom: 2px;
     cursor: pointer;
 
-    input[type="checkbox"] { cursor: pointer; accent-color: var(--ev-accent); }
-    .field-label { text-transform: none; letter-spacing: 0; font-size: $fs-sm; color: var(--ev-text-muted); }
+    input[type="checkbox"] { cursor: pointer; accent-color: var(--kz-accent); }
+    .field-label { text-transform: none; letter-spacing: 0; font-size: $fs-sm; color: var(--kz-text-muted); }
   }
 }
 
@@ -164,23 +164,23 @@
   font-weight: $fw-semibold;
   text-transform: uppercase;
   letter-spacing: 0.4px;
-  color: var(--ev-text-muted);
+  color: var(--kz-text-muted);
 }
 
 input,
 select {
   height: 36px;
   padding: 0 11px;
-  background: var(--ev-bg);
-  border: 1px solid var(--ev-border);
+  background: var(--kz-bg);
+  border: 1px solid var(--kz-border);
   border-radius: $radius-md;
-  color: var(--ev-text);
+  color: var(--kz-text);
   font-size: $fs-sm;
   outline: none;
   transition: border-color $dur-fast $ease-standard;
 
-  &:focus { border-color: var(--ev-accent); }
-  &::placeholder { color: var(--ev-text-muted); }
+  &:focus { border-color: var(--kz-accent); }
+  &::placeholder { color: var(--kz-text-muted); }
 }
 
 .targets {
@@ -194,11 +194,11 @@ select {
   justify-content: space-between;
   gap: $space-4;
   padding: 14px 20px;
-  border-bottom: 1px solid var(--ev-border);
+  border-bottom: 1px solid var(--kz-border);
   transition: background $dur-fast $ease-standard;
 
   &:last-child { border-bottom: none; }
-  &:hover { background: var(--ev-surface-2); }
+  &:hover { background: var(--kz-surface-2); }
 
   &-left {
     display: flex;
@@ -217,12 +217,12 @@ select {
   &-query {
     font-size: $fs-sm;
     font-weight: $fw-semibold;
-    color: var(--ev-text);
+    color: var(--kz-text);
   }
 
   &-sub {
     font-size: $fs-xs;
-    color: var(--ev-text-muted);
+    color: var(--kz-text-muted);
   }
 
   &-right {
@@ -233,12 +233,12 @@ select {
   }
 
   &-running {
-    background: color-mix(in srgb, var(--ev-accent) 5%, transparent);
-    border-left: 3px solid var(--ev-accent);
+    background: color-mix(in srgb, var(--kz-accent) 5%, transparent);
+    border-left: 3px solid var(--kz-accent);
   }
 
   &-editing {
-    background: var(--ev-surface-2);
+    background: var(--kz-surface-2);
     align-items: center;
   }
 }
@@ -253,17 +253,17 @@ select {
 .edit-input {
   height: 32px;
   padding: 0 10px;
-  background: var(--ev-bg);
-  border: 1px solid var(--ev-border);
+  background: var(--kz-bg);
+  border: 1px solid var(--kz-border);
   border-radius: 8px;
-  color: var(--ev-text);
+  color: var(--kz-text);
   font-size: $fs-sm;
   outline: none;
   min-width: 140px;
   transition: border-color 0.15s;
 
   &:focus {
-    border-color: var(--ev-accent);
+    border-color: var(--kz-accent);
   }
 }
 
@@ -273,34 +273,34 @@ select {
   gap: $space-2;
   cursor: pointer;
   font-size: $fs-sm;
-  color: var(--ev-text-muted);
+  color: var(--kz-text-muted);
 
-  input[type="checkbox"] { cursor: pointer; accent-color: var(--ev-accent); }
+  input[type="checkbox"] { cursor: pointer; accent-color: var(--kz-accent); }
 }
 
 .edit-select {
   height: 32px;
   padding: 0 8px;
-  background: var(--ev-bg);
-  border: 1px solid var(--ev-border);
+  background: var(--kz-bg);
+  border: 1px solid var(--kz-border);
   border-radius: 8px;
-  color: var(--ev-text);
+  color: var(--kz-text);
   font-size: $fs-sm;
   outline: none;
   cursor: pointer;
   transition: border-color 0.15s;
 
   &:focus {
-    border-color: var(--ev-accent);
+    border-color: var(--kz-accent);
   }
 }
 
 .icon-btn.save {
-  color: var(--ev-success, #22c55e);
+  color: var(--kz-success, #22c55e);
 
   &:hover {
-    background: color-mix(in srgb, var(--ev-success, #22c55e) 12%, transparent);
-    color: var(--ev-success, #22c55e);
+    background: color-mix(in srgb, var(--kz-success, #22c55e) 12%, transparent);
+    color: var(--kz-success, #22c55e);
   }
 }
 
@@ -310,14 +310,14 @@ select {
   gap: 6px;
   font-size: $fs-xs;
   font-weight: $fw-semibold;
-  color: var(--ev-accent);
+  color: var(--kz-accent);
 }
 
 .spinner {
   width: 12px;
   height: 12px;
-  border: 2px solid color-mix(in srgb, var(--ev-accent) 30%, transparent);
-  border-top-color: var(--ev-accent);
+  border: 2px solid color-mix(in srgb, var(--kz-accent) 30%, transparent);
+  border-top-color: var(--kz-accent);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
@@ -332,10 +332,10 @@ select {
   gap: 4px;
   padding: 2px 8px;
   border-radius: 999px;
-  background: var(--ev-surface-2);
+  background: var(--kz-surface-2);
   font-size: $fs-xs;
   font-weight: $fw-semibold;
-  color: var(--ev-text-muted);
+  color: var(--kz-text-muted);
 
   .material-symbols-rounded { font-size: 14px; }
 }
@@ -345,7 +345,7 @@ select {
   align-items: center;
   gap: 4px;
   font-size: $fs-xs;
-  color: var(--ev-text-muted);
+  color: var(--kz-text-muted);
 
   .material-symbols-rounded { font-size: 14px; }
 }

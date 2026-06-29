@@ -1,7 +1,7 @@
-import { Component, input } from '@angular/core';
+﻿import { Component, input } from '@angular/core';
 
 @Component({
-  selector: 'ev-metric-widget',
+  selector: 'kz-metric-widget',
   standalone: true,
   template: `
     <div class="metric">
@@ -18,8 +18,8 @@ import { Component, input } from '@angular/core';
         display: flex;
         align-items: center;
         gap: 16px;
-        background: var(--ev-surface);
-        border: 1px solid var(--ev-border);
+        background: var(--kz-surface);
+        border: 1px solid var(--kz-border);
         border-radius: 16px;
         padding: 20px;
       }
@@ -29,11 +29,11 @@ import { Component, input } from '@angular/core';
         width: 44px;
         height: 44px;
         border-radius: 12px;
-        background: var(--ev-surface-2);
-        color: var(--ev-accent);
+        background: var(--kz-surface-2);
+        color: var(--kz-accent);
       }
       .metric-value { font-size: 28px; font-weight: 700; line-height: 1; }
-      .metric-label { color: var(--ev-text-muted); font-size: 13px; margin-top: 4px; }
+      .metric-label { color: var(--kz-text-muted); font-size: 13px; margin-top: 4px; }
     `,
   ],
 })

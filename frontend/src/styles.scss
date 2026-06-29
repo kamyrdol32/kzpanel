@@ -1,4 +1,4 @@
-@use 'styles/tokens' as *;
+﻿@use 'styles/tokens' as *;
 @use 'styles/themes' as *;
 @import '@ng-select/ng-select/themes/default.theme.css';
 
@@ -7,10 +7,10 @@
   .ng-select-container {
     height: 36px;
     min-height: 36px;
-    background: var(--ev-surface-2) !important;
-    border: 1px solid var(--ev-border-2) !important;
+    background: var(--kz-surface-2) !important;
+    border: 1px solid var(--kz-border-2) !important;
     border-radius: $radius-md !important;
-    color: var(--ev-text) !important;
+    color: var(--kz-text) !important;
     font-size: $fs-sm;
     box-shadow: none !important;
     transition: border-color 0.15s;
@@ -18,7 +18,7 @@
     .ng-value-container {
       padding-left: 10px;
 
-      .ng-placeholder { color: var(--ev-text-dim) !important; }
+      .ng-placeholder { color: var(--kz-text-dim) !important; }
 
       .ng-input {
         top: 50% !important;
@@ -26,9 +26,9 @@
         padding-bottom: 0 !important;
 
         > input {
-          color: var(--ev-text) !important;
+          color: var(--kz-text) !important;
           font-size: $fs-sm;
-          caret-color: var(--ev-accent);
+          caret-color: var(--kz-accent);
           padding: 0 !important;
           line-height: 1 !important;
         }
@@ -38,56 +38,56 @@
     .ng-arrow-wrapper {
       padding-right: 8px;
       .ng-arrow {
-        border-color: var(--ev-text-dim) transparent transparent !important;
+        border-color: var(--kz-text-dim) transparent transparent !important;
       }
     }
 
     .ng-clear-wrapper {
-      color: var(--ev-text-dim) !important;
-      &:hover { color: var(--ev-danger) !important; }
+      color: var(--kz-text-dim) !important;
+      &:hover { color: var(--kz-danger) !important; }
     }
   }
 
   &.ng-select-opened > .ng-select-container {
-    border-color: var(--ev-accent) !important;
-    box-shadow: 0 0 0 2px color-mix(in srgb, var(--ev-accent) 20%, transparent) !important;
+    border-color: var(--kz-accent) !important;
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--kz-accent) 20%, transparent) !important;
   }
 
   &.ng-select-focused:not(.ng-select-opened) > .ng-select-container {
-    border-color: var(--ev-accent) !important;
+    border-color: var(--kz-accent) !important;
     box-shadow: none !important;
   }
 }
 
 .ng-dropdown-panel {
-  background: var(--ev-surface) !important;
-  border: 1px solid var(--ev-border) !important;
+  background: var(--kz-surface) !important;
+  border: 1px solid var(--kz-border) !important;
   border-radius: $radius-md !important;
-  box-shadow: var(--ev-shadow-md) !important;
+  box-shadow: var(--kz-shadow-md) !important;
   margin-top: 4px !important;
 
   .ng-dropdown-panel-items {
     .ng-option {
-      background: var(--ev-surface) !important;
-      color: var(--ev-text-muted) !important;
+      background: var(--kz-surface) !important;
+      color: var(--kz-text-muted) !important;
       font-size: $fs-sm;
       padding: 8px 12px;
       transition: background 0.1s, color 0.1s;
 
       &.ng-option-marked {
-        background: var(--ev-surface-2) !important;
-        color: var(--ev-text) !important;
+        background: var(--kz-surface-2) !important;
+        color: var(--kz-text) !important;
       }
 
       &.ng-option-selected {
-        background: var(--ev-accent-dim) !important;
-        color: var(--ev-accent) !important;
+        background: var(--kz-accent-dim) !important;
+        color: var(--kz-accent) !important;
         font-weight: $fw-medium;
       }
 
       &.ng-option-selected.ng-option-marked {
-        background: var(--ev-accent-dim) !important;
-        color: var(--ev-accent) !important;
+        background: var(--kz-accent-dim) !important;
+        color: var(--kz-accent) !important;
       }
     }
   }
@@ -126,8 +126,8 @@ body::after {
   z-index: -1;
   opacity: 0.3;
   background-image:
-    linear-gradient(var(--ev-border) 1px, transparent 1px),
-    linear-gradient(90deg, var(--ev-border) 1px, transparent 1px);
+    linear-gradient(var(--kz-border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--kz-border) 1px, transparent 1px);
   background-size: 60px 60px;
   mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
   -webkit-mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
@@ -138,7 +138,7 @@ body {
   margin: 0;
   height: 100%;
   font-family: $font-sans;
-  color: var(--ev-text);
+  color: var(--kz-text);
   -webkit-font-smoothing: antialiased;
 }
 
@@ -149,7 +149,7 @@ body {
 // A solid background on body would cover those negative-z layers.
 html {
   font-size: 16px;
-  background: var(--ev-bg);
+  background: var(--kz-bg);
 }
 
 body {
@@ -157,13 +157,13 @@ body {
 }
 
 a {
-  color: var(--ev-accent);
+  color: var(--kz-accent);
   text-decoration: none;
-  &:hover { color: var(--ev-accent-strong); }
+  &:hover { color: var(--kz-accent-strong); }
 }
 
 :focus-visible {
-  outline: 2px solid var(--ev-accent);
+  outline: 2px solid var(--kz-accent);
   outline-offset: 3px;
   border-radius: 2px;
 }
@@ -173,7 +173,7 @@ a {
 
 ::-webkit-scrollbar { width: 10px; height: 10px; }
 ::-webkit-scrollbar-thumb {
-  background: var(--ev-surface-3);
+  background: var(--kz-surface-3);
   border-radius: $radius-pill;
 }
 
@@ -208,28 +208,28 @@ a {
   }
 }
 
-.ev-page { padding: $space-5; }
+.kz-page { padding: $space-5; }
 
-.ev-page-title {
+.kz-page-title {
   font-family: $font-display;
   font-size: $fs-2xl;
   font-weight: $fw-bold;
   letter-spacing: -0.02em;
   text-wrap: balance;
   margin: 0 0 $space-5;
-  color: var(--ev-text);
+  color: var(--kz-text);
   padding-left: 14px;
-  border-left: 3px solid var(--ev-accent);
+  border-left: 3px solid var(--kz-accent);
 }
 
-.ev-row  { display: flex; align-items: center; gap: $space-3; }
-.ev-grid { display: grid; gap: $space-4; }
-.muted   { color: var(--ev-text-muted); }
+.kz-row  { display: flex; align-items: center; gap: $space-3; }
+.kz-grid { display: grid; gap: $space-4; }
+.muted   { color: var(--kz-text-muted); }
 
 .link {
-  color: var(--ev-accent);
+  color: var(--kz-accent);
   font-weight: $fw-medium;
-  &:hover { color: var(--ev-accent-strong); }
+  &:hover { color: var(--kz-accent-strong); }
 }
 
 .row-actions {
@@ -244,12 +244,12 @@ a {
   align-items: center;
   border: none;
   background: transparent;
-  color: var(--ev-text-muted);
+  color: var(--kz-text-muted);
   cursor: pointer;
   padding: 2px;
   border-radius: $radius-sm;
   transition: color $dur-fast $ease-standard, background $dur-fast $ease-standard;
-  &:hover { color: var(--ev-danger); background: var(--ev-surface-2); }
+  &:hover { color: var(--kz-danger); background: var(--kz-surface-2); }
   .material-symbols-rounded { font-size: 20px; }
 }
 
@@ -260,17 +260,17 @@ a {
   gap: 0.4rem;
   padding: 0.3rem 0.7rem;
   border-radius: 3px;
-  background: var(--ev-surface-2);
-  border: 1px solid var(--ev-border-2);
-  color: var(--ev-text-muted);
+  background: var(--kz-surface-2);
+  border: 1px solid var(--kz-border-2);
+  color: var(--kz-text-muted);
   font-size: $fs-xs;
   font-weight: $fw-medium;
   letter-spacing: 0.04em;
 
   &-accent {
-    background: var(--ev-accent-dim);
-    border-color: var(--ev-accent-border);
-    color: var(--ev-accent);
+    background: var(--kz-accent-dim);
+    border-color: var(--kz-accent-border);
+    color: var(--kz-accent);
   }
 }
 
@@ -278,7 +278,7 @@ a {
   padding: 0.75rem 1.75rem;
   border: none;
   border-radius: $radius-md;
-  background: var(--ev-accent);
+  background: var(--kz-accent);
   color: #fff;
   font-family: $font-display;
   font-weight: $fw-semibold;
@@ -286,7 +286,7 @@ a {
   cursor: pointer;
   transition: background $dur-base $ease-standard, transform $dur-base $ease-standard;
   &:hover:not(:disabled) {
-    background: var(--ev-accent-strong);
+    background: var(--kz-accent-strong);
     transform: translateY(-1px);
   }
   &:disabled { opacity: 0.5; cursor: not-allowed; }
@@ -297,7 +297,7 @@ a {
   font-weight: $fw-medium;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: var(--ev-accent);
+  color: var(--kz-accent);
   margin-bottom: 1rem;
   display: flex;
   align-items: center;
@@ -307,19 +307,19 @@ a {
     content: '';
     flex: 0 0 32px;
     height: 1px;
-    background: var(--ev-accent);
+    background: var(--kz-accent);
   }
 }
 
-.ev-card {
-  background: var(--ev-surface);
-  border: 1px solid var(--ev-border);
+.kz-card {
+  background: var(--kz-surface);
+  border: 1px solid var(--kz-border);
   border-radius: $radius-lg;
   transition: border-color $dur-slow $ease-standard, transform $dur-slow $ease-standard, box-shadow $dur-slow $ease-standard;
 
   &:hover {
-    border-color: var(--ev-accent-border);
+    border-color: var(--kz-accent-border);
     transform: translateY(-4px);
-    box-shadow: var(--ev-shadow-lg);
+    box-shadow: var(--kz-shadow-lg);
   }
 }

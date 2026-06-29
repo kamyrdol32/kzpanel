@@ -1,7 +1,7 @@
-<div class="ev-page">
-  <div class="ev-row page-header-row">
-    <h1 class="ev-page-title" style="margin: 0">{{ 'recruitment.title' | translate }}</h1>
-    <ev-global-search />
+﻿<div class="kz-page">
+  <div class="kz-row page-header-row">
+    <h1 class="kz-page-title" style="margin: 0">{{ 'recruitment.title' | translate }}</h1>
+    <kz-global-search />
   </div>
 
   <div class="filter-bar">
@@ -48,9 +48,9 @@
   </div>
 
   @if (facade.items().length === 0) {
-    <ev-empty-state icon="work_history" [title]="'common.noData' | translate" />
+    <kz-empty-state icon="work_history" [title]="'common.noData' | translate" />
   } @else if (filteredItems().length === 0) {
-    <ev-empty-state icon="filter_list_off" [title]="'recruitment.filter.noResults' | translate" />
+    <kz-empty-state icon="filter_list_off" [title]="'recruitment.filter.noResults' | translate" />
   } @else {
     <div class="table-wrap">
       <table class="rec-table">
@@ -158,7 +158,7 @@
     </div>
   }
 
-  <ev-confirm-dialog
+  <kz-confirm-dialog
     [open]="!!pendingDelete()"
     title="recruitment.confirmDeleteTitle"
     message="recruitment.confirmDeleteMsg"

@@ -1,10 +1,10 @@
-import { Component, inject } from '@angular/core';
+﻿import { Component, inject } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 
 import { ToastService } from './toast.service';
 
 @Component({
-  selector: 'ev-toast',
+  selector: 'kz-toast',
   standalone: true,
   imports: [TranslateModule],
   templateUrl: './toast.component.html',

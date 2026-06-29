@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+﻿import { CommonModule } from '@angular/common';
 import { Component, ElementRef, HostListener, inject, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -9,7 +9,7 @@ import { debounceTime, distinctUntilChanged, Subject, switchMap } from 'rxjs';
 import { SearchApi, SearchResultsDto } from '../../data-access/search.api';
 
 @Component({
-  selector: 'ev-global-search',
+  selector: 'kz-global-search',
   standalone: true,
   imports: [CommonModule, FormsModule, TranslateModule],
   templateUrl: './global-search.component.html',
@@ -90,7 +90,7 @@ export class GlobalSearchComponent {
 
   @HostListener('document:click', ['$event'])
   protected onDocumentClick(event: Event): void {
-    if (!(event.target as HTMLElement).closest('ev-global-search')) {
+    if (!(event.target as HTMLElement).closest('kz-global-search')) {
       this.close();
     }
   }

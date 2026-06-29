@@ -1,7 +1,7 @@
-import { Component, input } from '@angular/core';
+﻿import { Component, input } from '@angular/core';
 
 @Component({
-  selector: 'ev-empty-state',
+  selector: 'kz-empty-state',
   standalone: true,
   template: `
     <div class="empty">
@@ -22,10 +22,10 @@ import { Component, input } from '@angular/core';
         justify-content: center;
         text-align: center;
         padding: 48px 24px;
-        color: var(--ev-text-muted);
+        color: var(--kz-text-muted);
       }
       .empty-icon { font-size: 48px; opacity: 0.5; }
-      .empty-title { font-weight: 600; color: var(--ev-text); margin: 12px 0 4px; }
+      .empty-title { font-weight: 600; color: var(--kz-text); margin: 12px 0 4px; }
       .empty-desc { margin: 0; font-size: 13px; }
     `,
   ],

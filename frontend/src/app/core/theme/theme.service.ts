@@ -1,8 +1,8 @@
-import { DOCUMENT } from '@angular/common';
+﻿import { DOCUMENT } from '@angular/common';
 import { computed, inject, Injectable, signal } from '@angular/core';
 
 export type ThemeMode = 'dark' | 'light';
-const STORAGE_KEY = 'ev-theme';
+const STORAGE_KEY = 'kz-theme';
 
 @Injectable({ providedIn: 'root' })
 export class ThemeService {

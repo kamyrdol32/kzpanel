@@ -1,4 +1,4 @@
-@use '../../../../styles/tokens' as *;
+﻿@use '../../../../styles/tokens' as *;
 
 .login {
   display: grid;
@@ -10,10 +10,10 @@
     position: relative;
     z-index: 1;
     width: 360px;
-    background: var(--ev-surface);
-    border: 1px solid var(--ev-border);
+    background: var(--kz-surface);
+    border: 1px solid var(--kz-border);
     border-radius: $radius-lg;
-    box-shadow: var(--ev-shadow-lg);
+    box-shadow: var(--kz-shadow-lg);
     padding: $space-6;
     display: flex;
     flex-direction: column;
@@ -26,7 +26,7 @@
     font-size: $fs-xl;
     font-weight: $fw-bold;
     letter-spacing: -0.02em;
-    span { color: var(--ev-accent); }
+    span { color: var(--kz-accent); }
   }
 
   &-title {
@@ -34,7 +34,7 @@
     font-family: $font-display;
     font-size: $fs-lg;
     font-weight: $fw-semibold;
-    color: var(--ev-text-muted);
+    color: var(--kz-text-muted);
   }
 
   &-label {
@@ -44,22 +44,22 @@
     font-size: $fs-sm;
     font-weight: $fw-medium;
     letter-spacing: 0.02em;
-    color: var(--ev-text-muted);
+    color: var(--kz-text-muted);
 
     input {
-      background: var(--ev-bg);
-      border: 1px solid var(--ev-border);
+      background: var(--kz-bg);
+      border: 1px solid var(--kz-border);
       border-radius: $radius-md;
       padding: 10px 12px;
-      color: var(--ev-text);
+      color: var(--kz-text);
       font-family: $font-sans;
       font-size: $fs-md;
       outline: none;
       transition: border-color $dur-base $ease-standard;
 
-      &:focus { border-color: var(--ev-accent); }
+      &:focus { border-color: var(--kz-accent); }
 
-      &::placeholder { color: var(--ev-text-dim); }
+      &::placeholder { color: var(--kz-text-dim); }
     }
   }
 
@@ -68,7 +68,7 @@
     align-items: center;
     gap: $space-2;
     font-size: $fs-sm;
-    color: var(--ev-text-muted);
+    color: var(--kz-text-muted);
     cursor: pointer;
     user-select: none;
 
@@ -83,9 +83,9 @@
       flex-shrink: 0;
       width: 16px;
       height: 16px;
-      border: 1px solid var(--ev-border-2);
+      border: 1px solid var(--kz-border-2);
       border-radius: 4px;
-      background: var(--ev-bg);
+      background: var(--kz-bg);
       transition: border-color $dur-fast $ease-standard, background $dur-fast $ease-standard;
       display: flex;
       align-items: center;
@@ -104,29 +104,29 @@
     }
 
     input:checked ~ &-box {
-      background: var(--ev-accent);
-      border-color: var(--ev-accent);
+      background: var(--kz-accent);
+      border-color: var(--kz-accent);
 
       &::after { opacity: 1; }
     }
 
-    &:hover &-box { border-color: var(--ev-accent); }
+    &:hover &-box { border-color: var(--kz-accent); }
   }
 
   &-error {
-    color: var(--ev-danger);
+    color: var(--kz-danger);
     font-size: $fs-sm;
     margin: 0;
   }
 
   &-success {
-    color: var(--ev-success);
+    color: var(--kz-success);
     font-size: $fs-sm;
     margin: 0;
   }
 
   &-note {
-    color: var(--ev-text-muted);
+    color: var(--kz-text-muted);
     font-size: $fs-sm;
     margin: 0;
   }
@@ -135,11 +135,11 @@
     font-family: ui-monospace, 'Cascadia Code', monospace;
     font-size: $fs-xs;
     word-break: break-all;
-    background: var(--ev-bg);
-    border: 1px solid var(--ev-border);
+    background: var(--kz-bg);
+    border: 1px solid var(--kz-border);
     border-radius: $radius-md;
     padding: 8px 10px;
-    color: var(--ev-text);
+    color: var(--kz-text);
   }
 
   &-links {
@@ -150,7 +150,7 @@
     font-size: $fs-sm;
 
     a {
-      color: var(--ev-accent);
+      color: var(--kz-accent);
       text-decoration: none;
       cursor: pointer;
     }
@@ -177,8 +177,8 @@
     height: 64px;
     border-radius: 50%;
     margin-bottom: $space-1;
-    background: color-mix(in srgb, var(--ev-success) 15%, transparent);
-    color: var(--ev-success);
+    background: color-mix(in srgb, var(--kz-success) 15%, transparent);
+    color: var(--kz-success);
 
     .material-symbols-rounded {
       font-size: 38px;
@@ -190,7 +190,7 @@
     font-family: $font-display;
     font-size: $fs-lg;
     font-weight: $fw-semibold;
-    color: var(--ev-text);
+    color: var(--kz-text);
   }
 
   &-done .login-note {
@@ -209,7 +209,7 @@
     padding: 0.75rem;
     border: none;
     border-radius: $radius-md;
-    background: var(--ev-accent);
+    background: var(--kz-accent);
     color: #fff;
     font-family: $font-display;
     font-size: 0.9rem;
@@ -218,7 +218,7 @@
     transition: background $dur-base $ease-standard, transform $dur-base $ease-standard;
 
     &:hover:not(:disabled) {
-      background: var(--ev-accent-strong);
+      background: var(--kz-accent-strong);
       transform: translateY(-1px);
     }
 

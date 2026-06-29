@@ -1,4 +1,4 @@
-import { Component, input, output } from '@angular/core';
+﻿import { Component, input, output } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 
 /**
@@ -6,7 +6,7 @@ import { TranslateModule } from '@ngx-translate/core';
  * emits `confirm` / `cancel`. Labels/title/message accept i18n keys.
  */
 @Component({
-  selector: 'ev-confirm-dialog',
+  selector: 'kz-confirm-dialog',
   standalone: true,
   imports: [TranslateModule],
   template: `

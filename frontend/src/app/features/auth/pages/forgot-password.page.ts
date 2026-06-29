@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+﻿import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
@@ -6,7 +6,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { AuthService } from '../../../core/auth/auth.service';
 
 @Component({
-  selector: 'ev-forgot-password',
+  selector: 'kz-forgot-password',
   standalone: true,
   imports: [ReactiveFormsModule, RouterLink, TranslateModule],
   templateUrl: './forgot-password.page.html',

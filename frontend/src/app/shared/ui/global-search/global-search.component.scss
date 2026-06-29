@@ -1,4 +1,4 @@
-.search-wrap {
+﻿.search-wrap {
   position: relative;
   width: 100%;
   max-width: 480px;
@@ -8,20 +8,20 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  background: var(--ev-surface);
-  border: 1px solid var(--ev-border);
+  background: var(--kz-surface);
+  border: 1px solid var(--kz-border);
   border-radius: 8px;
   padding: 0 12px;
   transition: border-color 0.2s;
 
   &:focus-within {
-    border-color: var(--ev-accent);
+    border-color: var(--kz-accent);
   }
 }
 
 .search-icon {
   font-size: 20px;
-  color: var(--ev-text-muted);
+  color: var(--kz-text-muted);
   flex-shrink: 0;
 }
 
@@ -32,16 +32,16 @@
   outline: none;
   padding: 10px 0;
   font-size: 0.9rem;
-  color: var(--ev-text);
+  color: var(--kz-text);
 
   &::placeholder {
-    color: var(--ev-text-muted);
+    color: var(--kz-text-muted);
   }
 }
 
 .search-spinner {
   font-size: 18px;
-  color: var(--ev-text-muted);
+  color: var(--kz-text-muted);
   animation: spin 1s linear infinite;
 }
 
@@ -54,8 +54,8 @@
   top: calc(100% + 6px);
   left: 0;
   right: 0;
-  background: var(--ev-surface);
-  border: 1px solid var(--ev-border);
+  background: var(--kz-surface);
+  border: 1px solid var(--kz-border);
   border-radius: 8px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
   z-index: 100;
@@ -65,14 +65,14 @@
 .search-empty {
   padding: 16px;
   text-align: center;
-  color: var(--ev-text-muted);
+  color: var(--kz-text-muted);
   font-size: 0.875rem;
   margin: 0;
 }
 
 .search-section {
   & + & {
-    border-top: 1px solid var(--ev-border);
+    border-top: 1px solid var(--kz-border);
   }
 }
 
@@ -82,7 +82,7 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--ev-text-muted);
+  color: var(--kz-text-muted);
   margin: 0;
 }
 
@@ -99,14 +99,14 @@
   transition: background 0.15s;
 
   &:hover {
-    background: var(--ev-surface-hover, rgba(255, 255, 255, 0.05));
+    background: var(--kz-surface-hover, rgba(255, 255, 255, 0.05));
   }
 }
 
 .search-item-primary {
   font-size: 0.875rem;
   font-weight: 500;
-  color: var(--ev-text);
+  color: var(--kz-text);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -117,7 +117,7 @@
 
 .search-item-secondary {
   font-size: 0.8rem;
-  color: var(--ev-text-muted);
+  color: var(--kz-text-muted);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -129,13 +129,13 @@
   font-size: 0.7rem;
   padding: 2px 6px;
   border-radius: 4px;
-  background: var(--ev-surface-alt, rgba(255, 255, 255, 0.08));
-  color: var(--ev-text-muted);
+  background: var(--kz-surface-alt, rgba(255, 255, 255, 0.08));
+  color: var(--kz-text-muted);
   white-space: nowrap;
   flex-shrink: 0;
 
   &--recruitment {
-    color: var(--ev-accent);
-    background: color-mix(in srgb, var(--ev-accent) 15%, transparent);
+    color: var(--kz-accent);
+    background: color-mix(in srgb, var(--kz-accent) 15%, transparent);
   }
 }

@@ -1,4 +1,4 @@
-@use '../../../styles/tokens' as *;
+﻿@use '../../../styles/tokens' as *;
 
 .toast-container {
   position: fixed;
@@ -19,9 +19,9 @@
   gap: 10px;
   padding: 12px 14px;
   border-radius: $radius-lg;
-  border: 1px solid var(--ev-border);
-  background: var(--ev-surface);
-  box-shadow: var(--ev-shadow-md);
+  border: 1px solid var(--kz-border);
+  background: var(--kz-surface);
+  box-shadow: var(--kz-shadow-md);
   pointer-events: all;
   animation: slideInRight $dur-base $ease-standard both;
 
@@ -35,7 +35,7 @@
     flex: 1;
     font-size: $fs-sm;
     line-height: 1.5;
-    color: var(--ev-text);
+    color: var(--kz-text);
   }
 
   &-close {
@@ -46,32 +46,32 @@
     border: none;
     cursor: pointer;
     padding: 0;
-    color: var(--ev-text-muted);
+    color: var(--kz-text-muted);
     transition: color $dur-fast $ease-standard;
 
-    &:hover { color: var(--ev-text); }
+    &:hover { color: var(--kz-text); }
 
     .material-symbols-rounded { font-size: 18px; }
   }
 
   &-info {
-    border-color: var(--ev-info);
-    .toast-icon { color: var(--ev-info); }
+    border-color: var(--kz-info);
+    .toast-icon { color: var(--kz-info); }
   }
 
   &-success {
-    border-color: var(--ev-success);
-    .toast-icon { color: var(--ev-success); }
+    border-color: var(--kz-success);
+    .toast-icon { color: var(--kz-success); }
   }
 
   &-warning {
-    border-color: var(--ev-warning);
-    .toast-icon { color: var(--ev-warning); }
+    border-color: var(--kz-warning);
+    .toast-icon { color: var(--kz-warning); }
   }
 
   &-error {
-    border-color: var(--ev-danger);
-    .toast-icon { color: var(--ev-danger); }
+    border-color: var(--kz-danger);
+    .toast-icon { color: var(--kz-danger); }
   }
 }
 

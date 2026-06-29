@@ -1,7 +1,7 @@
-@if (facade.selected(); as job) {
-  <div class="ev-page">
-    <div class="ev-row" style="justify-content: space-between">
-      <h1 class="ev-page-title" style="margin: 0">{{ job.title }}</h1>
+﻿@if (facade.selected(); as job) {
+  <div class="kz-page">
+    <div class="kz-row" style="justify-content: space-between">
+      <h1 class="kz-page-title" style="margin: 0">{{ job.title }}</h1>
       <a class="apply-btn" [href]="job.sourceUrl" target="_blank" rel="noopener noreferrer">
         {{ 'jobs.apply' | translate }}
         <span class="material-symbols-rounded" style="font-size:18px">open_in_new</span>
@@ -13,14 +13,14 @@
       @for (rt of job.remoteTypes; track rt) { · {{ 'enum.remote.' + rt | translate }} }
     </p>
 
-    <div class="ev-row" style="gap: 8px; margin-bottom: 16px; flex-wrap: wrap">
-      @for (lvl of job.levels; track lvl) { <ev-status-badge [label]="'enum.level.' + lvl | translate" tone="info" /> }
-      <ev-status-badge [label]="'enum.language.' + job.language | translate" tone="neutral" />
-      <ev-status-badge [label]="job.source" tone="neutral" />
+    <div class="kz-row" style="gap: 8px; margin-bottom: 16px; flex-wrap: wrap">
+      @for (lvl of job.levels; track lvl) { <kz-status-badge [label]="'enum.level.' + lvl | translate" tone="info" /> }
+      <kz-status-badge [label]="'enum.language.' + job.language | translate" tone="neutral" />
+      <kz-status-badge [label]="job.source" tone="neutral" />
     </div>
 
-    <div class="ev-grid" style="grid-template-columns: 2fr 1fr">
-      <ev-card [title]="'jobs.description' | translate">
+    <div class="kz-grid" style="grid-template-columns: 2fr 1fr">
+      <kz-card [title]="'jobs.description' | translate">
         <p>{{ job.description ?? '—' }}</p>
 
         <h4>{{ 'jobs.requirements' | translate }}</h4>
@@ -32,9 +32,9 @@
         <ul>
           @for (r of job.mustHave; track r) { <li>{{ r }}</li> }
         </ul>
-      </ev-card>
+      </kz-card>
 
-      <ev-card [title]="'jobs.techStack' | translate">
+      <kz-card [title]="'jobs.techStack' | translate">
         <div class="chips">
           @for (t of job.techStack; track t) { <span class="chip">{{ t }}</span> }
         </div>
@@ -43,9 +43,9 @@
         <ul>
           @for (b of job.benefits; track b) { <li>{{ b }}</li> }
         </ul>
-      </ev-card>
+      </kz-card>
     </div>
   </div>
 } @else {
-  <div class="ev-page"><p class="muted">{{ 'common.loading' | translate }}</p></div>
+  <div class="kz-page"><p class="muted">{{ 'common.loading' | translate }}</p></div>
 }

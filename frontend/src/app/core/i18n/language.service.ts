@@ -1,8 +1,8 @@
-import { inject, Injectable, signal } from '@angular/core';
+﻿import { inject, Injectable, signal } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 
 export type AppLang = 'pl' | 'en';
-const STORAGE_KEY = 'ev-lang';
+const STORAGE_KEY = 'kz-lang';
 
 @Injectable({ providedIn: 'root' })
 export class LanguageService {

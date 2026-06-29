@@ -1,4 +1,4 @@
-.app-layout {
+﻿.app-layout {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
@@ -24,8 +24,8 @@
   transition: all 0.4s ease;
 
   &.scrolled {
-    background: color-mix(in srgb, var(--ev-bg) 85%, transparent);
-    border-bottom-color: var(--ev-border);
+    background: color-mix(in srgb, var(--kz-bg) 85%, transparent);
+    border-bottom-color: var(--kz-border);
     backdrop-filter: blur(20px);
   }
 
@@ -40,12 +40,12 @@
   font-weight: 700;
   font-size: 1.1rem;
   letter-spacing: -0.01em;
-  color: var(--ev-text);
+  color: var(--kz-text);
   text-decoration: none;
 
-  span { color: var(--ev-accent); }
+  span { color: var(--kz-accent); }
 
-  &:hover { color: var(--ev-text); }
+  &:hover { color: var(--kz-text); }
 }
 
 .nav-links {
@@ -65,7 +65,7 @@
   position: relative;
   font-size: 0.85rem;
   font-weight: 400;
-  color: var(--ev-text-muted);
+  color: var(--kz-text-muted);
   letter-spacing: 0.04em;
   text-transform: uppercase;
   text-decoration: none;
@@ -79,21 +79,21 @@
     bottom: -6px;
     height: 2px;
     border-radius: 2px;
-    background: var(--ev-accent);
+    background: var(--kz-accent);
     opacity: 0;
     transform: scaleX(0.3);
     transition: opacity 0.25s ease, transform 0.25s ease;
   }
 
-  &:hover { color: var(--ev-text); }
+  &:hover { color: var(--kz-text); }
 
   &.active {
-    color: var(--ev-accent);
+    color: var(--kz-accent);
 
     &::after {
       opacity: 1;
       transform: scaleX(1);
-      box-shadow: 0 0 10px color-mix(in srgb, var(--ev-accent) 70%, transparent);
+      box-shadow: 0 0 10px color-mix(in srgb, var(--kz-accent) 70%, transparent);
     }
   }
 }
@@ -111,7 +111,7 @@
     border: none;
     cursor: pointer;
     padding: 0;
-    color: var(--ev-text-muted);
+    color: var(--kz-text-muted);
 
     &::after { display: none; }
   }
@@ -128,8 +128,8 @@
     left: 50%;
     transform: translateX(-50%) translateY(-4px);
     min-width: 200px;
-    background: var(--ev-surface);
-    border: 1px solid var(--ev-border);
+    background: var(--kz-surface);
+    border: 1px solid var(--kz-border);
     border-radius: 8px;
     padding: 0.375rem;
     list-style: none;
@@ -155,20 +155,20 @@
     border-radius: 5px;
     font-size: 0.85rem;
     font-weight: 400;
-    color: var(--ev-text-muted);
+    color: var(--kz-text-muted);
     letter-spacing: 0.04em;
     text-transform: uppercase;
     text-decoration: none;
     transition: background 0.15s, color 0.15s;
 
     &:hover {
-      background: var(--ev-surface-2);
-      color: var(--ev-text);
+      background: var(--kz-surface-2);
+      color: var(--kz-text);
     }
 
     &.active {
-      color: var(--ev-accent);
-      background: var(--ev-accent-dim);
+      color: var(--kz-accent);
+      background: var(--kz-accent-dim);
     }
   }
 }
@@ -183,7 +183,7 @@
 
 .lang-toggle {
   background: none;
-  border: 1px solid var(--ev-border-2);
+  border: 1px solid var(--kz-border-2);
   border-radius: 4px;
   padding: 0.35rem 0.65rem;
   cursor: pointer;
@@ -192,27 +192,27 @@
   gap: 0.3rem;
   transition: border-color 0.2s;
 
-  &:hover { border-color: var(--ev-accent); }
+  &:hover { border-color: var(--kz-accent); }
 }
 
 .lang-opt {
   font-size: 0.72rem;
   font-weight: 600;
   letter-spacing: 0.08em;
-  color: var(--ev-text-dim);
+  color: var(--kz-text-dim);
   transition: color 0.2s;
 
-  &.active { color: var(--ev-accent); }
+  &.active { color: var(--kz-accent); }
 }
 
 .lang-sep {
   font-size: 0.65rem;
-  color: var(--ev-border-2);
+  color: var(--kz-border-2);
   user-select: none;
 }
 
 .nav-cta {
-  background: var(--ev-accent);
+  background: var(--kz-accent);
   color: #fff;
   font-family: 'Space Grotesk', sans-serif;
   font-weight: 600;
@@ -225,7 +225,7 @@
   transition: all 0.2s;
 
   &:hover {
-    background: var(--ev-accent-strong);
+    background: var(--kz-accent-strong);
     transform: translateY(-1px);
   }
 }
@@ -238,13 +238,13 @@
     align-items: center;
     gap: 0.5rem;
     background: none;
-    border: 1px solid var(--ev-border-2);
+    border: 1px solid var(--kz-border-2);
     border-radius: 999px;
     padding: 0.25rem 0.6rem 0.25rem 0.25rem;
     cursor: pointer;
     transition: border-color 0.2s;
 
-    &:hover { border-color: var(--ev-accent); }
+    &:hover { border-color: var(--kz-accent); }
   }
 
   &-avatar {
@@ -254,7 +254,7 @@
     width: 28px;
     height: 28px;
     border-radius: 50%;
-    background: var(--ev-accent);
+    background: var(--kz-accent);
     color: #fff;
     font-size: 0.8rem;
     font-weight: 700;
@@ -265,7 +265,7 @@
   &-name {
     font-size: 0.82rem;
     font-weight: 500;
-    color: var(--ev-text);
+    color: var(--kz-text);
     max-width: 140px;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -273,7 +273,7 @@
   }
 
   &-chevron {
-    color: var(--ev-text-dim);
+    color: var(--kz-text-dim);
     transition: transform 0.2s ease;
     .is-open & { transform: rotate(180deg); }
   }
@@ -283,8 +283,8 @@
     top: calc(100% + 0.6rem);
     right: 0;
     min-width: 180px;
-    background: var(--ev-surface);
-    border: 1px solid var(--ev-border);
+    background: var(--kz-surface);
+    border: 1px solid var(--kz-border);
     border-radius: 8px;
     padding: 0.375rem;
     list-style: none;
@@ -315,7 +315,7 @@
     background: none;
     border-radius: 5px;
     font-size: 0.85rem;
-    color: var(--ev-text-muted);
+    color: var(--kz-text-muted);
     text-decoration: none;
     cursor: pointer;
     transition: background 0.15s, color 0.15s;
@@ -323,12 +323,12 @@
     .material-symbols-rounded { font-size: 18px; }
 
     &:hover {
-      background: var(--ev-surface-2);
-      color: var(--ev-text);
+      background: var(--kz-surface-2);
+      color: var(--kz-text);
     }
 
     &-danger:hover {
-      color: var(--ev-danger);
+      color: var(--kz-danger);
     }
   }
 }

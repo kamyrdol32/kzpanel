@@ -1,7 +1,7 @@
-import { Injectable } from '@angular/core';
+﻿import { Injectable } from '@angular/core';
 
-const ACCESS = 'ev-access-token';
-const REFRESH = 'ev-refresh-token';
+const ACCESS = 'kz-access-token';
+const REFRESH = 'kz-refresh-token';
 
 @Injectable({ providedIn: 'root' })
 export class TokenStorageService {

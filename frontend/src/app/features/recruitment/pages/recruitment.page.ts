@@ -1,4 +1,4 @@
-import { DatePipe } from '@angular/common';
+﻿import { DatePipe } from '@angular/common';
 import { animate, style, transition, trigger } from '@angular/animations';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -11,7 +11,7 @@ import { GlobalSearchComponent } from '../../../shared/ui/global-search/global-s
 import { RecruitmentFacade } from '../facade/recruitment.facade';
 
 @Component({
-  selector: 'ev-recruitment',
+  selector: 'kz-recruitment',
   standalone: true,
   imports: [
     FormsModule,
