@@ -76,17 +76,19 @@ export class ScrapeTargetsController {
   }
 
   @Post('run')
-  @HttpCode(200)
+  @HttpCode(202)
   @RequirePermissions(Permission.SCRAPE_RUN)
-  runAll(@CurrentUser() user: JwtPayload) {
-    return this.queue.enqueue({ userId: user.sub });
+  runAll(@CurrentUser() user: JwtPayload): { queued: true } {
+    void this.queue.enqueue({ userId: user.sub });
+    return { queued: true };
   }
 
   @Post(':id/run')
-  @HttpCode(200)
+  @HttpCode(202)
   @RequirePermissions(Permission.SCRAPE_RUN)
-  async runOne(@Param('id') id: string, @CurrentUser() user: JwtPayload) {
+  async runOne(@Param('id') id: string, @CurrentUser() user: JwtPayload): Promise<{ queued: true }> {
     await this.targets.findOneForUser(id, user.sub, user.role);
-    return this.queue.enqueue({ targetId: id });
+    void this.queue.enqueue({ targetId: id, userId: user.sub });
+    return { queued: true };
   }
 }

@@ -5,6 +5,7 @@ import { finalize } from 'rxjs';
 
 import { AuthService } from '../../../core/auth/auth.service';
 import { ToastService } from '../../../core/toast/toast.service';
+import { WebSocketService } from '../../../core/websocket/websocket.service';
 import { ScrapingApi } from '../data-access/scraping.api';
 
 @Injectable({ providedIn: 'root' })
@@ -13,6 +14,7 @@ export class ScrapingFacade {
   private readonly auth = inject(AuthService);
   private readonly toast = inject(ToastService);
   private readonly translate = inject(TranslateService);
+  private readonly ws = inject(WebSocketService);
 
   readonly targets = signal<ScrapeTargetDto[]>([]);
   readonly otherTargets = signal<ScrapeTargetDto[]>([]);
@@ -23,6 +25,23 @@ export class ScrapingFacade {
   readonly running = signal(false);
   readonly runningId = signal<string | null>(null);
   readonly lastResult = signal<string | null>(null);
+
+  constructor() {
+    this.ws.scrapeCompleted$.subscribe((r) => {
+      if (!this.running()) {
+        return;
+      }
+      const wasRunningId = this.runningId();
+      this.running.set(false);
+      this.runningId.set(null);
+      this.lastResult.set(
+        wasRunningId
+          ? this.translate.instant('scraping.resultOffers', { offers: r.offersUpserted })
+          : this.translate.instant('scraping.resultSummary', { targets: r.targetsProcessed, offers: r.offersUpserted }),
+      );
+      this.load();
+    });
+  }
 
   public load(): void {
     this.loading.set(true);
@@ -80,39 +99,24 @@ export class ScrapingFacade {
     this.running.set(true);
     this.runningId.set(null);
     this.lastResult.set(null);
-    this.api
-      .runAll()
-      .pipe(finalize(() => { this.running.set(false); this.runningId.set(null); }))
-      .subscribe({
-        next: (r) => {
-          this.lastResult.set(this.translate.instant('scraping.resultSummary', { targets: r.targetsProcessed, offers: r.offersUpserted }));
-          this.load();
-        },
-        error: (err) => {
-          const msg = (err as { message?: string }).message ?? 'unknown';
-          this.lastResult.set(msg);
-          this.toast.error(this.translate.instant('scraping.toastRunError'));
-        },
-      });
+    this.api.runAll().subscribe({
+      error: () => {
+        this.running.set(false);
+        this.toast.error(this.translate.instant('scraping.toastRunError'));
+      },
+    });
   }
 
   public runOne(id: string): void {
     this.running.set(true);
     this.runningId.set(id);
     this.lastResult.set(null);
-    this.api
-      .runOne(id)
-      .pipe(finalize(() => { this.running.set(false); this.runningId.set(null); }))
-      .subscribe({
-        next: (r) => {
-          this.lastResult.set(this.translate.instant('scraping.resultOffers', { offers: r.offersUpserted }));
-          this.load();
-        },
-        error: (err) => {
-          const msg = (err as { message?: string }).message ?? 'unknown';
-          this.lastResult.set(msg);
-          this.toast.error(this.translate.instant('scraping.toastRunError'));
-        },
-      });
+    this.api.runOne(id).subscribe({
+      error: () => {
+        this.running.set(false);
+        this.runningId.set(null);
+        this.toast.error(this.translate.instant('scraping.toastRunError'));
+      },
+    });
   }
 }

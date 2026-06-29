@@ -1,7 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import {
   CreateScrapeTargetRequest,
-  ScrapeRunResult,
   ScrapeTargetDto,
   UpdateScrapeTargetRequest,
 } from '@kzpanel/shared';
@@ -37,11 +36,11 @@ export class ScrapingApi {
     return this.api.delete<void>(`/scrape-targets/${id}`);
   }
 
-  public runAll(): Observable<ScrapeRunResult> {
-    return this.api.post<ScrapeRunResult>('/scrape-targets/run', {});
+  public runAll(): Observable<void> {
+    return this.api.post<void>('/scrape-targets/run', {});
   }
 
-  public runOne(id: string): Observable<ScrapeRunResult> {
-    return this.api.post<ScrapeRunResult>(`/scrape-targets/${id}/run`, {});
+  public runOne(id: string): Observable<void> {
+    return this.api.post<void>(`/scrape-targets/${id}/run`, {});
   }
 }
