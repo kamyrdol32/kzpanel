@@ -61,7 +61,13 @@ function sortJobs(jobs: JobOfferDto[], field: JobSortField, dir: SortDir): JobOf
       }
     }
 
-    return dir === 'asc' ? cmp : -cmp;
+    const directed = dir === 'asc' ? cmp : -cmp;
+    if (directed !== 0) {
+      return directed;
+    }
+    // Stable tiebreaker by id so rows with an equal sort value keep a fixed
+    // order — applying or dismissing (an upsert) must not reshuffle the table.
+    return a.id.localeCompare(b.id);
   });
 
   return sorted;
