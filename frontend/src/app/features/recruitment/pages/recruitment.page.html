@@ -1,6 +1,11 @@
 <div class="kz-page">
   <div class="kz-row page-header-row">
-    <h1 class="kz-page-title" style="margin: 0">{{ 'recruitment.title' | translate }}</h1>
+    <div class="kz-row" style="gap: 12px">
+      <h1 class="kz-page-title" style="margin: 0">{{ 'recruitment.title' | translate }}</h1>
+      @if (filteredItems().length > 0) {
+        <span class="rec-count">{{ filteredItems().length }}</span>
+      }
+    </div>
     <kz-global-search />
   </div>
 
