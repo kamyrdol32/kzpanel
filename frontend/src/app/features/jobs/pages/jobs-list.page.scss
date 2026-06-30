@@ -468,6 +468,10 @@
   &-stale {
     color: var(--kz-warning, #f59e0b);
   }
+
+  &-elsewhere {
+    color: var(--kz-accent);
+  }
 }
 
 :host ::ng-deep .job-row-dismissed td {
@@ -535,6 +539,18 @@
   background: color-mix(in srgb, var(--kz-success, #22c55e) 15%, transparent);
   color: var(--kz-success, #22c55e);
   font-weight: 500;
+}
+
+.chip-elsewhere {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--kz-accent-dim);
+  border: 1px solid var(--kz-accent-border);
+  color: var(--kz-accent);
+  font-weight: 500;
+
+  .material-symbols-rounded { font-size: 16px; }
 }
 
 .job-detail {

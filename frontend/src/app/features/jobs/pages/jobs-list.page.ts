@@ -17,7 +17,7 @@ import { StatusBadgeComponent } from '../../../shared/ui/status-badge/status-bad
 import { JobsFacade } from '../facade/jobs.facade';
 import { JobSortField } from '../store/jobs.actions';
 
-type JobRow = JobOfferDto & { applied: boolean; extraTech: string[] };
+type JobRow = JobOfferDto & { applied: boolean; appliedElsewhere: boolean; extraTech: string[] };
 
 
 @Component({
@@ -81,18 +81,35 @@ export class JobsListPage implements OnInit, OnDestroy {
     pages.push(total);
     return pages;
   });
+  protected readonly rankedJobs = computed<JobRow[]>(() => {
+    const applied = this.appliedJobIds();
+    const appliedKeys = this.appliedKeys();
+    const rows = this.facade.jobs().map((job) => {
+      const isApplied = applied.has(job.id);
+      return {
+        ...job,
+        applied: isApplied,
+        // The same role often appears on several portals as separate offers.
+        // Flag it as applied-elsewhere when another offer with the same
+        // company + title already has a recruitment entry.
+        appliedElsewhere: !isApplied && appliedKeys.has(this.offerKey(job.company, job.title)),
+        extraTech: this.extraTech(job),
+      };
+    });
+    // Offers with no status float to the top, acted-on/handled ones sink to the
+    // bottom. Array.sort is stable, so the chosen field order is kept within each
+    // group — changing a status simply moves that row down.
+    return rows.sort((a, b) => Number(this.hasStatus(a)) - Number(this.hasStatus(b)));
+  });
+
   protected readonly paginatedJobs = computed<JobRow[]>(() => {
     const page = this.currentPage();
-    const applied = this.appliedJobIds();
-    return this.facade
-      .jobs()
-      .slice((page - 1) * this.PAGE_SIZE, page * this.PAGE_SIZE)
-      .map((job) => ({
-        ...job,
-        applied: applied.has(job.id),
-        extraTech: this.extraTech(job),
-      }));
+    return this.rankedJobs().slice((page - 1) * this.PAGE_SIZE, page * this.PAGE_SIZE);
   });
+
+  private hasStatus(job: JobRow): boolean {
+    return job.applied || job.appliedElsewhere || job.dismissed || !!job.staleAt;
+  }
 
   protected readonly levels = Object.values(JobLevel);
   protected readonly remoteTypes = Object.values(RemoteType);
@@ -116,6 +133,29 @@ export class JobsListPage implements OnInit, OnDestroy {
     }
     return set;
   });
+
+  protected readonly appliedKeys = computed<Set<string>>(() => {
+    const set = new Set<string>();
+    for (const r of this.recruitmentFacade.items()) {
+      set.add(this.offerKey(r.company, r.position));
+    }
+    return set;
+  });
+
+  private offerKey(company: string, title: string): string {
+    // Lenient match so the same role on different portals still lines up:
+    // drop parenthesised/bracketed suffixes (e.g. "(Remote)", "(m/f/d)") and
+    // collapse punctuation, so only the meaningful words remain.
+    const norm = (s: string): string =>
+      s
+        .toLowerCase()
+        .replace(/\([^)]*\)/g, ' ')
+        .replace(/\[[^\]]*\]/g, ' ')
+        .replace(/[^a-z0-9ąćęłńóśźż]+/gi, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+    return `${norm(company)}|${norm(title)}`;
+  }
 
   protected columns: TableColumn<JobRow>[] = [];
 

@@ -48,6 +48,7 @@
       "status": "Status",
       "statusNew": "Nowa",
       "statusApplied": "CV wysłane",
+      "statusAppliedElsewhere": "CV wysłane w innym portalu",
       "statusDismissed": "Nieinteresujące",
       "statusStale": "Oferta zniknęła z portalu"
     },

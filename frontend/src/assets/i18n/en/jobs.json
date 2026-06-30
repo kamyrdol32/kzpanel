@@ -48,6 +48,7 @@
       "status": "Status",
       "statusNew": "New",
       "statusApplied": "CV sent",
+      "statusAppliedElsewhere": "CV sent on another portal",
       "statusDismissed": "Not interested",
       "statusStale": "No longer on the portal"
     },

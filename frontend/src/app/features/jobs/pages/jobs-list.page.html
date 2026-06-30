@@ -130,6 +130,10 @@
           <span class="status-dot status-dot-applied" [title]="'jobs.detail.statusApplied' | translate">
             <span class="material-symbols-rounded">mark_email_read</span>
           </span>
+        } @else if (job.appliedElsewhere) {
+          <span class="status-dot status-dot-elsewhere" [title]="'jobs.detail.statusAppliedElsewhere' | translate">
+            <span class="material-symbols-rounded">forward_to_inbox</span>
+          </span>
         } @else if (job.dismissed) {
           <span class="status-dot status-dot-dismissed" [title]="'jobs.detail.statusDismissed' | translate">
             <span class="material-symbols-rounded">visibility_off</span>
@@ -181,6 +185,12 @@
                 <span class="material-symbols-rounded">send</span>
                 {{ 'jobs.apply' | translate }}
               </button>
+              @if (job.appliedElsewhere) {
+                <span class="chip chip-elsewhere">
+                  <span class="material-symbols-rounded">forward_to_inbox</span>
+                  {{ 'jobs.detail.statusAppliedElsewhere' | translate }}
+                </span>
+              }
             }
             <button class="btn btn-ghost" (click)="openSource(job)">
               <span class="material-symbols-rounded">open_in_new</span>
