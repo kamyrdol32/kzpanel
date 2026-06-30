@@ -31,7 +31,8 @@
     "toastRunError": "An error occurred while scraping.",
     "resultSummary": "Scraping done — {{ targets }} target(s), {{ offers }} offer(s).",
     "resultOffers": "Fetched {{ offers }} offer(s).",
-    "cityPlaceholder": "Select city...",
+    "cityPlaceholder": "Select or type a city...",
+    "addCity": "Add",
     "includeAllRemote": "Include remote from all Poland",
     "includeRemote": "Remote"
   }

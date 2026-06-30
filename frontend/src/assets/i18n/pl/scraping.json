@@ -31,7 +31,8 @@
     "toastRunError": "Wystąpił błąd podczas scrapowania.",
     "resultSummary": "Scrapowanie zakończone — {{ targets }} cel(e), {{ offers }} ofert(y).",
     "resultOffers": "Pobrano {{ offers }} ofert(y).",
-    "cityPlaceholder": "Wybierz miasto...",
+    "cityPlaceholder": "Wybierz lub wpisz miasto...",
+    "addCity": "Dodaj",
     "includeAllRemote": "Uwzględnij zdalne z całej PL",
     "includeRemote": "Zdalne"
   }

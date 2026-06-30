@@ -54,6 +54,8 @@
                   [formControlName]="f.key"
                   [placeholder]="'scraping.cityPlaceholder' | translate"
                   [clearable]="true"
+                  [addTag]="true"
+                  [addTagText]="'scraping.addCity' | translate"
                   notFoundText=""
                 />
               } @else {
@@ -117,6 +119,8 @@
                       formControlName="location"
                       [placeholder]="'scraping.cityPlaceholder' | translate"
                       [clearable]="true"
+                      [addTag]="true"
+                      [addTagText]="'scraping.addCity' | translate"
                       notFoundText=""
                     />
                   }
