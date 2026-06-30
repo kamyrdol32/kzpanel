@@ -117,6 +117,12 @@ export class AuthService {
 
   public logout(): void {
     this.http.post(`${this.base}/logout`, {}).subscribe({ error: () => void 0 });
+    this.clearSession();
+  }
+
+  // Drops local auth state without calling the backend — used when the session
+  // has already become invalid (e.g. an expired token returned 401).
+  public clearSession(): void {
     this.tokens.clear();
     this._user.set(null);
   }
