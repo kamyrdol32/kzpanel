@@ -18,12 +18,12 @@ export const landingGuard: CanActivateFn = () => {
     return true;
   }
 
-  if (auth.hasPermission(Permission.RECRUITMENT_MANAGE)) {
-    return router.createUrlTree(['/recruitment']);
-  }
-
   if (auth.hasPermission(Permission.JOBS_VIEW)) {
     return router.createUrlTree(['/jobs']);
+  }
+
+  if (auth.hasPermission(Permission.RECRUITMENT_MANAGE)) {
+    return router.createUrlTree(['/recruitment']);
   }
 
   if (auth.hasPermission(Permission.SCRAPE_RUN) || auth.hasPermission(Permission.SCRAPE_TARGETS_MANAGE)) {
