@@ -225,6 +225,11 @@
     font-weight: 600;
     color: var(--kz-accent);
   }
+
+  &-total {
+    color: var(--kz-text-muted);
+    font-weight: 500;
+  }
 }
 
 .back-btn {

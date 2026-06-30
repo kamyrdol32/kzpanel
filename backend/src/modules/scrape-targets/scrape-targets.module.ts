@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { JobOffer } from '../jobs/job-offer.entity';
 import { NotificationsModule } from '../notifications/notifications.module';
+import { Recruitment } from '../recruitment/recruitment.entity';
 import { User } from '../users/user.entity';
 
 import { LanguageDetector } from './language.detector';
@@ -15,7 +16,7 @@ import { ScrapeTargetsService } from './scrape-targets.service';
 import { ScraperClient } from './scraper-client.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([ScrapeTarget, JobOffer, User]), NotificationsModule],
+  imports: [TypeOrmModule.forFeature([ScrapeTarget, JobOffer, User, Recruitment]), NotificationsModule],
   controllers: [ScrapeTargetsController],
   providers: [
     ScrapeTargetsService,

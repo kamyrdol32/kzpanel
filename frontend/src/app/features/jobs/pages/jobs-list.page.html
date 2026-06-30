@@ -41,7 +41,10 @@
               <button class="scraper-card" type="button" (click)="selectScraper(s)">
                 <kz-status-badge [label]="s.source" tone="info" />
                 <span class="scraper-card-query">{{ s.query }}</span>
-                <span class="scraper-card-count">{{ s.offerCount }} {{ 'jobs.offersShort' | translate }}</span>
+                <span class="scraper-card-count">
+                  {{ s.pendingCount }} {{ 'jobs.offersShort' | translate }}
+                  <span class="scraper-card-total">({{ s.offerCount }})</span>
+                </span>
               </button>
             }
           </div>
@@ -57,7 +60,10 @@
                 <kz-status-badge [label]="s.source" tone="info" />
                 <span class="scraper-card-query">{{ s.query }}</span>
                 <span class="scraper-card-owner">{{ s.ownerUsername }}</span>
-                <span class="scraper-card-count">{{ s.offerCount }} {{ 'jobs.offersShort' | translate }}</span>
+                <span class="scraper-card-count">
+                  {{ s.pendingCount }} {{ 'jobs.offersShort' | translate }}
+                  <span class="scraper-card-total">({{ s.offerCount }})</span>
+                </span>
               </button>
             }
           </div>

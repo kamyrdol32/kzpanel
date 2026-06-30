@@ -11,6 +11,7 @@ export interface ScrapeTargetDto extends BaseEntityDto {
   enabled: boolean;
   lastRunAt: string | null;
   offerCount: number;
+  pendingCount: number;
   userId: string;
   ownerUsername?: string;
 }

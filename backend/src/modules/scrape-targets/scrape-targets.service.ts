@@ -9,12 +9,17 @@ import { In, Not, QueryFailedError, Repository } from 'typeorm';
 
 import { Role } from '../../shared';
 import { JobOffer } from '../jobs/job-offer.entity';
+import { Recruitment } from '../recruitment/recruitment.entity';
 import { User } from '../users/user.entity';
 
 import { CreateScrapeTargetDto, UpdateScrapeTargetDto } from './dto/scrape-target.dto';
 import { ScrapeTarget } from './scrape-target.entity';
 
-type ScrapeTargetWithCount = ScrapeTarget & { offerCount: number; ownerUsername?: string };
+type ScrapeTargetWithCount = ScrapeTarget & {
+  offerCount: number;
+  pendingCount: number;
+  ownerUsername?: string;
+};
 
 @Injectable()
 export class ScrapeTargetsService {
@@ -25,11 +30,13 @@ export class ScrapeTargetsService {
     private readonly offers: Repository<JobOffer>,
     @InjectRepository(User)
     private readonly users: Repository<User>,
+    @InjectRepository(Recruitment)
+    private readonly recruitments: Repository<Recruitment>,
   ) {}
 
   async findAll(userId: string): Promise<ScrapeTargetWithCount[]> {
     const targets = await this.repo.find({ where: { userId }, order: { createdAt: 'DESC' } });
-    return this.withOfferCounts(targets);
+    return this.withOfferCounts(targets, userId);
   }
 
   async findOthers(userId: string): Promise<ScrapeTargetWithCount[]> {
@@ -37,7 +44,7 @@ export class ScrapeTargetsService {
       where: { userId: Not(userId) },
       order: { createdAt: 'DESC' },
     });
-    const withCounts = await this.withOfferCounts(targets);
+    const withCounts = await this.withOfferCounts(targets, userId);
 
     const ownerIds = [...new Set(targets.map((t) => t.userId))];
     if (ownerIds.length === 0) {
@@ -101,24 +108,47 @@ export class ScrapeTargetsService {
     await this.repo.softDelete(id);
   }
 
-  private async withOfferCounts(targets: ScrapeTarget[]): Promise<ScrapeTargetWithCount[]> {
+  private async withOfferCounts(
+    targets: ScrapeTarget[],
+    userId: string,
+  ): Promise<ScrapeTargetWithCount[]> {
     if (targets.length === 0) {
       return [];
     }
+    const ids = targets.map((t) => t.id);
+
     const counts = await this.offers
       .createQueryBuilder('o')
       .select('o.scrapeTargetId', 'targetId')
       .addSelect('COUNT(*)', 'count')
-      .where('o.scrapeTargetId IN (:...ids)', { ids: targets.map((t) => t.id) })
+      .where('o.scrapeTargetId IN (:...ids)', { ids })
       .andWhere('o.deletedAt IS NULL')
       .groupBy('o.scrapeTargetId')
       .getRawMany<{ targetId: string; count: string }>();
 
+    // Pending = no action taken: not dismissed and not added to recruitment by
+    // the requesting user.
+    const pending = await this.offers
+      .createQueryBuilder('o')
+      .select('o.scrapeTargetId', 'targetId')
+      .addSelect('COUNT(*)', 'count')
+      .where('o.scrapeTargetId IN (:...ids)', { ids })
+      .andWhere('o.deletedAt IS NULL')
+      .andWhere('o.dismissed = false')
+      .andWhere(
+        'NOT EXISTS (SELECT 1 FROM "recruitments" r WHERE r."jobOfferId" = o.id AND r."userId" = :userId)',
+        { userId },
+      )
+      .groupBy('o.scrapeTargetId')
+      .getRawMany<{ targetId: string; count: string }>();
+
     const countByTarget = new Map(counts.map((c) => [c.targetId, Number(c.count)]));
+    const pendingByTarget = new Map(pending.map((c) => [c.targetId, Number(c.count)]));
 
     return targets.map((target) => ({
       ...target,
       offerCount: countByTarget.get(target.id) ?? 0,
+      pendingCount: pendingByTarget.get(target.id) ?? 0,
     }));
   }
 }
