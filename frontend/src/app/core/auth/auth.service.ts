@@ -88,6 +88,22 @@ export class AuthService {
       .pipe(tap((res) => this.tokens.set(res.accessToken, res.refreshToken)));
   }
 
+  // Re-derive role and permissions from the current (renewed) access token so an
+  // admin's change reaches the live session without a re-login. Email and other
+  // fields from the original login response are preserved.
+  public syncFromToken(): void {
+    const fromToken = this.userFromToken();
+    if (!fromToken) {
+      return;
+    }
+    const current = this._user();
+    if (!current) {
+      this._user.set(fromToken);
+      return;
+    }
+    this._user.set({ ...current, role: fromToken.role, permissions: fromToken.permissions });
+  }
+
   public hasPermission(permission: Permission): boolean {
     const user = this._user();
     if (!user) {

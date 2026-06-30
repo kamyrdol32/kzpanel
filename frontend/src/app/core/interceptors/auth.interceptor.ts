@@ -2,6 +2,7 @@ import { HttpInterceptorFn, HttpResponse } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { tap } from 'rxjs';
 
+import { AuthService } from '../auth/auth.service';
 import { TokenStorageService } from '../auth/token-storage.service';
 
 /**
@@ -11,6 +12,7 @@ import { TokenStorageService } from '../auth/token-storage.service';
  */
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const tokens = inject(TokenStorageService);
+  const auth = inject(AuthService);
   const token = tokens.getAccessToken();
   const outgoing =
     token && req.url.includes('/api')
@@ -26,6 +28,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
         // x-access-token must not silently log the user back in.
         if (renewed && tokens.getAccessToken()) {
           tokens.setAccess(renewed);
+          auth.syncFromToken();
         }
       }
     }),

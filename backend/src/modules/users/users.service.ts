@@ -2,14 +2,49 @@ import { BadRequestException, Injectable, NotFoundException } from '@nestjs/comm
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
+import { Permission, Role } from '../../shared';
+
 import { User } from './user.entity';
+
+export interface UserAuthInfo {
+  role: Role;
+  permissions: Permission[];
+  isActive: boolean;
+}
 
 @Injectable()
 export class UsersService {
+  // In-memory cache of the auth-relevant fields, read on every request by the
+  // JWT strategy. Populated lazily and dropped whenever the user is mutated, so
+  // permission/role changes take effect without hitting the database each time.
+  private readonly authCache = new Map<string, UserAuthInfo>();
+
   constructor(
     @InjectRepository(User)
     private readonly repo: Repository<User>,
   ) {}
+
+  async getAuthInfo(id: string): Promise<UserAuthInfo | null> {
+    const cached = this.authCache.get(id);
+    if (cached) {
+      return cached;
+    }
+    const user = await this.findById(id);
+    if (!user) {
+      return null;
+    }
+    const info: UserAuthInfo = {
+      role: user.role,
+      permissions: user.permissions ?? [],
+      isActive: user.isActive,
+    };
+    this.authCache.set(id, info);
+    return info;
+  }
+
+  private invalidateAuthInfo(id: string): void {
+    this.authCache.delete(id);
+  }
 
   findByUsernameWithSecrets(username: string): Promise<User | null> {
     return this.repo
@@ -65,6 +100,7 @@ export class UsersService {
     }
     await this.getByIdOrThrow(id);
     await this.repo.delete(id);
+    this.invalidateAuthInfo(id);
   }
 
   create(data: Partial<User>): Promise<User> {
@@ -73,6 +109,7 @@ export class UsersService {
 
   async update(id: string, data: Partial<User>): Promise<User> {
     await this.repo.update(id, data);
+    this.invalidateAuthInfo(id);
     return this.getByIdOrThrow(id);
   }
 }
