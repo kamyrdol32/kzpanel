@@ -30,7 +30,7 @@ export class RegisterPage {
     {
       username: ['', [Validators.required, Validators.minLength(3)]],
       email: ['', [Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(8)]],
+      password: ['', [Validators.required, Validators.minLength(4)]],
       confirm: ['', [Validators.required]],
     },
     { validators: passwordsMatch },

@@ -33,7 +33,7 @@ export class SettingsPage {
   protected readonly passwordForm = this.fb.nonNullable.group(
     {
       currentPassword: ['', [Validators.required]],
-      newPassword: ['', [Validators.required, Validators.minLength(8)]],
+      newPassword: ['', [Validators.required, Validators.minLength(4)]],
       confirm: ['', [Validators.required]],
     },
     { validators: passwordsMatch },

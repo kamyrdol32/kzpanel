@@ -30,7 +30,7 @@ export class ResetPasswordPage implements OnInit {
   protected readonly form = this.fb.nonNullable.group(
     {
       token: ['', [Validators.required]],
-      newPassword: ['', [Validators.required, Validators.minLength(8)]],
+      newPassword: ['', [Validators.required, Validators.minLength(4)]],
       confirm: ['', [Validators.required]],
     },
     { validators: passwordsMatch },

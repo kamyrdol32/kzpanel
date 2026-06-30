@@ -28,7 +28,7 @@ export class LoginPage implements OnInit {
 
   protected readonly form = this.fb.nonNullable.group({
     username: ['', [Validators.required]],
-    password: ['', [Validators.required]],
+    password: ['', [Validators.required, Validators.minLength(4)]],
     rememberMe: [false],
   });
 

@@ -17,7 +17,7 @@ export class LoginDto implements LoginRequest {
 
   @ApiProperty({ example: 'StrongPass123' })
   @IsString()
-  @MinLength(8)
+  @MinLength(4)
   password!: string;
 }
 
@@ -33,7 +33,7 @@ export class RegisterDto implements RegisterRequest {
 
   @ApiProperty()
   @IsString()
-  @MinLength(8)
+  @MinLength(4)
   password!: string;
 }
 
@@ -56,7 +56,7 @@ export class ResetPasswordDto implements ResetPasswordRequest {
 
   @ApiProperty()
   @IsString()
-  @MinLength(8)
+  @MinLength(4)
   newPassword!: string;
 }
 
@@ -67,7 +67,7 @@ export class ChangePasswordDto implements ChangePasswordRequest {
 
   @ApiProperty()
   @IsString()
-  @MinLength(8)
+  @MinLength(4)
   newPassword!: string;
 }
 
