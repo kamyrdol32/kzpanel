@@ -26,7 +26,6 @@ export class JustJoinITStrategy implements JobScraperStrategy {
 
   async fetchList(params: ScrapeParams): Promise<JobStub[]> {
     const perPage = 100;
-    const q = (params.query ?? '').toLowerCase();
     const encodedQuery = encodeURIComponent(params.query ?? '');
     const location = params.location?.trim() || undefined;
     const allOffers: JjitOffer[] = [];
@@ -34,8 +33,14 @@ export class JustJoinITStrategy implements JobScraperStrategy {
     let totalPages = 1;
 
     try {
+      // JustJoinIt expects a single, diacritics-free city param (e.g. "krakow").
+      // The array form `city[]=` now returns HTTP 400, and a value with Polish
+      // diacritics ("Kraków") is silently ignored. Skip the param entirely when
+      // includeAllRemote is set so remote-from-anywhere offers are kept.
+      const cityParam =
+        location && !params.includeAllRemote ? `&city=${encodeURIComponent(this.normalize(location))}` : '';
+
       do {
-        const cityParam = location ? `&city%5B%5D=${encodeURIComponent(location)}` : '';
         const url = `${API}?page=${page}&perPage=${perPage}&sortBy=published&orderBy=DESC&keywords%5B%5D=${encodedQuery}${cityParam}`;
         const res = await fetch(url, {
           headers: { 'User-Agent': UA, Version: '2' },
@@ -61,27 +66,18 @@ export class JustJoinITStrategy implements JobScraperStrategy {
         page++;
       } while (page <= totalPages);
 
-      let offers = q
-        ? allOffers.filter(
-            (o) =>
-              (o.title ?? '').toLowerCase().includes(q) ||
-              (o.requiredSkills ?? []).some((s) => s.name?.toLowerCase().includes(q)),
-          )
-        : allOffers;
+      // The API already filters by keyword and city, and the list does not expose
+      // requiredSkills — so a local title-only re-filter would wrongly drop valid
+      // matches (e.g. a backend role that lists Angular among its skills). The
+      // city match is likewise left to the API, which also handles multi-location
+      // offers a local `o.city` check would miss.
+      let offers = allOffers;
 
       if (params.remoteType === RemoteType.REMOTE) {
         offers = offers.filter((o) => o.workplaceType === 'remote');
       }
 
-      if (location && !params.includeAllRemote) {
-        const normalizedLocation = this.normalize(location);
-        offers = offers.filter((o) => {
-          const isRemote = o.workplaceType === 'remote';
-          return isRemote || this.normalize(o.city ?? '') === normalizedLocation;
-        });
-      }
-
-      this.logger.log(`"${params.query ?? ''}" → ${offers.length} offers matched (fetched ${allOffers.length})`);
+      this.logger.log(`"${params.query ?? ''}" → ${offers.length} offers (fetched ${allOffers.length})`);
 
       return offers
         .filter((o) => o.slug)
