@@ -82,6 +82,7 @@
     "status": {
       "NEW": "New",
       "CV_SENT": "CV sent",
+      "OPENED": "Opened",
       "INTERVIEW": "Interview",
       "TECHNICAL": "Technical",
       "OFFER": "Offer",

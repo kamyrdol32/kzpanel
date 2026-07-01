@@ -1,6 +1,7 @@
 import { JobLevel, RecruitmentStatus, RemoteType } from '../enums';
 
 import { BaseEntityDto } from './common.dto';
+import { JobOfferDto } from './jobs.dto';
 
 export interface RecruitmentDto extends BaseEntityDto {
   company: string;
@@ -14,6 +15,8 @@ export interface RecruitmentDto extends BaseEntityDto {
   status: RecruitmentStatus;
   jobOfferId: string | null;
   notes: string | null;
+  /** Full scraped offer (description, requirements, links, …) when this entry was created from one. */
+  jobOffer: JobOfferDto | null;
 }
 
 export interface CreateRecruitmentRequest {

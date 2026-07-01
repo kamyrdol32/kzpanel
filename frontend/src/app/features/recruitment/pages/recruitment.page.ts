@@ -130,6 +130,8 @@ export class RecruitmentPage implements OnInit {
       case RecruitmentStatus.INTERVIEW:
       case RecruitmentStatus.TECHNICAL:
         return 'warning';
+      case RecruitmentStatus.OPENED:
+        return 'info';
       default:
         return 'neutral';
     }

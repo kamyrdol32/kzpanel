@@ -144,15 +144,79 @@
                         <span class="field-label">{{ 'recruitment.updated' | translate }}</span>
                         <span class="field-value">{{ row.updatedAt | date: 'dd.MM.yyyy HH:mm' }}</span>
                       </div>
-                      <div class="field">
-                        <span class="field-label">{{ 'recruitment.jobOffer' | translate }}</span>
-                        <span class="field-value field-value-mono">{{ row.jobOfferId ?? '—' }}</span>
-                      </div>
                     </div>
                     <div class="field field-full">
                       <span class="field-label">{{ 'recruitment.notes' | translate }}</span>
                       <span class="field-value">{{ row.notes || '—' }}</span>
                     </div>
+
+                    @if (row.jobOffer; as offer) {
+                      <div class="linked-offer">
+                        <div class="linked-offer-header">
+                          <h4 class="linked-offer-title">{{ 'recruitment.jobOffer' | translate }}</h4>
+                          <a class="linked-offer-link" [href]="offer.sourceUrl" target="_blank" rel="noopener noreferrer">
+                            <span class="material-symbols-rounded">open_in_new</span>
+                            {{ 'jobs.openSource' | translate }}
+                          </a>
+                        </div>
+
+                        <div class="chips">
+                          <span class="chip chip-accent">{{ offer.source }}</span>
+                          @if (offer.location) {
+                            <span class="chip"><span class="material-symbols-rounded">location_on</span>{{ offer.location }}</span>
+                          }
+                          @for (rt of offer.remoteTypes; track rt) {
+                            <span class="chip">{{ 'enum.remote.' + rt | translate }}</span>
+                          }
+                          @for (et of offer.employmentTypes; track et) {
+                            <span class="chip">{{ 'enum.employment.' + et | translate }}</span>
+                          }
+                          @if (offer.publishedDate) {
+                            <span class="chip">{{ offer.publishedDate | date: 'dd.MM.yyyy' }}</span>
+                          }
+                        </div>
+
+                        @if (offer.description) {
+                          <div class="field field-full">
+                            <span class="field-label">{{ 'jobs.description' | translate }}</span>
+                            <p class="linked-offer-text">{{ offer.description }}</p>
+                          </div>
+                        } @else {
+                          <p class="muted">{{ 'jobs.noDescription' | translate }}</p>
+                        }
+
+                        @if (offer.responsibilities?.length) {
+                          <div class="field field-full">
+                            <span class="field-label">{{ 'jobs.responsibilities' | translate }}</span>
+                            <ul class="linked-offer-list">@for (r of offer.responsibilities; track r) { <li>{{ r }}</li> }</ul>
+                          </div>
+                        }
+                        @if (offer.mustHave?.length) {
+                          <div class="field field-full">
+                            <span class="field-label">{{ 'jobs.mustHave' | translate }}</span>
+                            <ul class="linked-offer-list">@for (m of offer.mustHave; track m) { <li>{{ m }}</li> }</ul>
+                          </div>
+                        }
+                        @if (offer.niceToHave?.length) {
+                          <div class="field field-full">
+                            <span class="field-label">{{ 'jobs.niceToHave' | translate }}</span>
+                            <ul class="linked-offer-list">@for (n of offer.niceToHave; track n) { <li>{{ n }}</li> }</ul>
+                          </div>
+                        }
+                        @if (offer.benefits?.length) {
+                          <div class="field field-full">
+                            <span class="field-label">{{ 'jobs.benefits' | translate }}</span>
+                            <ul class="linked-offer-list">@for (b of offer.benefits; track b) { <li>{{ b }}</li> }</ul>
+                          </div>
+                        }
+                        @if (offer.techStack?.length) {
+                          <div class="field field-full">
+                            <span class="field-label">{{ 'jobs.techStack' | translate }}</span>
+                            <div class="chips">@for (t of offer.techStack; track t) { <span class="chip">{{ t }}</span> }</div>
+                          </div>
+                        }
+                      </div>
+                    }
                   </div>
                 </td>
               </tr>

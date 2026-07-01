@@ -6,6 +6,7 @@ export enum Role {
 export enum RecruitmentStatus {
   NEW = 'NEW',
   CV_SENT = 'CV_SENT',
+  OPENED = 'OPENED',
   INTERVIEW = 'INTERVIEW',
   TECHNICAL = 'TECHNICAL',
   OFFER = 'OFFER',
