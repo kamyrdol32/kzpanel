@@ -3,6 +3,7 @@ import {
   ApplicationConfig,
   importProvidersFrom,
   isDevMode,
+  provideAppInitializer,
   provideZoneChangeDetection,
 } from '@angular/core';
 import { provideAnimations } from '@angular/platform-browser/animations';
@@ -17,6 +18,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
 import { errorInterceptor } from './core/interceptors/error.interceptor';
 import { loadingInterceptor } from './core/interceptors/loading.interceptor';
+import { resumeSession } from './core/auth/session.initializer';
 import { provideTranslation } from './core/i18n/translation.config';
 import { AppTitleStrategy } from './core/seo/title.strategy';
 import { APP_ROUTES } from './app.routes';
@@ -27,6 +29,7 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(APP_ROUTES, withComponentInputBinding()),
     provideHttpClient(withInterceptors([loadingInterceptor, authInterceptor, errorInterceptor])),
+    provideAppInitializer(resumeSession),
     provideAnimations(),
     provideStore(reducers, { metaReducers }),
     provideEffects([]),

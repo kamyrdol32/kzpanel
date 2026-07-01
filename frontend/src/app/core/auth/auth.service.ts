@@ -88,6 +88,12 @@ export class AuthService {
       .pipe(tap((res) => this.tokens.set(res.accessToken, res.refreshToken)));
   }
 
+  // True only when a present access token has not yet expired. Presence alone
+  // (isAuthenticated) is not enough — an expired token still sits in storage.
+  public hasValidAccessToken(): boolean {
+    return this.userFromToken() !== null;
+  }
+
   // Re-derive role and permissions from the current (renewed) access token so an
   // admin's change reaches the live session without a re-login. Email and other
   // fields from the original login response are preserved.
