@@ -1,4 +1,4 @@
-import { JobLevel, JobSource, Language, RemoteType } from '../enums';
+import { JobLevel, JobSource, Language, RecurrenceType, RemoteType } from '../enums';
 
 import { BaseEntityDto } from './common.dto';
 
@@ -14,7 +14,27 @@ export interface ScrapeTargetDto extends BaseEntityDto {
   pendingCount: number;
   userId: string;
   ownerUsername?: string;
+  schedules?: ScrapeScheduleDto[];
 }
+
+export interface ScrapeScheduleDto extends BaseEntityDto {
+  scrapeTargetId: string;
+  recurrenceType: RecurrenceType;
+  time: string;
+  daysOfWeek: number[] | null;
+  dayOfMonth: number | null;
+  enabled: boolean;
+}
+
+export interface CreateScrapeScheduleRequest {
+  recurrenceType: RecurrenceType;
+  time: string;
+  daysOfWeek?: number[];
+  dayOfMonth?: number;
+  enabled?: boolean;
+}
+
+export type UpdateScrapeScheduleRequest = Partial<CreateScrapeScheduleRequest>;
 
 export interface CreateScrapeTargetRequest {
   source: JobSource;

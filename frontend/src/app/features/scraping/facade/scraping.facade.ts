@@ -1,5 +1,13 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
-import { CreateScrapeTargetRequest, Permission, Role, ScrapeTargetDto, UpdateScrapeTargetRequest } from '@kzpanel/shared';
+import {
+  CreateScrapeScheduleRequest,
+  CreateScrapeTargetRequest,
+  Permission,
+  Role,
+  ScrapeTargetDto,
+  UpdateScrapeScheduleRequest,
+  UpdateScrapeTargetRequest,
+} from '@kzpanel/shared';
 import { TranslateService } from '@ngx-translate/core';
 import { finalize } from 'rxjs';
 
@@ -21,6 +29,7 @@ export class ScrapingFacade {
   readonly isAdmin = computed(() => this.auth.user()?.role === Role.ADMIN);
   readonly canRun = computed(() => this.auth.hasPermission(Permission.SCRAPE_RUN));
   readonly canManageTargets = computed(() => this.auth.hasPermission(Permission.SCRAPE_TARGETS_MANAGE));
+  readonly canManageSchedules = computed(() => this.auth.hasPermission(Permission.SCRAPE_SCHEDULE_MANAGE));
   readonly loading = signal(false);
   readonly running = signal(false);
   readonly runningId = signal<string | null>(null);
@@ -117,6 +126,36 @@ export class ScrapingFacade {
         this.runningId.set(null);
         this.toast.error(this.translate.instant('scraping.toastRunError'));
       },
+    });
+  }
+
+  public addSchedule(targetId: string, body: CreateScrapeScheduleRequest): void {
+    this.api.createSchedule(targetId, body).subscribe({
+      next: () => {
+        this.load();
+        this.toast.success(this.translate.instant('scraping.toastScheduleAdded'));
+      },
+      error: () => this.toast.error(this.translate.instant('common.errorGeneric')),
+    });
+  }
+
+  public editSchedule(targetId: string, id: string, body: UpdateScrapeScheduleRequest): void {
+    this.api.updateSchedule(targetId, id, body).subscribe({
+      next: () => {
+        this.load();
+        this.toast.success(this.translate.instant('scraping.toastScheduleUpdated'));
+      },
+      error: () => this.toast.error(this.translate.instant('common.errorGeneric')),
+    });
+  }
+
+  public removeSchedule(targetId: string, id: string): void {
+    this.api.deleteSchedule(targetId, id).subscribe({
+      next: () => {
+        this.load();
+        this.toast.info(this.translate.instant('scraping.toastScheduleRemoved'));
+      },
+      error: () => this.toast.error(this.translate.instant('common.errorGeneric')),
     });
   }
 }

@@ -1,7 +1,10 @@
 import { inject, Injectable } from '@angular/core';
 import {
+  CreateScrapeScheduleRequest,
   CreateScrapeTargetRequest,
+  ScrapeScheduleDto,
   ScrapeTargetDto,
+  UpdateScrapeScheduleRequest,
   UpdateScrapeTargetRequest,
 } from '@kzpanel/shared';
 import { Observable } from 'rxjs';
@@ -42,5 +45,28 @@ export class ScrapingApi {
 
   public runOne(id: string): Observable<void> {
     return this.api.post<void>(`/scrape-targets/${id}/run`, {});
+  }
+
+  public listSchedules(targetId: string): Observable<ScrapeScheduleDto[]> {
+    return this.api.get<ScrapeScheduleDto[]>(`/scrape-targets/${targetId}/schedules`);
+  }
+
+  public createSchedule(
+    targetId: string,
+    body: CreateScrapeScheduleRequest,
+  ): Observable<ScrapeScheduleDto> {
+    return this.api.post<ScrapeScheduleDto>(`/scrape-targets/${targetId}/schedules`, body);
+  }
+
+  public updateSchedule(
+    targetId: string,
+    id: string,
+    body: UpdateScrapeScheduleRequest,
+  ): Observable<ScrapeScheduleDto> {
+    return this.api.patch<ScrapeScheduleDto>(`/scrape-targets/${targetId}/schedules/${id}`, body);
+  }
+
+  public deleteSchedule(targetId: string, id: string): Observable<void> {
+    return this.api.delete<void>(`/scrape-targets/${targetId}/schedules/${id}`);
   }
 }

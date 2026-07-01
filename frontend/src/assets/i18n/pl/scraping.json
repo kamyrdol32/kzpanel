@@ -34,6 +34,27 @@
     "cityPlaceholder": "Wybierz lub wpisz miasto...",
     "addCity": "Dodaj",
     "includeAllRemote": "Uwzględnij zdalne z całej PL",
-    "includeRemote": "Zdalne"
+    "includeRemote": "Zdalne",
+    "scheduleTitle": "Harmonogram",
+    "scheduleEmpty": "Ten scraper nie ma jeszcze skonfigurowanych terminów.",
+    "scheduleEnabled": "Włączony",
+    "addSlot": "Dodaj termin",
+    "scheduleTimeHint": "Godziny podawane są w czasie UTC.",
+    "recurrenceType": "Cykliczność",
+    "recurrenceDAILY": "Codziennie",
+    "recurrenceWEEKLY": "Co tydzień",
+    "recurrenceMONTHLY": "Co miesiąc",
+    "time": "Godzina",
+    "dayOfMonth": "Dzień miesiąca",
+    "weekdayMon": "Pon",
+    "weekdayTue": "Wt",
+    "weekdayWed": "Śr",
+    "weekdayThu": "Czw",
+    "weekdayFri": "Pt",
+    "weekdaySat": "Sob",
+    "weekdaySun": "Ndz",
+    "toastScheduleAdded": "Termin dodany.",
+    "toastScheduleUpdated": "Termin zaktualizowany.",
+    "toastScheduleRemoved": "Termin usunięty."
   }
 }

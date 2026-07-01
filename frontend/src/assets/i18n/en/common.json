@@ -76,6 +76,7 @@
     "permission": {
       "SCRAPE_RUN": "Run scraper manually",
       "SCRAPE_TARGETS_MANAGE": "Manage scrapers",
+      "SCRAPE_SCHEDULE_MANAGE": "Manage scraper schedules",
       "JOBS_VIEW": "View job offers",
       "RECRUITMENT_MANAGE": "Manage recruitment"
     },

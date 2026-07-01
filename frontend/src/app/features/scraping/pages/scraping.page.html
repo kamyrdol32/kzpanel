@@ -184,6 +184,11 @@
                     <span class="material-symbols-rounded">play_arrow</span>
                   </button>
                 }
+                @if (facade.canManageSchedules()) {
+                  <button class="icon-btn" [class.is-active]="expandedScheduleTargetId() === t.id" [title]="'scraping.scheduleTitle' | translate" (click)="toggleScheduleEditor(t.id)">
+                    <span class="material-symbols-rounded">event_repeat</span>
+                  </button>
+                }
                 @if (facade.canManageTargets()) {
                   <button class="icon-btn" [title]="'common.edit' | translate" [disabled]="facade.running()" (click)="startEdit(t)">
                     <span class="material-symbols-rounded">edit</span>
@@ -197,6 +202,89 @@
                 }
               </div>
             </div>
+
+            @if (expandedScheduleTargetId() === t.id) {
+              <div class="schedule-panel">
+                @if (!t.schedules || t.schedules.length === 0) {
+                  <p class="hint">{{ 'scraping.scheduleEmpty' | translate }}</p>
+                } @else {
+                  @for (schedule of t.schedules; track schedule.id) {
+                    <div class="schedule-row">
+                      <kz-status-badge [label]="'scraping.recurrence' + schedule.recurrenceType | translate" tone="info" />
+                      <span class="schedule-time">{{ schedule.time }}</span>
+                      @if (schedule.recurrenceType === 'WEEKLY') {
+                        <span class="schedule-days">
+                          @for (day of schedule.daysOfWeek; track day) {
+                            <span class="weekday-chip">{{ day | weekdayLabel | translate }}</span>
+                          }
+                        </span>
+                      }
+                      @if (schedule.recurrenceType === 'MONTHLY') {
+                        <span class="schedule-days">{{ 'scraping.dayOfMonth' | translate }}: {{ schedule.dayOfMonth }}</span>
+                      }
+                      <label class="schedule-enabled">
+                        <input type="checkbox" [checked]="schedule.enabled" (change)="toggleScheduleEnabled(schedule)" />
+                        <span>{{ 'scraping.scheduleEnabled' | translate }}</span>
+                      </label>
+                      <button class="icon-btn danger" [title]="'common.delete' | translate" (click)="removeSchedule(t.id, schedule.id)">
+                        <span class="material-symbols-rounded">delete</span>
+                      </button>
+                    </div>
+                  }
+                }
+
+                <form class="schedule-slot-form" [formGroup]="scheduleForm" (ngSubmit)="addSchedule(t.id)">
+                  <label class="field">
+                    <span class="field-label">{{ 'scraping.recurrenceType' | translate }}</span>
+                    <select formControlName="recurrenceType">
+                      @for (r of recurrenceTypes; track r) {
+                        <option [value]="r">{{ ('scraping.recurrence' + r) | translate }}</option>
+                      }
+                    </select>
+                  </label>
+
+                  <label class="field">
+                    <span class="field-label">{{ 'scraping.time' | translate }}</span>
+                    <input type="time" formControlName="time" />
+                  </label>
+
+                  @if (scheduleFormShowsWeekly()) {
+                    <div class="weekday-picker">
+                      @for (opt of weekdayPickerOptions(); track opt.value) {
+                        <button
+                          type="button"
+                          class="weekday-chip weekday-chip-toggle"
+                          [class.is-selected]="opt.selected"
+                          (click)="toggleWeekday(opt.value)"
+                        >
+                          {{ opt.labelKey | translate }}
+                        </button>
+                      }
+                    </div>
+                  }
+
+                  @if (scheduleFormShowsMonthly()) {
+                    <label class="field">
+                      <span class="field-label">{{ 'scraping.dayOfMonth' | translate }}</span>
+                      <select formControlName="dayOfMonth">
+                        @for (d of dayOfMonthOptions; track d) {
+                          <option [value]="d">{{ d }}</option>
+                        }
+                      </select>
+                    </label>
+                  }
+
+                  <div class="field field-action">
+                    <span class="field-label">&nbsp;</span>
+                    <button type="submit" class="primary-btn" [disabled]="scheduleForm.invalid">
+                      <span class="material-symbols-rounded">add</span>
+                      {{ 'scraping.addSlot' | translate }}
+                    </button>
+                  </div>
+                </form>
+                <p class="hint">{{ 'scraping.scheduleTimeHint' | translate }}</p>
+              </div>
+            }
           }
         }
       </div>

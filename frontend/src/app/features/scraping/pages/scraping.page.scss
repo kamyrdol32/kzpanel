@@ -49,6 +49,12 @@
     color: var(--kz-danger);
     border-color: var(--kz-danger);
   }
+
+  &.is-active {
+    background: var(--kz-accent-dim);
+    color: var(--kz-accent);
+    border-color: var(--kz-accent-border);
+  }
 }
 
 .result-info {
@@ -435,4 +441,85 @@ select {
 .edit-city {
   min-width: 160px;
   flex: 1;
+}
+
+.schedule-panel {
+  display: flex;
+  flex-direction: column;
+  gap: $space-3;
+  padding: $space-4 20px;
+  background: var(--kz-surface-2);
+  border-bottom: 1px solid var(--kz-border);
+}
+
+.schedule-row {
+  display: flex;
+  align-items: center;
+  gap: $space-3;
+  padding: $space-2 0;
+  border-bottom: 1px solid var(--kz-border);
+
+  &:last-child { border-bottom: none; }
+}
+
+.schedule-time {
+  font-size: $fs-sm;
+  font-weight: $fw-semibold;
+  color: var(--kz-text);
+}
+
+.schedule-days {
+  display: flex;
+  align-items: center;
+  gap: $space-1;
+  font-size: $fs-xs;
+  color: var(--kz-text-muted);
+}
+
+.schedule-enabled {
+  display: flex;
+  align-items: center;
+  gap: $space-1;
+  margin-left: auto;
+  font-size: $fs-xs;
+  color: var(--kz-text-muted);
+  cursor: pointer;
+
+  input[type="checkbox"] { cursor: pointer; accent-color: var(--kz-accent); }
+}
+
+.schedule-slot-form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: $space-3;
+}
+
+.weekday-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $space-1;
+}
+
+.weekday-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 10px;
+  border-radius: $radius-pill;
+  background: var(--kz-surface);
+  border: 1px solid var(--kz-border);
+  font-size: $fs-xs;
+  color: var(--kz-text-muted);
+
+  &-toggle {
+    cursor: pointer;
+    transition: background $dur-fast $ease-standard, color $dur-fast $ease-standard;
+
+    &.is-selected {
+      background: var(--kz-accent-dim);
+      color: var(--kz-accent);
+      border-color: var(--kz-accent-border);
+    }
+  }
 }

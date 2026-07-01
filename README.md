@@ -83,7 +83,6 @@ INTERNAL_API_TOKEN=
 
 # --- Scraper scheduler ---
 SCRAPER_ENABLED=false
-SCRAPER_INTERVAL_CRON=0 0 4 * * *
 
 ```
 

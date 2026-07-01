@@ -34,6 +34,27 @@
     "cityPlaceholder": "Select or type a city...",
     "addCity": "Add",
     "includeAllRemote": "Include remote from all Poland",
-    "includeRemote": "Remote"
+    "includeRemote": "Remote",
+    "scheduleTitle": "Schedule",
+    "scheduleEmpty": "No time slots configured for this scraper.",
+    "scheduleEnabled": "Enabled",
+    "addSlot": "Add slot",
+    "scheduleTimeHint": "Times are in UTC.",
+    "recurrenceType": "Recurrence",
+    "recurrenceDAILY": "Daily",
+    "recurrenceWEEKLY": "Weekly",
+    "recurrenceMONTHLY": "Monthly",
+    "time": "Time",
+    "dayOfMonth": "Day of month",
+    "weekdayMon": "Mon",
+    "weekdayTue": "Tue",
+    "weekdayWed": "Wed",
+    "weekdayThu": "Thu",
+    "weekdayFri": "Fri",
+    "weekdaySat": "Sat",
+    "weekdaySun": "Sun",
+    "toastScheduleAdded": "Time slot added.",
+    "toastScheduleUpdated": "Time slot updated.",
+    "toastScheduleRemoved": "Time slot removed."
   }
 }

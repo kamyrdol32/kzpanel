@@ -9,6 +9,9 @@ import { User } from '../users/user.entity';
 import { LanguageDetector } from './language.detector';
 import { ScrapeOrchestratorService } from './scrape-orchestrator.service';
 import { ScrapeQueueService } from './scrape-queue.service';
+import { ScrapeSchedule } from './scrape-schedule.entity';
+import { ScrapeSchedulesController } from './scrape-schedules.controller';
+import { ScrapeSchedulesService } from './scrape-schedules.service';
 import { ScrapeScheduler } from './scrape.scheduler';
 import { ScrapeTarget } from './scrape-target.entity';
 import { ScrapeTargetsController } from './scrape-targets.controller';
@@ -16,8 +19,11 @@ import { ScrapeTargetsService } from './scrape-targets.service';
 import { ScraperClient } from './scraper-client.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([ScrapeTarget, JobOffer, User, Recruitment]), NotificationsModule],
-  controllers: [ScrapeTargetsController],
+  imports: [
+    TypeOrmModule.forFeature([ScrapeTarget, ScrapeSchedule, JobOffer, User, Recruitment]),
+    NotificationsModule,
+  ],
+  controllers: [ScrapeTargetsController, ScrapeSchedulesController],
   providers: [
     ScrapeTargetsService,
     ScraperClient,
@@ -25,6 +31,7 @@ import { ScraperClient } from './scraper-client.service';
     ScrapeOrchestratorService,
     ScrapeQueueService,
     ScrapeScheduler,
+    ScrapeSchedulesService,
   ],
   exports: [ScrapeTargetsService],
 })

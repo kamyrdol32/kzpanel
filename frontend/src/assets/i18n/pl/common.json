@@ -76,6 +76,7 @@
     "permission": {
       "SCRAPE_RUN": "Ręczne uruchamianie scrapera",
       "SCRAPE_TARGETS_MANAGE": "Zarządzanie scraperami",
+      "SCRAPE_SCHEDULE_MANAGE": "Zarządzanie harmonogramami scraperów",
       "JOBS_VIEW": "Przeglądanie ofert",
       "RECRUITMENT_MANAGE": "Zarządzanie rekrutacją"
     },

@@ -13,12 +13,14 @@ import { Recruitment } from '../recruitment/recruitment.entity';
 import { User } from '../users/user.entity';
 
 import { CreateScrapeTargetDto, UpdateScrapeTargetDto } from './dto/scrape-target.dto';
+import { ScrapeSchedule } from './scrape-schedule.entity';
 import { ScrapeTarget } from './scrape-target.entity';
 
 type ScrapeTargetWithCount = ScrapeTarget & {
   offerCount: number;
   pendingCount: number;
   ownerUsername?: string;
+  schedules: ScrapeSchedule[];
 };
 
 @Injectable()
@@ -32,6 +34,8 @@ export class ScrapeTargetsService {
     private readonly users: Repository<User>,
     @InjectRepository(Recruitment)
     private readonly recruitments: Repository<Recruitment>,
+    @InjectRepository(ScrapeSchedule)
+    private readonly schedules: Repository<ScrapeSchedule>,
   ) {}
 
   async findAll(userId: string): Promise<ScrapeTargetWithCount[]> {
@@ -145,10 +149,28 @@ export class ScrapeTargetsService {
     const countByTarget = new Map(counts.map((c) => [c.targetId, Number(c.count)]));
     const pendingByTarget = new Map(pending.map((c) => [c.targetId, Number(c.count)]));
 
+    const schedulesByTarget = await this.schedulesByTargetId(ids);
+
     return targets.map((target) => ({
       ...target,
       offerCount: countByTarget.get(target.id) ?? 0,
       pendingCount: pendingByTarget.get(target.id) ?? 0,
+      schedules: schedulesByTarget.get(target.id) ?? [],
     }));
+  }
+
+  private async schedulesByTargetId(targetIds: string[]): Promise<Map<string, ScrapeSchedule[]>> {
+    const schedules = await this.schedules
+      .createQueryBuilder('s')
+      .where('s.scrapeTargetId IN (:...targetIds)', { targetIds })
+      .getMany();
+
+    const byTarget = new Map<string, ScrapeSchedule[]>();
+    for (const schedule of schedules) {
+      const existing = byTarget.get(schedule.scrapeTargetId) ?? [];
+      existing.push(schedule);
+      byTarget.set(schedule.scrapeTargetId, existing);
+    }
+    return byTarget;
   }
 }

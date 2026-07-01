@@ -1,37 +1,39 @@
-import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { SchedulerRegistry } from '@nestjs/schedule';
-import { CronJob } from 'cron';
+import { Cron, CronExpression } from '@nestjs/schedule';
 
 import { ScrapeQueueService } from './scrape-queue.service';
+import { ScrapeSchedulesService } from './scrape-schedules.service';
 
 @Injectable()
-export class ScrapeScheduler implements OnModuleInit {
+export class ScrapeScheduler {
   private readonly logger = new Logger(ScrapeScheduler.name);
 
-  constructor(
+  public constructor(
     private readonly queue: ScrapeQueueService,
     private readonly config: ConfigService,
-    private readonly schedulerRegistry: SchedulerRegistry,
+    private readonly schedules: ScrapeSchedulesService,
   ) {}
 
-  onModuleInit(): void {
+  @Cron(CronExpression.EVERY_MINUTE)
+  public async handleTick(): Promise<void> {
     if (this.config.get('SCRAPER_ENABLED') === 'false') {
-      this.logger.warn('Scraper disabled (SCRAPER_ENABLED=false)');
       return;
     }
-    const cron = this.config.get<string>('SCRAPER_INTERVAL_CRON') ?? '0 0 4 * * *';
-    const job = new CronJob(cron, () => void this.run());
-    this.schedulerRegistry.addCronJob('scrape', job);
-    job.start();
-    this.logger.log(`Daily scrape scheduled with cron "${cron}"`);
-  }
 
-  private async run(): Promise<void> {
-    this.logger.log('Scheduled scrape enqueued');
-    const result = await this.queue.enqueue();
-    this.logger.log(
-      `Scheduled scrape finished — targets=${result.targetsProcessed} offers=${result.offersUpserted}`,
-    );
+    const now = new Date();
+    const weekday = now.getUTCDay();
+    const dayOfMonth = now.getUTCDate();
+    const hhmm = `${String(now.getUTCHours()).padStart(2, '0')}:${String(now.getUTCMinutes()).padStart(2, '0')}`;
+
+    const due = await this.schedules.findDueSchedules(weekday, dayOfMonth, hhmm);
+    if (due.length === 0) {
+      return;
+    }
+
+    this.logger.log(`${due.length} scheduled scrape(s) due at ${hhmm} UTC`);
+    for (const schedule of due) {
+      void this.queue.enqueue({ targetId: schedule.scrapeTargetId });
+    }
   }
 }
