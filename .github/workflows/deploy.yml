@@ -9,6 +9,19 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
+      - name: Notify Discord — build started
+        run: |
+          PAYLOAD=$(jq -n \
+            --arg title "🚀 Build started — ${{ github.repository }}" \
+            --arg desc "**Branch:** \`${{ github.ref_name }}\`
+          **Commit:** \`${{ github.sha }}\` — ${{ github.event.head_commit.message }}
+          **Author:** ${{ github.actor }}
+          **Run:** ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+            --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+            '{embeds: [{title: $title, description: $desc, color: 3447003, timestamp: $ts}]}')
+          curl -H "Content-Type: application/json" -X POST -d "$PAYLOAD" "${{ secrets.DISCORD_WEBHOOK_URL }}"
+        shell: bash
+
       - name: Configure SSH agent
         uses: webfactory/ssh-agent@v0.9.0
         with:
@@ -27,11 +40,26 @@ jobs:
           exit $exit_code
         shell: bash
 
-      - name: Notify Discord on failure
+      - name: Notify Discord — build succeeded
+        if: success()
+        run: |
+          PAYLOAD=$(jq -n \
+            --arg title "✅ Build succeeded — ${{ github.repository }}" \
+            --arg desc "**Branch:** \`${{ github.ref_name }}\`
+          **Commit:** \`${{ github.sha }}\` — ${{ github.event.head_commit.message }}
+          **Author:** ${{ github.actor }}
+          **Run:** ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+            --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+            '{embeds: [{title: $title, description: $desc, color: 3066993, timestamp: $ts}]}')
+          curl -H "Content-Type: application/json" -X POST -d "$PAYLOAD" "${{ secrets.DISCORD_WEBHOOK_URL }}"
+        shell: bash
+
+      - name: Notify Discord — build failed
         if: failure()
         run: |
           ERROR_LOG=$(tail -n 30 deploy.log)
-          DESC="**Commit:** \`${{ github.sha }}\`
+          DESC="**Branch:** \`${{ github.ref_name }}\`
+          **Commit:** \`${{ github.sha }}\` — ${{ github.event.head_commit.message }}
           **Author:** ${{ github.actor }}
           **Run:** ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
@@ -39,8 +67,9 @@ jobs:
           $ERROR_LOG
           \`\`\`"
           PAYLOAD=$(jq -n \
-            --arg title "❌ Deploy failed: ${{ github.repository }}" \
+            --arg title "❌ Build failed — ${{ github.repository }}" \
             --arg desc "$DESC" \
-            '{embeds: [{title: $title, description: $desc, color: 15158332}]}')
+            --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+            '{embeds: [{title: $title, description: $desc, color: 15158332, timestamp: $ts}]}')
           curl -H "Content-Type: application/json" -X POST -d "$PAYLOAD" "${{ secrets.DISCORD_WEBHOOK_URL }}"
         shell: bash
