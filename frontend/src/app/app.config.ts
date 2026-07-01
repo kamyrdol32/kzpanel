@@ -16,6 +16,7 @@ import { TranslateModule } from '@ngx-translate/core';
 
 import { authInterceptor } from './core/interceptors/auth.interceptor';
 import { errorInterceptor } from './core/interceptors/error.interceptor';
+import { loadingInterceptor } from './core/interceptors/loading.interceptor';
 import { provideTranslation } from './core/i18n/translation.config';
 import { AppTitleStrategy } from './core/seo/title.strategy';
 import { APP_ROUTES } from './app.routes';
@@ -25,7 +26,7 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(APP_ROUTES, withComponentInputBinding()),
-    provideHttpClient(withInterceptors([authInterceptor, errorInterceptor])),
+    provideHttpClient(withInterceptors([loadingInterceptor, authInterceptor, errorInterceptor])),
     provideAnimations(),
     provideStore(reducers, { metaReducers }),
     provideEffects([]),

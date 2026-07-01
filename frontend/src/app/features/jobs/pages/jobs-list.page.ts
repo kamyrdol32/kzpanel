@@ -224,8 +224,15 @@ export class JobsListPage implements OnInit, OnDestroy {
     this.route.queryParamMap.pipe(takeUntil(this.destroy$)).subscribe((params) => {
       const id = params.get('scraper');
       if (!id) {
+        const wasViewingScraper = this.selectedScraper() !== null;
         this.selectedScraper.set(null);
         this.pendingScraperId = null;
+        // Returning to the picker — refresh so each scraper's pending/offer
+        // counts reflect the offers just applied to or dismissed.
+        if (wasViewingScraper) {
+          this.recruitmentFacade.load();
+          this.loadScrapers();
+        }
         return;
       }
 
