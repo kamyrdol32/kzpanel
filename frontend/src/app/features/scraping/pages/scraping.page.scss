@@ -447,19 +447,37 @@ select {
   display: flex;
   flex-direction: column;
   gap: $space-3;
-  padding: $space-4 20px;
-  background: var(--kz-surface-2);
-  border-bottom: 1px solid var(--kz-border);
+  margin: $space-2 20px $space-4;
+  padding: $space-4;
+  background: var(--kz-surface-3);
+  border: 1px solid var(--kz-border);
+  border-left: 3px solid var(--kz-accent);
+  border-radius: $radius-md;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.schedule-panel-header {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  font-size: $fs-sm;
+  font-weight: $fw-semibold;
+  color: var(--kz-text);
+
+  .material-symbols-rounded {
+    font-size: 18px;
+    color: var(--kz-accent);
+  }
 }
 
 .schedule-row {
   display: flex;
   align-items: center;
   gap: $space-3;
-  padding: $space-2 0;
-  border-bottom: 1px solid var(--kz-border);
-
-  &:last-child { border-bottom: none; }
+  padding: $space-2 $space-3;
+  background: var(--kz-surface);
+  border: 1px solid var(--kz-border);
+  border-radius: $radius-md;
 }
 
 .schedule-time {

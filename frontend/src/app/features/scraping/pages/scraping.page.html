@@ -205,6 +205,10 @@
 
             @if (expandedScheduleTargetId() === t.id) {
               <div class="schedule-panel">
+                <div class="schedule-panel-header">
+                  <span class="material-symbols-rounded">event_repeat</span>
+                  <span>{{ 'scraping.scheduleTitle' | translate }}</span>
+                </div>
                 @if (!t.schedules || t.schedules.length === 0) {
                   <p class="hint">{{ 'scraping.scheduleEmpty' | translate }}</p>
                 } @else {
