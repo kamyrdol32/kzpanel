@@ -185,31 +185,31 @@
                           <p class="muted">{{ 'jobs.noDescription' | translate }}</p>
                         }
 
-                        @if (offer.responsibilities?.length) {
+                        @if (offer.responsibilities.length) {
                           <div class="field field-full">
                             <span class="field-label">{{ 'jobs.responsibilities' | translate }}</span>
                             <ul class="linked-offer-list">@for (r of offer.responsibilities; track r) { <li>{{ r }}</li> }</ul>
                           </div>
                         }
-                        @if (offer.mustHave?.length) {
+                        @if (offer.mustHave.length) {
                           <div class="field field-full">
                             <span class="field-label">{{ 'jobs.mustHave' | translate }}</span>
                             <ul class="linked-offer-list">@for (m of offer.mustHave; track m) { <li>{{ m }}</li> }</ul>
                           </div>
                         }
-                        @if (offer.niceToHave?.length) {
+                        @if (offer.niceToHave.length) {
                           <div class="field field-full">
                             <span class="field-label">{{ 'jobs.niceToHave' | translate }}</span>
                             <ul class="linked-offer-list">@for (n of offer.niceToHave; track n) { <li>{{ n }}</li> }</ul>
                           </div>
                         }
-                        @if (offer.benefits?.length) {
+                        @if (offer.benefits.length) {
                           <div class="field field-full">
                             <span class="field-label">{{ 'jobs.benefits' | translate }}</span>
                             <ul class="linked-offer-list">@for (b of offer.benefits; track b) { <li>{{ b }}</li> }</ul>
                           </div>
                         }
-                        @if (offer.techStack?.length) {
+                        @if (offer.techStack.length) {
                           <div class="field field-full">
                             <span class="field-label">{{ 'jobs.techStack' | translate }}</span>
                             <div class="chips">@for (t of offer.techStack; track t) { <span class="chip">{{ t }}</span> }</div>

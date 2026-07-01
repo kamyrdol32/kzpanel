@@ -34,7 +34,7 @@ jobs:
         run: |
           set +e
           ssh -p ${{ secrets.VPS_PORT }} ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} \
-            "cd ${{ secrets.VPS_PROJECT_PATH }} && git pull && docker compose up -d --build" \
+            "cd ${{ secrets.VPS_PROJECT_PATH }} && git fetch origin main && git reset --hard origin/main && docker compose up -d --build" \
             2>&1 | tee deploy.log
           exit_code=${PIPESTATUS[0]}
           exit $exit_code
