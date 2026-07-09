@@ -10,16 +10,38 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Notify Discord — build started
+        env:
+          COMMIT_MSG: ${{ github.event.head_commit.message }}
+          BRANCH: ${{ github.ref_name }}
+          AUTHOR: ${{ github.actor }}
+          SHA: ${{ github.sha }}
+          COMMIT_URL: ${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          REPO: ${{ github.repository }}
         run: |
+          COMMIT_TITLE="${COMMIT_MSG%%$'\n'*}"
           PAYLOAD=$(jq -n \
-            --arg title "🚀 Build started — ${{ github.repository }}" \
-            --arg desc "**Branch:** \`${{ github.ref_name }}\`
-          **Commit:** \`${{ github.sha }}\` — ${{ github.event.head_commit.message }}
-          **Author:** ${{ github.actor }}
-          **Run:** ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+            --arg title "🚀 Build started — $REPO" \
+            --arg branch "$BRANCH" \
+            --arg author "$AUTHOR" \
+            --arg sha "$SHA" \
+            --arg commit_url "$COMMIT_URL" \
+            --arg commit_title "$COMMIT_TITLE" \
+            --arg run_url "$RUN_URL" \
             --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
-            '{embeds: [{title: $title, description: $desc, color: 3447003, timestamp: $ts}]}')
-          curl -H "Content-Type: application/json" -X POST -d "$PAYLOAD" "${{ secrets.DISCORD_WEBHOOK_URL }}"
+            '{embeds: [{
+              title: $title,
+              color: 3447003,
+              timestamp: $ts,
+              fields: [
+                {name: "Branch", value: "`\($branch)`", inline: true},
+                {name: "Author", value: $author, inline: true},
+                {name: "Commit", value: "[`\($sha[0:7])`](\($commit_url)) \($commit_title)", inline: false},
+                {name: "Run", value: "[Zobacz przebieg](\($run_url))", inline: false}
+              ]
+            }]}')
+          MESSAGE_ID=$(curl -H "Content-Type: application/json" -X POST -d "$PAYLOAD" "${{ secrets.DISCORD_WEBHOOK_URL }}?wait=true" | jq -r '.id')
+          echo "DISCORD_MESSAGE_ID=$MESSAGE_ID" >> "$GITHUB_ENV"
         shell: bash
 
       - name: Configure SSH agent
@@ -42,34 +64,84 @@ jobs:
 
       - name: Notify Discord — build succeeded
         if: success()
+        env:
+          COMMIT_MSG: ${{ github.event.head_commit.message }}
+          BRANCH: ${{ github.ref_name }}
+          AUTHOR: ${{ github.actor }}
+          SHA: ${{ github.sha }}
+          COMMIT_URL: ${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          REPO: ${{ github.repository }}
         run: |
+          COMMIT_TITLE="${COMMIT_MSG%%$'\n'*}"
           PAYLOAD=$(jq -n \
-            --arg title "✅ Build succeeded — ${{ github.repository }}" \
-            --arg desc "**Branch:** \`${{ github.ref_name }}\`
-          **Commit:** \`${{ github.sha }}\` — ${{ github.event.head_commit.message }}
-          **Author:** ${{ github.actor }}
-          **Run:** ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+            --arg title "✅ Build succeeded — $REPO" \
+            --arg branch "$BRANCH" \
+            --arg author "$AUTHOR" \
+            --arg sha "$SHA" \
+            --arg commit_url "$COMMIT_URL" \
+            --arg commit_title "$COMMIT_TITLE" \
+            --arg run_url "$RUN_URL" \
             --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
-            '{embeds: [{title: $title, description: $desc, color: 3066993, timestamp: $ts}]}')
-          curl -H "Content-Type: application/json" -X POST -d "$PAYLOAD" "${{ secrets.DISCORD_WEBHOOK_URL }}"
+            '{embeds: [{
+              title: $title,
+              color: 3066993,
+              timestamp: $ts,
+              fields: [
+                {name: "Branch", value: "`\($branch)`", inline: true},
+                {name: "Author", value: $author, inline: true},
+                {name: "Commit", value: "[`\($sha[0:7])`](\($commit_url)) \($commit_title)", inline: false},
+                {name: "Run", value: "[Zobacz przebieg](\($run_url))", inline: false}
+              ]
+            }]}')
+          curl -X DELETE "${{ secrets.DISCORD_WEBHOOK_URL }}/messages/$DISCORD_MESSAGE_ID"
+          FINAL_MESSAGE_ID=$(curl -H "Content-Type: application/json" -X POST -d "$PAYLOAD" "${{ secrets.DISCORD_WEBHOOK_URL }}?wait=true" | jq -r '.id')
+          echo "DISCORD_FINAL_MESSAGE_ID=$FINAL_MESSAGE_ID" >> "$GITHUB_ENV"
         shell: bash
 
       - name: Notify Discord — build failed
         if: failure()
+        env:
+          COMMIT_MSG: ${{ github.event.head_commit.message }}
+          BRANCH: ${{ github.ref_name }}
+          AUTHOR: ${{ github.actor }}
+          SHA: ${{ github.sha }}
+          COMMIT_URL: ${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          REPO: ${{ github.repository }}
         run: |
+          COMMIT_TITLE="${COMMIT_MSG%%$'\n'*}"
           ERROR_LOG=$(tail -n 30 deploy.log)
-          DESC="**Branch:** \`${{ github.ref_name }}\`
-          **Commit:** \`${{ github.sha }}\` — ${{ github.event.head_commit.message }}
-          **Author:** ${{ github.actor }}
-          **Run:** ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-
-          \`\`\`
-          $ERROR_LOG
-          \`\`\`"
           PAYLOAD=$(jq -n \
-            --arg title "❌ Build failed — ${{ github.repository }}" \
-            --arg desc "$DESC" \
+            --arg title "❌ Build failed — $REPO" \
+            --arg branch "$BRANCH" \
+            --arg author "$AUTHOR" \
+            --arg sha "$SHA" \
+            --arg commit_url "$COMMIT_URL" \
+            --arg commit_title "$COMMIT_TITLE" \
+            --arg run_url "$RUN_URL" \
+            --arg error_log "$ERROR_LOG" \
             --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
-            '{embeds: [{title: $title, description: $desc, color: 15158332, timestamp: $ts}]}')
-          curl -H "Content-Type: application/json" -X POST -d "$PAYLOAD" "${{ secrets.DISCORD_WEBHOOK_URL }}"
+            '{embeds: [{
+              title: $title,
+              color: 15158332,
+              timestamp: $ts,
+              fields: [
+                {name: "Branch", value: "`\($branch)`", inline: true},
+                {name: "Author", value: $author, inline: true},
+                {name: "Commit", value: "[`\($sha[0:7])`](\($commit_url)) \($commit_title)", inline: false},
+                {name: "Run", value: "[Zobacz przebieg](\($run_url))", inline: false},
+                {name: "Log", value: "```\($error_log)```", inline: false}
+              ]
+            }]}')
+          curl -X DELETE "${{ secrets.DISCORD_WEBHOOK_URL }}/messages/$DISCORD_MESSAGE_ID"
+          FINAL_MESSAGE_ID=$(curl -H "Content-Type: application/json" -X POST -d "$PAYLOAD" "${{ secrets.DISCORD_WEBHOOK_URL }}?wait=true" | jq -r '.id')
+          echo "DISCORD_FINAL_MESSAGE_ID=$FINAL_MESSAGE_ID" >> "$GITHUB_ENV"
+        shell: bash
+
+      - name: Remove Discord notification after 5 minutes
+        if: always()
+        run: |
+          sleep 300
+          curl -X DELETE "${{ secrets.DISCORD_WEBHOOK_URL }}/messages/$DISCORD_FINAL_MESSAGE_ID"
         shell: bash

@@ -19,8 +19,6 @@ services:
     restart: unless-stopped
     depends_on:
       - kzpanel-backend
-    ports:
-      - '3001:3001'
     healthcheck:
       test: [ 'CMD', 'curl', '-fsS', 'http://localhost:3001/' ]
       interval: 15s
@@ -39,8 +37,6 @@ services:
     env_file: ./backend/.env
     depends_on:
       - kzpanel-scraper
-    ports:
-      - '5001:5001'
     healthcheck:
       test: [ 'CMD', 'node', '-e', "require('http').get('http://localhost:'+ (process.env.BACKEND_PORT||3000) +'/api/health',r=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))" ]
       interval: 15s
@@ -58,8 +54,6 @@ services:
     container_name: kzpanel-scraper
     restart: unless-stopped
     env_file: ./scraper/.env
-    ports:
-      - '4001:4001'
     networks:
       - kzpanel_default
       - nginx-proxy-manager_default
